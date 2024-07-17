@@ -9,4 +9,4 @@
 
 </div>
 
-Bilix patches from [BiliromingX-fork](https://github.com/sti-233/BiliRoamingX)
+Bilix patches from [BiliroamingX-fork](https://github.com/sti-233/BiliRoamingX)
