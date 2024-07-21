@@ -71,7 +71,7 @@ jobs:
           Bilix-global-md5=$(md5sum ./Bilix-global-${{ env.Bilix-global-ver }}-${{ env.ver }}@Aniruf_x.apk | cut -d ' ' -f 1)
           echo "Bilix-global-md5=$Bilix-global-md5" >> $GITHUB_ENV
           
-      - name: Get md5 from Bilix
+      - name: Get size from Bilix
         run: |
           Bilix-size=$(stat -c %s ./Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk)
           echo "Bilix-size=$Bilix-size" >> $GITHUB_ENV
