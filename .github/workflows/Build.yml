@@ -39,7 +39,7 @@ jobs:
           wget https://github.com/zjns/revanced-cli/releases/download/v4.6.0.1/revanced-cli.jar
       - name: Unzip CI zip and Rename
         run: |
-          unzip BiliroamingX-${{ env.ver }}.zip
+          unzip BiliRoamingX-${{ env.ver }}.zip
           mv BiliRoamingX-integrations-${{ env.ver }}.apk integrations.apk
           mv BiliRoamingX-patches-${{ env.ver }}.jar patches.jar
       - name: Build Patched apk
