@@ -2,7 +2,7 @@ name: Build Bilix
 
 on:
   workflow_dispatch:
-  push:
+    push:
     branches:
       - main
     paths-ignore:
@@ -14,7 +14,7 @@ jobs:
       matrix:
         apkname: [Bilix-8.6.0,Bilix-global-3.19.2]  #List of vanilla apk
     env:
-      ver: 1.22.5 #the billroamingX version
+      ver: 1.22.5.r1923 #the billroamingX version
       apkfile: ${{ matrix.apkname }}
       torelease: true
     runs-on: ubuntu-latest
@@ -34,7 +34,7 @@ jobs:
           echo Downloading original apk
           wget https://github.com/sti-233/Bilix-PreBuilds/releases/download/original/${{ env.apkfile }}.apk
           echo Downloading CI zip
-          wget https://github.com/sti-233/BiliRoamingX/actions/runs/10026067422/artifacts/1722813616
+          wget https://github.com/sti-233/BiliRoamingX/releases/download/prever4build/BiliRoamingX-${{ env.ver }}.zip
           echo Downloading modified revanced-cli
           wget https://github.com/zjns/revanced-cli/releases/download/v4.6.0.1/revanced-cli.jar
       - name: Unzip CI zip and Rename
