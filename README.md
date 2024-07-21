@@ -10,3 +10,9 @@
 </div>
 
 Bilix patches from [BiliroamingX-fork](https://github.com/sti-233/BiliRoamingX)
+
+# 使用/参考的项目
+
+- [BiliRoamingX/BiliRoamingX-PreBuilds](https://github.com/BiliRoamingX/BiliRoamingX-PreBuilds)
+- [vc-teahouse/inital-biliroaming-maker](https://github.com/vc-teahouse/inital-biliroaming-maker)
+
