@@ -1,0 +1,42 @@
+name: Build Bilix
+
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        apkname: [bilibili-play,iBiliPlayer-CN-HD,iBiliPlayer-CN]  #List of vanilla apk
+    env:
+      ver: 1.22.5 #the billroamingX version
+      apkfile: ${{ matrix.apkname }}
+      torelease: true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get Current Time
+        run: |
+          TIME=$(date +"%Y%m%d")
+          echo "TIME=$TIME" >> $GITHUB_ENV
+      - name: Setup JRE
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          java-package: 'jre'
+      - name: Get files
+        run: |
+          echo Downloading vanilla apk
+          wget https://github.com/vc-teahouse/inital-biliroaming-maker/releases/download/vanlia/${{ env.apkfile }}.apk
+          echo Downloading patches
+          wget https://github.com/BiliRoamingX/BiliRoamingX/releases/download/v${{ env.ver }}/BiliRoamingX-patches-${{ env.ver }}.jar -O patches.jar
+          wget https://github.com/BiliRoamingX/BiliRoamingX/releases/download/v${{ env.ver }}/BiliRoamingX-integrations-${{ env.ver }}.apk -Ointegrations.apk
+          echo Downloading modified revanced-cli
+          wget https://github.com/zjns/revanced-cli/releases/download/v4.6.0.1/revanced-cli.jar
+      - name: Build Patched apk
+        run: java -jar revanced-cli.jar patch --merge integrations.apk --patch-bundle patches.jar --signing-levels 1,2,3 ${{ env.apkfile }}.apk
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.apkfile }}-patched
+          path: ./${{ env.apkfile }}-patched.apk
