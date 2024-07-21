@@ -2,12 +2,17 @@ name: Build Bilix
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '**.md'
 jobs:
   build:
     strategy:
       fail-fast: false
       matrix:
-        apkname: [bilibili-play,iBiliPlayer-CN-HD,iBiliPlayer-CN]  #List of vanilla apk
+        apkname: [Bilix-8.6.0,Bilix-global-3.19.2]  #List of vanilla apk
     env:
       ver: 1.22.5 #the billroamingX version
       apkfile: ${{ matrix.apkname }}
@@ -26,17 +31,23 @@ jobs:
           java-package: 'jre'
       - name: Get files
         run: |
-          echo Downloading vanilla apk
-          wget https://github.com/vc-teahouse/inital-biliroaming-maker/releases/download/vanlia/${{ env.apkfile }}.apk
-          echo Downloading patches
-          wget https://github.com/BiliRoamingX/BiliRoamingX/releases/download/v${{ env.ver }}/BiliRoamingX-patches-${{ env.ver }}.jar -O patches.jar
-          wget https://github.com/BiliRoamingX/BiliRoamingX/releases/download/v${{ env.ver }}/BiliRoamingX-integrations-${{ env.ver }}.apk -Ointegrations.apk
+          echo Downloading original apk
+          wget https://github.com/sti-233/Bilix-PreBuilds/releases/download/original/${{ env.apkfile }}.apk
+          echo Downloading CI zip
+          wget https://github.com/sti-233/BiliRoamingX/actions/runs/10026067422/artifacts/1722813616
           echo Downloading modified revanced-cli
           wget https://github.com/zjns/revanced-cli/releases/download/v4.6.0.1/revanced-cli.jar
+      - name: Unzip CI zip and Rename
+        run: |
+          unzip BiliroamingX-${{ env.ver }}.zip
+          mv BiliRoamingX-integrations-${{ env.ver }}.apk integrations.apk
+          mv BiliRoamingX-patches-${{ env.ver }}.jar patches.jar
       - name: Build Patched apk
         run: java -jar revanced-cli.jar patch --merge integrations.apk --patch-bundle patches.jar --signing-levels 1,2,3 ${{ env.apkfile }}.apk
+      - name: Rename Patched Bilix
+        run: mv ${{ env.apkfile }}-patched.apk ${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.apkfile }}-patched
-          path: ./${{ env.apkfile }}-patched.apk
+          name: ${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk
+          path: ./${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk
