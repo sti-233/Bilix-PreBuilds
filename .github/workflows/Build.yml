@@ -49,16 +49,16 @@ jobs:
         run: |
           echo Downloading original apk
           wget https://github.com/sti-233/Bilix-PreBuilds/releases/download/original/${{ env.apkfile }}.apk
-         # echo Downloading CI zip
-         # wget https://github.com/sti-233/BiliRoamingX/releases/download/prever4build/BiliRoamingX-${{ env.ver }}.zip
+          echo Downloading CI zip
+          wget https://github.com/sti-233/BiliRoamingX/releases/download/prever4build/BiliRoamingX-${{ env.ver }}.zip
           echo Downloading modified revanced-cli
           wget https://github.com/zjns/revanced-cli/releases/download/v4.6.0.1/revanced-cli.jar
           
-      - name: Get BiliroamingX CI Build
-        run: |
-          echo ${{ secrets.CUSTOM_GITHUB_TOKEN }} | gh auth login --with-token
-          gh run view ${{ env.run-id }} --log
-          gh run download ${{ env.run-id }} --name BiliRoamingX-${{ env.ver }}.zip --dir ./
+      #- name: Get BiliroamingX CI Build
+       # run: |
+         # echo ${{ secrets.CUSTOM_GITHUB_TOKEN }} | gh auth login --with-token
+         # gh run view ${{ env.run-id }} --log
+         # gh run download ${{ env.run-id }} --name BiliRoamingX-${{ env.ver }}.zip --dir ./
           
       - name: Unzip CI zip and Rename
         run: |
