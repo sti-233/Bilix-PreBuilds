@@ -21,6 +21,8 @@ jobs:
       Bilix-global-vercode: 7750600
       Bilix-ver: 8.6.0
       Bilix-global-ver: 3.19.2
+      Bilix-sn: 15467355
+      Bilix-global-sn: 15154452
       torelease: true
       Bilix-draft: true
       Bilix-prerelease: false
@@ -101,30 +103,28 @@ jobs:
           echo "size=$size" >> $GITHUB_ENV
           
       - name: Release Bilix
-        if: ${{ env.torelease == 'true' && env.apkfile == 'Bilix-${{ env.Bilix-ver }}' }}
         uses: softprops/action-gh-release@v2
         with:
             draft: ${{ env.Bilix-draft }}
             prerelease: ${{ env.Bilix-prerelease }}
             fail_on_unmatched_files: true
             name: 'Bilix ${{ env.Bilix-ver }}(${{ env.Bilix-vercode }}) with BiliroamingX ${{ env.ver }}'
-            tag_name: 'android-v${{ env.Bilix-ver }}-b?-p${{ env.ver }}'
-            body: '版本信息：${{ env.Bilix-ver }} ${{ env.Bilix-vercode }} ${{ env.ver }} ${{ env.bigver }} sn ${{ env.size }} ${{ env.md5 }} ${{ env.TIME }}'
+            tag_name: 'android-v${{ env.Bilix-ver }}-b${{ env.Bilix-sn }}-p${{ env.ver }}'
+            body: '版本信息：${{ env.Bilix-ver }} ${{ env.Bilix-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.Bilix-sn }} ${{ env.size }} ${{ env.md5 }} ${{ env.TIME }}'
             files: ./Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk
             
       - name: Release Bilix-global
         continue-on-error: true
-        if: ${{ env.torelease == 'true' && env.apkfile == 'Bilix-${{ env.Bilix-global-ver }}' }}
         uses: softprops/action-gh-release@v2
         with:
             draft: ${{ env.Bilix-global-draft }}
             prerelease: ${{ env.Bilix-global-prerelease }}
             fail_on_unmatched_files: true
             name: 'Bilix global ${{ env.Bilix-global-ver }}(${{ env.Bilix-global-vercode }}) with BiliroamingX ${{ env.ver }}'
-            tag_name: 'android_i-v${{ env.Bilix-global-ver }}-b?-p${{ env.ver }}'
-            body: '版本信息：${{ env.Bilix-global-ver }} ${{ env.Bilix-global-vercode }} ${{ env.ver }} ${{ env.bigver }} sn ${{ env.Bilix-size }} ${{ env.md5 }} ${{ env.TIME }}'
+            tag_name: 'android_i-v${{ env.Bilix-global-ver }}-b${{ env.Bilix-global-sn }}-p${{ env.ver }}'
+            body: '版本信息：${{ env.Bilix-global-ver }} ${{ env.Bilix-global-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.Bilix-global-sn }} ${{ env.Bilix-size }} ${{ env.md5 }} ${{ env.TIME }}'
             files: ./Bilix-global-${{ env.Bilix-global-ver }}-${{ env.ver }}@Aniruf_x.apk
             
-      - name: Clean
+      - name: Build Success
         continue-on-error: true
         run: echo "### Build Success" >> $GITHUB_STEP_SUMMARY
