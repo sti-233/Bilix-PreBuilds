@@ -56,19 +56,8 @@ jobs:
           
       - name: Get BiliroamingX CI Build
         run: |
-          # 1. 安装GitHub CLI (如果尚未安装)
-          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
-          sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
-          echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
-          sudo apt update
-          sudo apt install gh
-          # 2. 登录GitHub CLI
           echo ${{ secrets.CUSTOM_GITHUB_TOKEN }} | gh auth login --with-token
-
-          # 4. 列出指定run的Artifact
           gh run view ${{ env.run-id }} --log
-
-          # 5. 下载Artifact
           gh run download ${{ env.run-id }} --name BiliRoamingX-${{ env.ver }}.zip --dir ./
           
       - name: Unzip CI zip and Rename
