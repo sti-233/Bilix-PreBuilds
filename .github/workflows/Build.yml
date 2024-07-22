@@ -1,135 +1,51 @@
-name: Build Bilix
+name: Build apk
 
 on:
   workflow_dispatch:
   push:
-    branches:
-      - main
-    paths-ignore:
-      - '**.md'
 jobs:
   build:
     strategy:
       fail-fast: false
       matrix:
-        apkname: [Bilix-8.6.0,Bilix-global-3.19.2]  #List of vanilla apk
+        apkname: [bilibili-play,iBiliPlayer-CN-HD,iBiliPlayer-CN]  #List of vanilla apk
     env:
-      ver: 1.22.5.r1923 #the billroamingX version
-     # run-id: 10026067422
-      bigver: 1.22.5
-      Bilix-vercode: 8060100
-      Bilix-global-vercode: 7750600
-      Bilix-ver: 8.6.0
-      Bilix-global-ver: 3.19.2
-      Bilix-sn: 15467355
-      Bilix-global-sn: 15154452
-      Bilix-torelease: false
-      Bilix-draft: true
-      Bilix-prerelease: false
-      Bilix-global-torelease: true
-      Bilix-global-draft: false
-      Bilix-global-prerelease: true
+      ver: 1.22.5 #the billroamingX version
       apkfile: ${{ matrix.apkname }}
+      torelease: true
     runs-on: ubuntu-latest
     steps:
-    
       - name: Get Current Time
         run: |
-          TIME=$EPOCHSECONDS
+          TIME=$(date +"%Y%m%d")
           echo "TIME=$TIME" >> $GITHUB_ENV
-          
       - name: Setup JRE
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
           java-package: 'jre'
-          
-      - name: Get resource
+      - name: Get files
         run: |
-          echo Downloading original apk
-          wget https://github.com/sti-233/Bilix-PreBuilds/releases/download/original/${{ env.apkfile }}.apk
-          echo Downloading CI zip
-          wget https://github.com/sti-233/BiliRoamingX/releases/download/prever4build/BiliRoamingX-${{ env.ver }}.zip
+          echo Downloading vanilla apk
+          wget https://github.com/${{ github.repository }}/releases/download/vanlia/${{ env.apkfile }}.apk
+          echo Downloading patches
+          wget https://github.com/BiliRoamingX/BiliRoamingX/releases/download/v${{ env.ver }}/BiliRoamingX-patches-${{ env.ver }}.jar -O patches.jar
+          wget https://github.com/BiliRoamingX/BiliRoamingX/releases/download/v${{ env.ver }}/BiliRoamingX-integrations-${{ env.ver }}.apk -Ointegrations.apk
           echo Downloading modified revanced-cli
           wget https://github.com/zjns/revanced-cli/releases/download/v4.6.0.1/revanced-cli.jar
-          
-      #- name: Get BiliroamingX CI Build
-       # uses: actions/download-artifact@v4
-       # with:
-           # name: BiliRoamingX-${{ env.ver }}.zip
-           # path: ./
-           # github-token: ${{ github.token }}
-           # repository: sti-233/BiliroamingX
-           # run-id: ${{ env.run-id }}
-          
-      - name: Unzip CI zip and Rename
-        run: |
-          unzip BiliRoamingX-${{ env.ver }}.zip
-          mv BiliRoamingX-integrations-${{ env.ver }}.apk integrations.apk
-          mv BiliRoamingX-patches-${{ env.ver }}.jar patches.jar
-          
-      - name: Build Bilix
+      - name: Build Patched apk
         run: java -jar revanced-cli.jar patch --merge integrations.apk --patch-bundle patches.jar --signing-levels 1,2,3 ${{ env.apkfile }}.apk
-        
-      - name: Rename Bilix
-        run: mv ${{ env.apkfile }}-patched.apk ${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk
-        
-      - name: Upload Bilix (CI)
+      - name: Upload
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk
-          path: ./${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk
-          
-      - name: Get sn from Bilix
-        run: |
-          cp ./${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk ./${{ env.apkfile }}_patched.zip
-          unzip ./${{ env.apkfile }}_patched.zip
-          mv AndroidManifest.xml ${{ env.apkfile }}-AndroidManifest.xml
-            
-      - name: Upload sn-AndroidManifest.xml (CI)
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ env.apkfile }}-AndroidManifest.xml
-          path: ./${{ env.apkfile }}-AndroidManifest.xml
-          
-      - name: Get md5 from Bilix
-        run: |
-          md5=$(md5sum ./${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk | cut -d ' ' -f 1)
-          echo "md5=$md5" >> $GITHUB_ENV
-          
-      - name: Get size from Bilix
-        run: |
-          size=$(stat -c %s ./${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk)
-          echo "size=$size" >> $GITHUB_ENV
-          
-      - name: Release Bilix
-        if: ${{ env.Bilix-torelease == 'true' }}
+          name: ${{ env.apkfile }}-patched
+          path: ./${{ env.apkfile }}-patched.apk
+      - name: Release
+        if: ${{ env.torelease == 'true' }}
         uses: softprops/action-gh-release@v2
         with:
-            token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
-            draft: ${{ env.Bilix-draft }}
-            prerelease: ${{ env.Bilix-prerelease }}
-            fail_on_unmatched_files: true
-            name: 'Bilix ${{ env.Bilix-ver }}(${{ env.Bilix-vercode }}) with BiliroamingX ${{ env.ver }}'
-            tag_name: 'android-v${{ env.Bilix-ver }}-b${{ env.Bilix-sn }}-p${{ env.ver }}'
-            body: '版本信息：${{ env.Bilix-ver }} ${{ env.Bilix-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.Bilix-sn }} ${{ env.size }} ${{ env.md5 }} ${{ env.TIME }}'
-            files: Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk
-        continue-on-error: true
-            
-      - name: Release Bilix-global
-        if: ${{ env.Bilix-global-torelease == 'true' }}
-        uses: softprops/action-gh-release@v2
-        with:
-            token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
-            draft: ${{ env.Bilix-global-draft }}
-            prerelease: ${{ env.Bilix-global-prerelease }}
-            fail_on_unmatched_files: true
-            name: 'Bilix global ${{ env.Bilix-global-ver }}(${{ env.Bilix-global-vercode }}) with BiliroamingX ${{ env.ver }}'
-            tag_name: 'android_i-v${{ env.Bilix-global-ver }}-b${{ env.Bilix-global-sn }}-p${{ env.ver }}'
-            body: '版本信息：${{ env.Bilix-global-ver }} ${{ env.Bilix-global-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.Bilix-global-sn }} ${{ env.Bilix-size }} ${{ env.md5 }} ${{ env.TIME }}'
-            files: Bilix-global-${{ env.Bilix-global-ver }}-${{ env.ver }}@Aniruf_x.apk
-        continue-on-error: true
-            
-      - name: Build Success
-        run: echo "### Build Success" >> $GITHUB_STEP_SUMMARY
+            name: 'Patched-${{ env.TIME }}.${{ github.run_number }}'
+            tag_name: 'v${{ env.TIME }}.${{ github.run_number }}'
+            body: 'Patched-${{ env.TIME }}.${{ github.run_number }} with:BiliRoamingX:v${{ env.ver }}'
+            files: ./${{ env.apkfile }}-patched.apk
