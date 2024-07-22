@@ -107,7 +107,7 @@ jobs:
         if: ${{ env.Bilix-torelease == 'true' }}
         uses: softprops/action-gh-release@v2
         with:
-            token: ${{ github.token }}
+            token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
             draft: ${{ env.Bilix-draft }}
             prerelease: ${{ env.Bilix-prerelease }}
             fail_on_unmatched_files: true
@@ -121,7 +121,7 @@ jobs:
         if: ${{ env.Bilix-global-torelease == 'true' }}
         uses: softprops/action-gh-release@v2
         with:
-            token: ${{ github.token }}
+            token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
             draft: ${{ env.Bilix-global-draft }}
             prerelease: ${{ env.Bilix-global-prerelease }}
             fail_on_unmatched_files: true
