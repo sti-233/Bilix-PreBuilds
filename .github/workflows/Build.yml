@@ -12,10 +12,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        apkname: [Bilix-8.6.0,Bilix-global-3.19.2]  #List of vanilla apk
+        apkname: [Bilix-8.6.0, Bilix-global-3.19.2]  # List of vanilla apk
     env:
-      ver: 1.22.5.r1923 #the billroamingX version
-     # run-id: 10026067422
+      ver: 1.22.5.r1923  # the billroamingX version
+      # run-id: 10026067422
       bigver: 1.22.5
       Bilix-vercode: 8060100
       Bilix-global-vercode: 7750600
@@ -29,7 +29,6 @@ jobs:
       Bilix-global-torelease: true
       Bilix-global-draft: false
       Bilix-global-prerelease: true
-      apkfile: ${{ matrix.apkname }}
     runs-on: ubuntu-latest
     steps:
     
@@ -48,49 +47,35 @@ jobs:
       - name: Get resource
         run: |
           echo Downloading original apk
-          wget https://github.com/sti-233/Bilix-PreBuilds/releases/download/original/${{ env.apkfile }}.apk
-         # echo Downloading CI zip
-         # wget https://github.com/sti-233/BiliRoamingX/releases/download/prever4build/BiliRoamingX-${{ env.ver }}.zip
+          wget https://github.com/sti-233/Bilix-PreBuilds/releases/download/original/${{ matrix.apkname }}.apk
           echo Downloading modified revanced-cli
           wget https://github.com/zjns/revanced-cli/releases/download/v4.6.0.1/revanced-cli.jar
           
-      #- name: Get BiliroamingX CI Build
-       # uses: actions/download-artifact@v4
-       # with:
-           # name: BiliRoamingX-${{ env.ver }}.zip
-           # path: ./
-           # github-token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
-           # repository: sti-233/BiliroamingX
-           # run-id: ${{ env.run-id }}
-          
-    - name: Checkout Repo
-      uses: actions/checkout@v3
+      - name: Checkout Repo
+        uses: actions/checkout@v3
 
-    - name: Get BiliroamingX CI Artifact URL
-      id: get_artifact_url
-      uses: actions/github-script@v6  # 使用 GitHub Script Action 获取目标工件的下载 URL
-      with:
-        script: |
-          const { owner, repo } = context.repo;  # 获取当前仓库的所有者和名称
-          const run_id = ${{ env.run-id }};  # 将此替换为目标工作流的 run ID
-          const artifactName = `BiliRoamingX-${{ env.ver }}.zip`;  # 构建工件的名称
-          const token = ${{ secrets.CUSTOM_GITHUB_TOKEN }};  # 使用机密中的 GitHub Token
-          # 获取目标仓库中的构建工件列表
-          const artifacts = await github.actions.listWorkflowRunArtifacts({
-            owner: 'sti-233',  # 目标仓库的所有者
-            repo: 'BiliroamingX',  # 目标仓库的名称
-            run_id: ${{ env.run-id }}  # 目标工作流的 run ID
-          });
-          # 查找指定名称的工件
-          const artifact = artifacts.data.artifacts.find(a => a.name === artifactName);
-          if (!artifact) {
-            throw new Error(`Artifact ${artifactName} not found`);  # 如果未找到，抛出错误
-          }
-          # 返回工件的下载 URL
-          return artifact.archive_download_url;
+      - name: Get BiliroamingX CI Artifact URL
+        id: get_artifact_url
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const run_id = ${{ env.run-id }};
+            const artifactName = `BiliRoamingX-${{ env.ver }}.zip`;
+            const token = ${{ secrets.CUSTOM_GITHUB_TOKEN }};
+            const artifacts = await github.actions.listWorkflowRunArtifacts({
+              owner: 'sti-233',
+              repo: 'BiliroamingX',
+              run_id: run_id
+            });
+            const artifact = artifacts.data.artifacts.find(a => a.name === artifactName);
+            if (!artifact) {
+              throw new Error(`Artifact ${artifactName} not found`);
+            }
+            return artifact.archive_download_url;
 
-    - name: Download BiliroamingX CI  Artifact
-      run: curl -L -o BiliRoamingX-${{ env.ver }}.zip -H "Authorization: token ${{ secrets.CUSTOM_GITHUB_TOKEN }}" ${{ steps.get_artifact_url.outputs.result }}  # 使用 curl 下载工件
+      - name: Download BiliroamingX CI Artifact
+        run: curl -L -o BiliRoamingX-${{ env.ver }}.zip -H "Authorization: token ${{ secrets.CUSTOM_GITHUB_TOKEN }}" ${{ steps.get_artifact_url.outputs.result }}
           
       - name: Unzip CI zip and Rename
         run: |
@@ -99,71 +84,71 @@ jobs:
           mv BiliRoamingX-patches-${{ env.ver }}.jar patches.jar
           
       - name: Build Bilix
-        run: java -jar revanced-cli.jar patch --merge integrations.apk --patch-bundle patches.jar --signing-levels 1,2,3 ${{ env.apkfile }}.apk
+        run: java -jar revanced-cli.jar patch --merge integrations.apk --patch-bundle patches.jar --signing-levels 1,2,3 ${{ matrix.apkname }}.apk
         
       - name: Rename Bilix
-        run: mv ${{ env.apkfile }}-patched.apk ${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk
+        run: mv ${{ matrix.apkname }}-patched.apk ${{ matrix.apkname }}-${{ env.ver }}@Aniruf_x.apk
         
       - name: Upload Bilix (CI)
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk
-          path: ./${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk
+          name: ${{ matrix.apkname }}-${{ env.ver }}@Aniruf_x.apk
+          path: ./${{ matrix.apkname }}-${{ env.ver }}@Aniruf_x.apk
           
       - name: Get sn from Bilix
         run: |
-          cp ./${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk ./${{ env.apkfile }}_patched.zip
-          unzip ./${{ env.apkfile }}_patched.zip
-          mv AndroidManifest.xml ${{ env.apkfile }}-AndroidManifest.xml
+          cp ./${{ matrix.apkname }}-${{ env.ver }}@Aniruf_x.apk ./${{ matrix.apkname }}_patched.zip
+          unzip ./${{ matrix.apkname }}_patched.zip
+          mv AndroidManifest.xml ${{ matrix.apkname }}-AndroidManifest.xml
             
       - name: Upload sn-AndroidManifest.xml (CI)
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.apkfile }}-AndroidManifest.xml
-          path: ./${{ env.apkfile }}-AndroidManifest.xml
+          name: ${{ matrix.apkname }}-AndroidManifest.xml
+          path: ./${{ matrix.apkname }}-AndroidManifest.xml
           
       - name: Get md5 from Bilix
         run: |
-          md5=$(md5sum ./${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk | cut -d ' ' -f 1)
+          md5=$(md5sum ./${{ matrix.apkname }}-${{ env.ver }}@Aniruf_x.apk | cut -d ' ' -f 1)
           echo "md5=$md5" >> $GITHUB_ENV
           
       - name: Get size from Bilix
         run: |
-          size=$(stat -c %s ./${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk)
+          size=$(stat -c %s ./${{ matrix.apkname }}-${{ env.ver }}@Aniruf_x.apk)
           echo "size=$size" >> $GITHUB_ENV
           
       - name: Is Bilix?
-        run: echo "Is-Bilix=$(if [ '${{ env.apkfile }}' == 'Bilix-${{ env.Bilix-ver }}' ]; then echo true; else echo false; fi)" >> $GITHUB_ENV
+        run: echo "Is-Bilix=$(if [ '${{ matrix.apkname }}' == 'Bilix-${{ env.Bilix-ver }}' ]; then echo true; else echo false; fi)" >> $GITHUB_ENV
         
       - name: Is Bilix-global?
-        run: echo "Is-Bilix-global=$(if [ '${{ env.apkfile }}' == 'Bilix-global-${{ env.Bilix-global-ver }}' ]; then echo true; else echo false; fi)" >> $GITHUB_ENV
+        run: echo "Is-Bilix-global=$(if [ '${{ matrix.apkname }}' == 'Bilix-global-${{ env.Bilix-global-ver }}' ]; then echo true; else echo false; fi)" >> $GITHUB_ENV
           
       - name: Release Bilix
         if: ${{ env.Bilix-torelease == 'true' }}
         uses: softprops/action-gh-release@v2
         with:
-           token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
-            draft: ${{ env.Bilix-draft }}
-            prerelease: ${{ env.Bilix-prerelease }}
-            fail_on_unmatched_files: true
-            name: 'Bilix ${{ env.Bilix-ver }}(${{ env.Bilix-vercode }}) with BiliroamingX ${{ env.ver }}'
-            tag_name: 'android-v${{ env.Bilix-ver }}-b${{ env.Bilix-sn }}-p${{ env.ver }}'
-            body: '版本信息：${{ env.Bilix-ver }} ${{ env.Bilix-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.Bilix-sn }} ${{ env.size }} ${{ env.md5 }} ${{ env.TIME }}'
-            files: ./Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk
+          token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+          draft: ${{ env.Bilix-draft }}
+          prerelease: ${{ env.Bilix-prerelease }}
+          fail_on_unmatched_files: true
+          name: 'Bilix ${{ env.Bilix-ver }}(${{ env.Bilix-vercode }}) with BiliroamingX ${{ env.ver }}'
+          tag_name: 'android-v${{ env.Bilix-ver }}-b${{ env.Bilix-sn }}-p${{ env.ver }}'
+          body: '版本信息：${{ env.Bilix-ver }} ${{ env.Bilix-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.Bilix-sn }} ${{ env.size }} ${{ env.md5 }} ${{ env.TIME }}'
+          files: ./Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk
         continue-on-error: true
             
       - name: Release Bilix-global
         if: ${{ env.Bilix-global-torelease == 'true' }}
         uses: softprops/action-gh-release@v2
         with:
-            token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
-            draft: ${{ env.Bilix-global-draft }}
-            prerelease: ${{ env.Bilix-global-prerelease }}
-            fail_on_unmatched_files: true
-            name: 'Bilix global ${{ env.Bilix-global-ver }}(${{ env.Bilix-global-vercode }}) with BiliroamingX ${{ env.ver }}'
-            tag_name: 'android_i-v${{ env.Bilix-global-ver }}-b${{ env.Bilix-global-sn }}-p${{ env.ver }}'
-            body: '版本信息：${{ env.Bilix-global-ver }} ${{ env.Bilix-global-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.Bilix-global-sn }} ${{ env.Bilix-size }} ${{ env.md5 }} ${{ env.TIME }}'
-            files: ./Bilix-global-${{ env.Bilix-global-ver }}-${{ env.ver }}@Aniruf_x.apk
+          token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+          draft: ${{ env.Bilix-global-draft }}
+          prerelease: ${{ env.Bilix-global-prerelease }}
+          fail_on_unmatched_files: true
+          name: 'Bilix global ${{ env.Bilix-global-ver }}(${{ env.Bilix-global-vercode }}) with BiliroamingX ${{ env.ver }}'
+          tag_name: 'android_i-v${{ env.Bilix-global-ver }}-b${{ env.Bilix-global-sn }}-p${{ env.ver }}'
+          body: '版本信息：${{ env.Bilix-global-ver }} ${{ env.Bilix-global-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.Bilix-global-sn }} ${{ env.Bilix-size }} ${{ env.md5 }} ${{ env.TIME }}'
+          files: ./Bilix-global-${{ env.Bilix-global-ver }}-${{ env.ver }}@Aniruf_x.apk
         continue-on-error: true
             
       - name: Build Bilix Success
