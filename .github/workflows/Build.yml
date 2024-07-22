@@ -20,8 +20,11 @@ jobs:
       Bilix-global-vercode: 7750600
       Bilix-ver: 8.6.0
       Bilix-global-ver: 3.19.2
+      Bilix-draft: true
+      Bilix-prerelease: false
+      Bilix-global-draft: false
+      Bilix-global-prerelease: true
       apkfile: ${{ matrix.apkname }}
-      torelease: true
     runs-on: ubuntu-latest
     steps:
     
@@ -58,11 +61,36 @@ jobs:
       - name: Rename Bilix
         run: mv ${{ env.apkfile }}-patched.apk ${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk
         
-      - name: Upload
+      - name: Get sn from Bilix
+        run: |
+          cp ./Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk ./Bilix-${{ env.Bilix-ver }}_patched.zip
+          unzip ./Bilix-${{ env.Bilix-ver }}_patched.zip
+          mv AndroidManifest.xml Bilix-AndroidManifest.xml
+          cp ./Bilix-global-${{ env.Bilix-global-ver }}-${{ env.ver }}@Aniruf_x.apk ./Bilix-global-${{ env.Bilix-global-ver }}_patched.zip
+          unzip ./Bilix-global-${{ env.Bilix-global-ver }}_patched.zip
+          mv AndroidManifest.xml Bilix-global-AndroidManifest.xml
+        
+      - name: Upload Bilix (CI)
         uses: actions/upload-artifact@v4
+        if: ${{ env.apkfile == 'Bilix-${{ env.Bilix-ver }}' }}
         with:
-          name: ${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk
-          path: ./${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk
+          name: |
+            ${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk
+            Bilix-AndroidManifest.xml
+          path: |
+            ./${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk
+            ./Bilix-AndroidManifest.xml
+            
+      - name: Upload Bilix-global (CI)
+        uses: actions/upload-artifact@v4
+        if: ${{ env.apkfile == 'Bilix-${{ env.Bilix-global-ver }}' }}
+        with:
+          name: |
+            ${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk
+            Bilix-global-AndroidManifest.xml
+          path: |
+            ./${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk
+            ./Bilix-global-AndroidManifest.xml
           
       - name: Get md5 from Bilix
         run: |
@@ -79,19 +107,25 @@ jobs:
           echo "Bilix-global-size=$Bilix-global-size" >> $GITHUB_ENV
           
       - name: Release Bilix
-        if: ${{ env.torelease == 'true' }}
+        if: ${{ env.apkfile == 'Bilix-${{ env.Bilix-ver }}' }}
         uses: softprops/action-gh-release@v2
         with:
+            draft: ${{ env.Bilix-draft }}
+            prerelease: ${{ env.Bilix-global-prerelease }}
+            fail_on_unmatched_files: true
             name: 'Bilix ${{ env.Bilix-ver }}(${{ env.Bilix-vercode }}) with BiliroamingX ${{ env.ver }}'
             tag_name: 'android-v${{ env.Bilix-ver }}-b?-p${{ env.ver }}'
             body: '版本信息：${{ env.Bilix-ver }} ${{ env.Bilix-vercode }} ${{ env.ver }} ${{ env.bigver }} sn ${{ env.Bilix-size }} ${{ env.Bilix-md5 }} ${{ env.TIME }}'
             files: ./Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk
             
       - name: Release Bilix-global
-        if: ${{ env.torelease == 'true' }}
+        if: ${{ env.apkfile == 'Bilix-${{ env.Bilix-global-ver }}' }}
         uses: softprops/action-gh-release@v2
         with:
-            name: 'Bilix ${{ env.Bilix-global-ver }}(${{ env.Bilix-global-vercode }}) with BiliroamingX ${{ env.ver }}'
+            draft: ${{ env.Bilix-global-draft }}
+            prerelease: ${{ env.Bilix-global-prerelease }}
+            fail_on_unmatched_files: true
+            name: 'Bilix global ${{ env.Bilix-global-ver }}(${{ env.Bilix-global-vercode }}) with BiliroamingX ${{ env.ver }}'
             tag_name: 'android_i-v${{ env.Bilix-global-ver }}-b?-p${{ env.ver }}'
             body: '版本信息：${{ env.Bilix-global-ver }} ${{ env.Bilix-global-vercode }} ${{ env.ver }} ${{ env.bigver }} sn ${{ env.Bilix-global-size }} ${{ env.Bilix-global-md5 }} ${{ env.TIME }}'
             files: ./Bilix-global-${{ env.Bilix-global-ver }}-${{ env.ver }}@Aniruf_x.apk
