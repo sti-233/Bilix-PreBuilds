@@ -15,7 +15,7 @@ jobs:
         apkname: [Bilix-8.6.0,Bilix-global-3.19.2]  #List of vanilla apk
     env:
       ver: 1.22.5.r1923 #the billroamingX version
-      run-id: 10026067422
+     # run-id: 10026067422
       bigver: 1.22.5
       Bilix-vercode: 8060100
       Bilix-global-vercode: 7750600
@@ -74,17 +74,17 @@ jobs:
         
       - name: Get sn from Bilix
         if: ${{ env.apkfile}} == Bilix-${{ env.Bilix-ver }}
-        run: |
-          cp ./Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk ./Bilix-${{ env.Bilix-ver }}_patched.zip
-          unzip ./Bilix-${{ env.Bilix-ver }}_patched.zip
-          mv AndroidManifest.xml Bilix-AndroidManifest.xml
+          run: |
+            cp ./Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk ./Bilix-${{ env.Bilix-ver }}_patched.zip
+            unzip ./Bilix-${{ env.Bilix-ver }}_patched.zip
+            mv AndroidManifest.xml Bilix-AndroidManifest.xml
           
       - name: Get sn from Bilix-global
         if: ${{ env.apkfile }} == Bilix-${{ env.Bilix-global-ver }}
-        run: |
-          cp ./Bilix-global-${{ env.Bilix-global-ver }}-${{ env.ver }}@Aniruf_x.apk ./Bilix-global-${{ env.Bilix-global-ver }}_patched.zip
-          unzip ./Bilix-global-${{ env.Bilix-global-ver }}_patched.zip
-          mv AndroidManifest.xml Bilix-global-AndroidManifest.xml
+          run: |
+            cp ./Bilix-global-${{ env.Bilix-global-ver }}-${{ env.ver }}@Aniruf_x.apk ./Bilix-global-${{ env.Bilix-global-ver }}_patched.zip
+            unzip ./Bilix-global-${{ env.Bilix-global-ver }}_patched.zip
+            mv AndroidManifest.xml Bilix-global-AndroidManifest.xml
         
       - name: Upload Bilix (CI)
         uses: actions/upload-artifact@v4
@@ -110,27 +110,27 @@ jobs:
           
       - name: Get md5 from Bilix
         if: ${{ env.apkfile }} == Bilix-${{ env.Bilix-ver }}
-        run: |
-          Bilix-md5=$(md5sum ./Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk | cut -d ' ' -f 1)
-          echo "Bilix-md5=$Bilix-md5" >> $GITHUB_ENV
+          run: |
+            Bilix-md5=$(md5sum ./Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk | cut -d ' ' -f 1)
+            echo "Bilix-md5=$Bilix-md5" >> $GITHUB_ENV
           
       - name: Get md5 from Bilix-global
         if: ${{ env.apkfile }} == Bilix-${{ env.Bilix-ver }}
-        run: |
-          Bilix-global-md5=$(md5sum ./Bilix-global-${{ env.Bilix-global-ver }}-${{ env.ver }}@Aniruf_x.apk | cut -d ' ' -f 1)
-          echo "Bilix-global-md5=$Bilix-global-md5" >> $GITHUB_ENV
+          run: |
+            Bilix-global-md5=$(md5sum ./Bilix-global-${{ env.Bilix-global-ver }}-${{ env.ver }}@Aniruf_x.apk | cut -d ' ' -f 1)
+            echo "Bilix-global-md5=$Bilix-global-md5" >> $GITHUB_ENV
           
       - name: Get size from Bilix
         if: ${{ env.apkfile }} == Bilix-${{ env.Bilix-ver }}
-        run: |
-          Bilix-size=$(stat -c %s ./Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk)
-          echo "Bilix-size=$Bilix-size" >> $GITHUB_ENV
+          run: |
+            Bilix-size=$(stat -c %s ./Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk)
+            echo "Bilix-size=$Bilix-size" >> $GITHUB_ENV
           
       - name: Get size from Bilix-global
         if: ${{ env.apkfile }} == Bilix-${{ env.Bilix-ver }}
-        run: |
-          Bilix-global-size=$(stat -c %s ./Bilix-global-${{ env.Bilix-global-ver }}-${{ env.ver }}@Aniruf_x.apk)
-          echo "Bilix-global-size=$Bilix-global-size" >> $GITHUB_ENV
+          run: |
+            Bilix-global-size=$(stat -c %s ./Bilix-global-${{ env.Bilix-global-ver }}-${{ env.ver }}@Aniruf_x.apk)
+            echo "Bilix-global-size=$Bilix-global-size" >> $GITHUB_ENV
           
       - name: Release Bilix
         if: ${{ env.torelease == 'true' && env.apkfile == 'Bilix-${{ env.Bilix-ver }}' }}
