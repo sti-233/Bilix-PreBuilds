@@ -44,7 +44,7 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
           java-package: 'jre'
-          
+
       - name: Get resource
         run: |
           echo Downloading original apk
