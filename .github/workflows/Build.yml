@@ -15,11 +15,13 @@ jobs:
         apkname: [Bilix-8.6.0,Bilix-global-3.19.2]  #List of vanilla apk
     env:
       ver: 1.22.5.r1923 #the billroamingX version
+      run-id: 10026067422
       bigver: 1.22.5
       Bilix-vercode: 8060100
       Bilix-global-vercode: 7750600
       Bilix-ver: 8.6.0
       Bilix-global-ver: 3.19.2
+      torelease: true
       Bilix-draft: true
       Bilix-prerelease: false
       Bilix-global-draft: false
@@ -40,14 +42,23 @@ jobs:
           java-version: '17'
           java-package: 'jre'
           
-      - name: Get files
+      - name: Get original apk & revanced-cli
         run: |
           echo Downloading original apk
           wget https://github.com/sti-233/Bilix-PreBuilds/releases/download/original/${{ env.apkfile }}.apk
-          echo Downloading CI zip
-          wget https://github.com/sti-233/BiliRoamingX/releases/download/prever4build/BiliRoamingX-${{ env.ver }}.zip
+          #echo Downloading CI zip
+          #wget https://github.com/sti-233/BiliRoamingX/releases/download/prever4build/BiliRoamingX-${{ env.ver }}.zip
           echo Downloading modified revanced-cli
           wget https://github.com/zjns/revanced-cli/releases/download/v4.6.0.1/revanced-cli.jar
+          
+      - name: Get BiliroamingX CI Build
+        uses: actions/download-artifact@v4
+        with:
+            name: BiliRoamingX-${{ env.ver }}.zip
+            path: ./
+            github-token: ${{ github.token }}
+            repository: sti-233/BiliroamingX
+            run-id: ${{ env.run-id }}
           
       - name: Unzip CI zip and Rename
         run: |
@@ -107,11 +118,11 @@ jobs:
           echo "Bilix-global-size=$Bilix-global-size" >> $GITHUB_ENV
           
       - name: Release Bilix
-        if: ${{ env.apkfile == 'Bilix-${{ env.Bilix-ver }}' }}
+        if: ${{ env.torelease == 'true' && env.apkfile == env.apkfile == 'Bilix-${{ env.Bilix-ver }}' }}
         uses: softprops/action-gh-release@v2
         with:
             draft: ${{ env.Bilix-draft }}
-            prerelease: ${{ env.Bilix-global-prerelease }}
+            prerelease: ${{ env.Bilix-prerelease }}
             fail_on_unmatched_files: true
             name: 'Bilix ${{ env.Bilix-ver }}(${{ env.Bilix-vercode }}) with BiliroamingX ${{ env.ver }}'
             tag_name: 'android-v${{ env.Bilix-ver }}-b?-p${{ env.ver }}'
@@ -119,7 +130,7 @@ jobs:
             files: ./Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk
             
       - name: Release Bilix-global
-        if: ${{ env.apkfile == 'Bilix-${{ env.Bilix-global-ver }}' }}
+        if: ${{ env.torelease == 'true' && env.apkfile == env.apkfile == 'Bilix-${{ env.Bilix-global-ver }}' }}
         uses: softprops/action-gh-release@v2
         with:
             draft: ${{ env.Bilix-global-draft }}
