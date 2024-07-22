@@ -72,22 +72,24 @@ jobs:
       - name: Rename Bilix
         run: mv ${{ env.apkfile }}-patched.apk ${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk
         
+      - name: Upload Bilix (CI)
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk
+          path: ./${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk
+          
       - name: Get sn from Bilix
         run: |
           cp ./${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk ./${{ env.apkfile }}_patched.zip
           unzip ./${{ env.apkfile }}_patched.zip
           mv AndroidManifest.xml ${{ env.apkfile }}-AndroidManifest.xml
-                  
-      - name: Upload Bilix (CI)
+            
+      - name: Upload sn-AndroidManifest.xml (CI)
         uses: actions/upload-artifact@v4
         with:
-          name: |
-            ${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk
-            ${{ env.apkfile }}-AndroidManifest.xml
-          path: |
-            ./${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk
-            ./${{ env.apkfile }}-AndroidManifest.xml
-            
+          name: ${{ env.apkfile }}-AndroidManifest.xml
+          path: ./${{ env.apkfile }}-AndroidManifest.xml
+          
       - name: Get md5 from Bilix
         run: |
           md5=$(md5sum ./${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk | cut -d ' ' -f 1)
@@ -122,3 +124,7 @@ jobs:
             tag_name: 'android_i-v${{ env.Bilix-global-ver }}-b?-p${{ env.ver }}'
             body: '版本信息：${{ env.Bilix-global-ver }} ${{ env.Bilix-global-vercode }} ${{ env.ver }} ${{ env.bigver }} sn ${{ env.Bilix-size }} ${{ env.md5 }} ${{ env.TIME }}'
             files: ./Bilix-global-${{ env.Bilix-global-ver }}-${{ env.ver }}@Aniruf_x.apk
+            
+      - name: Clean
+        continue-on-error: true
+        run: echo "### Build Success" >> $GITHUB_STEP_SUMMARY
