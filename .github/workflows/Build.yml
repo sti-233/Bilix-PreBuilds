@@ -24,11 +24,11 @@ jobs:
       Bilix-sn: 15467355
       Bilix-global-sn: 15154452
       Bilix-torelease: false
-     # Bilix-draft: true
-     # Bilix-prerelease: false
+      Bilix-draft: true
+      Bilix-prerelease: false
       Bilix-global-torelease: true
-     # Bilix-global-draft: false
-     # Bilix-global-prerelease: true
+      Bilix-global-draft: false
+      Bilix-global-prerelease: true
       apkfile: ${{ matrix.apkname }}
     runs-on: ubuntu-latest
     steps:
@@ -49,8 +49,8 @@ jobs:
         run: |
           echo Downloading original apk
           wget https://github.com/sti-233/Bilix-PreBuilds/releases/download/original/${{ env.apkfile }}.apk
-          echo Downloading CI zip
-          wget https://github.com/sti-233/BiliRoamingX/releases/download/prever4build/BiliRoamingX-${{ env.ver }}.zip
+         # echo Downloading CI zip
+         # wget https://github.com/sti-233/BiliRoamingX/releases/download/prever4build/BiliRoamingX-${{ env.ver }}.zip
           echo Downloading modified revanced-cli
           wget https://github.com/zjns/revanced-cli/releases/download/v4.6.0.1/revanced-cli.jar
           
@@ -59,9 +59,38 @@ jobs:
        # with:
            # name: BiliRoamingX-${{ env.ver }}.zip
            # path: ./
-           # github-token: ${{ github.token }}
+           # github-token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
            # repository: sti-233/BiliroamingX
            # run-id: ${{ env.run-id }}
+          
+    - name: Checkout Repo
+      uses: actions/checkout@v3
+
+    - name: Get BiliroamingX CI Artifact URL
+      id: get_artifact_url
+      uses: actions/github-script@v6  # 使用 GitHub Script Action 获取目标工件的下载 URL
+      with:
+        script: |
+          const { owner, repo } = context.repo;  # 获取当前仓库的所有者和名称
+          const run_id = ${{ env.run-id }};  # 将此替换为目标工作流的 run ID
+          const artifactName = `BiliRoamingX-${{ env.ver }}.zip`;  # 构建工件的名称
+          const token = ${{ secrets.CUSTOM_GITHUB_TOKEN }};  # 使用机密中的 GitHub Token
+          # 获取目标仓库中的构建工件列表
+          const artifacts = await github.actions.listWorkflowRunArtifacts({
+            owner: 'sti-233',  # 目标仓库的所有者
+            repo: 'BiliroamingX',  # 目标仓库的名称
+            run_id: ${{ env.run-id }}  # 目标工作流的 run ID
+          });
+          # 查找指定名称的工件
+          const artifact = artifacts.data.artifacts.find(a => a.name === artifactName);
+          if (!artifact) {
+            throw new Error(`Artifact ${artifactName} not found`);  # 如果未找到，抛出错误
+          }
+          # 返回工件的下载 URL
+          return artifact.archive_download_url;
+
+    - name: Download BiliroamingX CI  Artifact
+      run: curl -L -o BiliRoamingX-${{ env.ver }}.zip -H "Authorization: token ${{ secrets.CUSTOM_GITHUB_TOKEN }}" ${{ steps.get_artifact_url.outputs.result }}  # 使用 curl 下载工件
           
       - name: Unzip CI zip and Rename
         run: |
@@ -103,41 +132,47 @@ jobs:
           size=$(stat -c %s ./${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk)
           echo "size=$size" >> $GITHUB_ENV
           
+      - name: Is Bilix?
+        run: echo "Is-Bilix=$(if [ '${{ env.apkfile }}' == 'Bilix-${{ env.Bilix-ver }}' ]; then echo true; else echo false; fi)" >> $GITHUB_ENV
+        
+      - name: Is Bilix-global?
+        run: echo "Is-Bilix-global=$(if [ '${{ env.apkfile }}' == 'Bilix-global-${{ env.Bilix-global-ver }}' ]; then echo true; else echo false; fi)" >> $GITHUB_ENV
+          
       - name: Release Bilix
         if: ${{ env.Bilix-torelease == 'true' }}
         uses: softprops/action-gh-release@v2
         with:
-           # token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
-           # draft: ${{ env.Bilix-draft }}
-           # prerelease: ${{ env.Bilix-prerelease }}
+           token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+            draft: ${{ env.Bilix-draft }}
+            prerelease: ${{ env.Bilix-prerelease }}
             fail_on_unmatched_files: true
             name: 'Bilix ${{ env.Bilix-ver }}(${{ env.Bilix-vercode }}) with BiliroamingX ${{ env.ver }}'
             tag_name: 'android-v${{ env.Bilix-ver }}-b${{ env.Bilix-sn }}-p${{ env.ver }}'
             body: '版本信息：${{ env.Bilix-ver }} ${{ env.Bilix-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.Bilix-sn }} ${{ env.size }} ${{ env.md5 }} ${{ env.TIME }}'
-            files: Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk
+            files: ./Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk
         continue-on-error: true
             
       - name: Release Bilix-global
         if: ${{ env.Bilix-global-torelease == 'true' }}
         uses: softprops/action-gh-release@v2
         with:
-           # token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
-           # draft: ${{ env.Bilix-global-draft }}
-           # prerelease: ${{ env.Bilix-global-prerelease }}
+            token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+            draft: ${{ env.Bilix-global-draft }}
+            prerelease: ${{ env.Bilix-global-prerelease }}
             fail_on_unmatched_files: true
             name: 'Bilix global ${{ env.Bilix-global-ver }}(${{ env.Bilix-global-vercode }}) with BiliroamingX ${{ env.ver }}'
             tag_name: 'android_i-v${{ env.Bilix-global-ver }}-b${{ env.Bilix-global-sn }}-p${{ env.ver }}'
             body: '版本信息：${{ env.Bilix-global-ver }} ${{ env.Bilix-global-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.Bilix-global-sn }} ${{ env.Bilix-size }} ${{ env.md5 }} ${{ env.TIME }}'
-            files: Bilix-global-${{ env.Bilix-global-ver }}-${{ env.ver }}@Aniruf_x.apk
+            files: ./Bilix-global-${{ env.Bilix-global-ver }}-${{ env.ver }}@Aniruf_x.apk
         continue-on-error: true
             
       - name: Build Bilix Success
-        if: ${{ env.apkfile == 'Bilix-${{ env.Bilix-ver }}' }}
+        if: ${{ env.Is-Bilix == 'true' }}
         run: echo "### Build Bilix Success<br/>版本信息：${{ env.Bilix-ver }} ${{ env.Bilix-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.Bilix-sn }} ${{ env.size }} ${{ env.md5 }} ${{ env.TIME }}" >> $GITHUB_STEP_SUMMARY
         continue-on-error: true
         
       - name: Build Bilix-global Success
-        if: ${{ env.apkfile == 'Bilix-global-${{ env.Bilix-global-ver }}' }}
+        if: ${{ env.Is-Bilix-global == 'true' }}
         run: echo "### Build Bilix-global Success<br/>版本信息：${{ env.Bilix-global-ver }} ${{ env.Bilix-global-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.Bilix-global-sn }} ${{ env.Bilix-size }} ${{ env.md5 }} ${{ env.TIME }}" >> $GITHUB_STEP_SUMMARY
         continue-on-error: true
         
