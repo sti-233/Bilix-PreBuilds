@@ -14,25 +14,23 @@ jobs:
       matrix:
         apkname: [Bilix-8.6.0,Bilix-global-3.19.2]  #List of vanilla apk
     env:
-      ver: 1.22.5.r1923 #the billroamingX version
-      run-id: 10026067422
-      bigver: 1.22.5
-      Bilix-vercode: 8060100
+      bigver: 1022005
+      Bilix-vercode: 8060200
       Bilix-global-vercode: 7750600
       Bilix-ver: 8.6.0
       Bilix-global-ver: 3.19.2
-      Bilix-sn: 15467355
+      Bilix-sn: ?
       Bilix-global-sn: 15154452
-      Bilix-torelease: false
-      Bilix-draft: true
-      Bilix-prerelease: false
+      Bilix-torelease: true
+      Bilix-draft: false
+      Bilix-prerelease: true
       Bilix-global-torelease: true
       Bilix-global-draft: false
       Bilix-global-prerelease: true
       apkfile: ${{ matrix.apkname }}
     runs-on: ubuntu-latest
     steps:
-    
+
       - name: Get Current Time
         run: |
           TIME=$EPOCHSECONDS
@@ -50,34 +48,31 @@ jobs:
           echo Downloading original apk
           wget https://github.com/sti-233/Bilix-PreBuilds/releases/download/original/${{ env.apkfile }}.apk
           echo Downloading CI zip
-          wget https://github.com/sti-233/BiliRoamingX/releases/download/prever4build/BiliRoamingX-${{ env.ver }}.zip
+          git clone --recurse-submodules https://github.com/sti-233/BiliRoamingX.git
           echo Downloading modified revanced-cli
           wget https://github.com/zjns/revanced-cli/releases/download/v4.6.0.1/revanced-cli.jar
           
-      #- name: Get BiliroamingX CI Build
-       # run: |
-         # echo ${{ secrets.CUSTOM_GITHUB_TOKEN }} | gh auth login --with-token
-         # gh run view ${{ env.run-id }} --log
-         # gh run download ${{ env.run-id }} --name BiliRoamingX-${{ env.ver }}.zip --dir ./
-          
+      - name: Get version
+        run: echo "ver=$(cat version.txt)" >> $GITHUB_ENV
+
       - name: Unzip CI zip and Rename
         run: |
-          unzip BiliRoamingX-${{ env.ver }}.zip
+          unzip BiliRoamingX-CI-Build.zip
           mv BiliRoamingX-integrations-${{ env.ver }}.apk integrations.apk
           mv BiliRoamingX-patches-${{ env.ver }}.jar patches.jar
           
       - name: Build Bilix
         run: java -jar revanced-cli.jar patch --merge integrations.apk --patch-bundle patches.jar --signing-levels 1,2,3 ${{ env.apkfile }}.apk
-        
+
       - name: Rename Bilix
         run: mv ${{ env.apkfile }}-patched.apk ${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk
-        
+
       - name: Upload Bilix (CI)
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk
           path: ./${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk
-          
+
       - name: Get sn from Bilix
         run: |
           cp ./${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk ./${{ env.apkfile }}_patched.zip
@@ -89,7 +84,7 @@ jobs:
         with:
           name: ${{ env.apkfile }}-AndroidManifest.xml
           path: ./${{ env.apkfile }}-AndroidManifest.xml
-          
+
       - name: Get md5 from Bilix
         run: |
           md5=$(md5sum ./${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk | cut -d ' ' -f 1)
@@ -102,12 +97,12 @@ jobs:
           
       - name: Is Bilix?
         run: echo "Is-Bilix=$(if [ '${{ env.apkfile }}' == 'Bilix-${{ env.Bilix-ver }}' ]; then echo true; else echo false; fi)" >> $GITHUB_ENV
-        
+
       - name: Is Bilix-global?
         run: echo "Is-Bilix-global=$(if [ '${{ env.apkfile }}' == 'Bilix-global-${{ env.Bilix-global-ver }}' ]; then echo true; else echo false; fi)" >> $GITHUB_ENV
-          
+
       - name: Release Bilix
-        if: ${{ env.Bilix-torelease == 'true' }}
+        if: ${{ env.Is-Bilix == 'true' && env.Bilix-torelease == 'true' }}
         uses: softprops/action-gh-release@v2
         with:
           token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
@@ -119,9 +114,9 @@ jobs:
           body: '版本信息：${{ env.Bilix-ver }} ${{ env.Bilix-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.Bilix-sn }} ${{ env.size }} ${{ env.md5 }} ${{ env.TIME }}'
           files: ./Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk
         continue-on-error: true
-            
+
       - name: Release Bilix-global
-        if: ${{ env.Bilix-global-torelease == 'true' }}
+        if: ${{ env.Is-Bilix-global == 'true' && env.Bilix-global-torelease == 'true' }}
         uses: softprops/action-gh-release@v2
         with:
           token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
@@ -133,16 +128,16 @@ jobs:
           body: '版本信息：${{ env.Bilix-global-ver }} ${{ env.Bilix-global-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.Bilix-global-sn }} ${{ env.Bilix-size }} ${{ env.md5 }} ${{ env.TIME }}'
           files: ./Bilix-global-${{ env.Bilix-global-ver }}-${{ env.ver }}@Aniruf_x.apk
         continue-on-error: true
-            
+
       - name: Build Bilix Success
         if: ${{ env.Is-Bilix == 'true' }}
-        run: echo "### Build Bilix Success<br/>版本信息：${{ env.Bilix-ver }} ${{ env.Bilix-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.Bilix-sn }} ${{ env.size }} ${{ env.md5 }} ${{ env.TIME }}" >> $GITHUB_STEP_SUMMARY
+        run: echo " ### Build Bilix Success <br/> 版本信息：${{ env.Bilix-ver }} ${{ env.Bilix-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.Bilix-sn }} ${{ env.size }} ${{ env.md5 }} ${{ env.TIME }}" >> $GITHUB_STEP_SUMMARY
         continue-on-error: true
-        
+
       - name: Build Bilix-global Success
         if: ${{ env.Is-Bilix-global == 'true' }}
-        run: echo "### Build Bilix-global Success<br/>版本信息：${{ env.Bilix-global-ver }} ${{ env.Bilix-global-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.Bilix-global-sn }} ${{ env.Bilix-size }} ${{ env.md5 }} ${{ env.TIME }}" >> $GITHUB_STEP_SUMMARY
+        run: echo " ### Build Bilix-global Success <br/> 版本信息：${{ env.Bilix-global-ver }} ${{ env.Bilix-global-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.Bilix-global-sn }} ${{ env.Bilix-size }} ${{ env.md5 }} ${{ env.TIME }}" >> $GITHUB_STEP_SUMMARY
         continue-on-error: true
-        
+
       - name: End
         run: echo "Build end."
