@@ -48,7 +48,7 @@ jobs:
           echo Downloading original apk
           wget https://github.com/sti-233/Bilix-PreBuilds/releases/download/original/${{ env.apkfile }}.apk
           echo Downloading CI zip
-          git clone --recurse-submodules https://github.com/sti-233/BiliRoamingX.git
+          git clone https://github.com/sti-233/BiliRoamingX.git
           echo Downloading modified revanced-cli
           wget https://github.com/zjns/revanced-cli/releases/download/v4.6.0.1/revanced-cli.jar
           
