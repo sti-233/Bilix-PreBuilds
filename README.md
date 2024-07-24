@@ -14,4 +14,5 @@ Bilix patches from [BiliroamingX-fork](https://github.com/sti-233/BiliRoamingX)
 ## 使用/参考的项目
 - [BiliRoamingX/BiliRoamingX-PreBuilds](https://github.com/BiliRoamingX/BiliRoamingX-PreBuilds)
 - [vc-teahouse/inital-biliroaming-maker](https://github.com/vc-teahouse/inital-biliroaming-maker)
+- [8Mi-Tech/LSPatch-ApkFactory](https://github.com/8Mi-Tech/LSPatch-ApkFactory)
 
