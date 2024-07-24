@@ -61,8 +61,7 @@ jobs:
       - name: Get bilibili
         if: ${{ env.Is-Bilix == 'true' }}
         run: |
-          wget https://www.wandoujia.com/apps/281291/download/dot?ch=detail_normal_dl
-          mv ./*.apk ./${{ env.apkfile }}.apk
+          aria2c --out "${{ env.apkfile }}.apk" https://www.wandoujia.com/apps/281291/download/dot?ch=detail_normal_dl
 
       - name: Get bilibili-play
         if: ${{ env.Is-Bilix-global == 'true' }}
