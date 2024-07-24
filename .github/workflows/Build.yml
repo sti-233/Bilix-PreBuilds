@@ -62,13 +62,11 @@ jobs:
         if: ${{ env.Is-Bilix == 'true' }}
         run: |
           wget https://www.wandoujia.com/apps/281291/download/dot?ch=detail_normal_dl
-          mv *.apk ${{ env.apkfile }}.apk
+          mv ./*.apk ./${{ env.apkfile }}.apk
 
       - name: Get bilibili-play
         if: ${{ env.Is-Bilix-global == 'true' }}
-        run: |
-          wget https://d.apkpure.com/b/APK/com.bilibili.app.in?version=latest
-          mv bilibili-弹幕动画直播高清视频_${{ env.ver }}_APKPure.apk ${{ env.apkfile }}.apk
+        run: aria2c --out "${{ env.apkfile }}.apk" https://d.apkpure.com/b/APK/com.bilibili.app.in?version=latest
 
       - name: Get version
         run: echo "ver=$(cat version.txt)" >> $GITHUB_ENV
