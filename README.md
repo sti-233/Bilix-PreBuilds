@@ -10,6 +10,7 @@
 </div>
 
 Bilix patches from [BiliroamingX-fork](https://github.com/sti-233/BiliRoamingX)
+本仓库现基本可完全通过 Github Action 进行构建并预发布
 
 ## 使用/参考的项目
 - [BiliRoamingX/BiliRoamingX-PreBuilds](https://github.com/BiliRoamingX/BiliRoamingX-PreBuilds)
