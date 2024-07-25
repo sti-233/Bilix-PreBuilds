@@ -106,7 +106,7 @@ jobs:
 
      - name: Check is Bilibili correct ver
         run: |
-          if [ "${{ env.correctVersionCode }}" == "${{ env.correctVersion }}" ]; then
+          if [ "${{ env.correctVersionCode }}" == "1" ] && [ "${{ env.correctVersion }}" == "1" ]; then
             echo "correctVer=true" >> $GITHUB_ENV
           else
             echo "correctVer=false" >> $GITHUB_ENV
