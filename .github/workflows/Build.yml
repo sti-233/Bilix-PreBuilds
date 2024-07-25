@@ -49,19 +49,14 @@ jobs:
 
       - name: Setup Android SDK
         run: |
-          # Install necessary packages
           sudo apt-get update
-          sudo apt-get install -y wget unzip
-          # Download and unzip Android SDK Command-line tools
-          wget https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip -O commandlinetools-linux.zip
-          mkdir -p /home/runner/android-sdk
-          unzip commandlinetools-linux.zip -d /home/runner/android-sdk
-          # Install SDK packages
-          yes | /home/runner/android-sdk/cmdline-tools/bin/sdkmanager --sdk_root=/home/runner/android-sdk "platform-tools" "build-tools;30.0.3" "platforms;android-30"
-          # Add SDK tools to PATH
-          echo "ANDROID_SDK_ROOT=/home/runner/android-sdk" >> $GITHUB_ENV
-          echo "/home/runner/android-sdk/platform-tools" >> $GITHUB_PATH
-          echo "/home/runner/android-sdk/cmdline-tools/latest/bin" >> $GITHUB_PATH
+          sudo apt-get install android-sdk
+          cd /usr/lib/android-sdk/
+          cd build-tools/
+          ls
+          sudo apt install android-sdk-build-tools-35.0.1
+          cd /usr/lib/android-sdk/build-tools/35.0.1/
+          sudo ln -s aapt aapt
 
       - name: Get build resource
         run: |
@@ -184,7 +179,6 @@ jobs:
 #          unzip ./${{ env.apkfile }}_patched.zip
 #          mv AndroidManifest.xml ${{ env.apkfile }}-AndroidManifest.xml
           #New(Try auto get sn)
-          cd /home/runner/android-sdk/platform-tools
           which aapt
           aapt dump xmltree ./${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk AndroidManifest.xml > ./AndroidManifest_output.txt
           sn=$(awk '/meta-data/,/E:/ { if ($0 ~ /android:name\(0x01010003\)="BUILD_SN"/) { f=1 } if (f && $0 ~ /android:value\(0x01010024\)/) { match($0, /"[^"]+"/) print substr($0, RSTART+1, RLENGTH-2) exit } }' ./AndroidManifest_output.txt)
@@ -197,7 +191,6 @@ jobs:
 #          unzip ./${{ env.apkfile }}_patched.zip
 #          mv AndroidManifest.xml ${{ env.apkfile }}-AndroidManifest.xml
           #New(Try auto get sn)
-          cd /home/runner/android-sdk/platform-tools
           which aapt
           aapt dump xmltree ./${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk AndroidManifest.xml > ./AndroidManifest_output.txt
           sn=$(awk '/meta-data/,/E:/ { if ($0 ~ /android:name\(0x01010003\)="BUILD_SN"/) { f=1 } if (f && $0 ~ /android:value\(0x01010024\)/) { match($0, /"[^"]+"/) print substr($0, RSTART+1, RLENGTH-2) exit } }' ./AndroidManifest_output.txt)
