@@ -48,25 +48,6 @@ jobs:
           java-version: '17'
           java-package: 'jre'
 
-      - name: Setup Android SDK
-        run: |
-          # Install necessary packages
-          sudo apt-get update
-          sudo apt-get install -y wget unzip
-
-          # Download and unzip Android SDK Command-line tools
-          wget https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip -O commandlinetools-linux.zip
-          mkdir -p $HOME/android-sdk
-          unzip commandlinetools-linux.zip -d $HOME/android-sdk
-
-          # Install SDK packages
-          yes | $HOME/android-sdk/cmdline-tools/bin/sdkmanager --sdk_root=$HOME/android-sdk "platform-tools" "build-tools;30.0.3" "platforms;android-30"
-
-          # Add SDK tools to PATH
-          echo "ANDROID_SDK_ROOT=$HOME/android-sdk" >> $GITHUB_ENV
-          echo "$HOME/android-sdk/platform-tools" >> $GITHUB_PATH
-          echo "$HOME/android-sdk/cmdline-tools/latest/bin" >> $GITHUB_PATH
-
       - name: Get build resource
         run: |
           echo Downloading CI zip
@@ -184,6 +165,7 @@ jobs:
       - name: Get sn from Bilix
         run: |
           #New(Try auto get sn)
+          sudo apt-get install aapt
           aapt dump xmltree ./${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk AndroidManifest.xml > AndroidManifest_output.txt
           sn=$(awk '/meta-data/,/E:/ { if ($0 ~ /android:name\(0x01010003\)="BUILD_SN"/) { f=1 } if (f && $0 ~ /android:value\(0x01010024\)/) { match($0, /"[^"]+"/) print substr($0, RSTART+1, RLENGTH-2) exit } }' AndroidManifest_output.txt)
           echo "sn=$sn" >> $GITHUB_ENV
