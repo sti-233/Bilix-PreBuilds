@@ -179,19 +179,6 @@ jobs:
 #          unzip ./${{ env.apkfile }}_patched.zip
 #          mv AndroidManifest.xml ${{ env.apkfile }}-AndroidManifest.xml
           #New(Try auto get sn)
-          which aapt
-          aapt dump xmltree ./${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk AndroidManifest.xml > AndroidManifest_output.txt
-          sn=$(awk '/meta-data/,/E:/ { if ($0 ~ /android:name\(0x01010003\)="BUILD_SN"/) { f=1 } if (f && $0 ~ /android:value\(0x01010024\)/) { match($0, /"[^"]+"/) print substr($0, RSTART+1, RLENGTH-2) exit } }' AndroidManifest_output.txt)
-          echo "sn=$sn" >> $GITHUB_ENV
-
-      - name: Get sn from Bilix
-        if: ${{ env.Is-Bilix-global == 'true' && env.Build-Bilix-global == 'true' && env.correctVer == 'true'  }}
-        run: |
-#          cp ./${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk ./${{ env.apkfile }}_patched.zip
-#          unzip ./${{ env.apkfile }}_patched.zip
-#          mv AndroidManifest.xml ${{ env.apkfile }}-AndroidManifest.xml
-          #New(Try auto get sn)
-          which aapt
           aapt dump xmltree ./${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk AndroidManifest.xml > AndroidManifest_output.txt
           sn=$(awk '/meta-data/,/E:/ { if ($0 ~ /android:name\(0x01010003\)="BUILD_SN"/) { f=1 } if (f && $0 ~ /android:value\(0x01010024\)/) { match($0, /"[^"]+"/) print substr($0, RSTART+1, RLENGTH-2) exit } }' AndroidManifest_output.txt)
           echo "sn=$sn" >> $GITHUB_ENV
