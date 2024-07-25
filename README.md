@@ -13,8 +13,8 @@ Bilix patches from [BiliroamingX-fork](https://github.com/sti-233/BiliRoamingX)<
 本仓库现基本可完全通过 Github Action 进行构建并预发布<br/>
 ```
 - 自动获取bilibili-cn/play原包
-- 自动获取[BiliroamingX-fork](https://github.com/sti-233/BiliRoamingX)的ci构建
-- 自动获取[BiliroamingX-fork](https://github.com/sti-233/BiliRoamingX)的ci版本
+- 自动获取BiliroamingX-fork的ci构建
+- 自动获取BiliroamingX-fork的构建ci版本
 - 可自动检测bilibili是否符合版本要求
 - more...
 ```
