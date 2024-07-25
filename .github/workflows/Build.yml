@@ -80,33 +80,33 @@ jobs:
         if: ${{ env.Is-Bilix == 'true' }}
         run: |
           if [ "${{ steps.apk-info.outputs.versionCode }}" == "${{ env.Bilix-vercode }}" ]; then
-            echo "correctVersionCode=1" >> $GITHUB_ENV
+            echo "correctVersionCode=true" >> $GITHUB_ENV
           else
-            echo "correctVersionCode=0" >> $GITHUB_ENV
+            echo "correctVersionCode=false" >> $GITHUB_ENV
           fi
           if [ "${{ steps.apk-info.outputs.versionNum }}" == "${{ env.Bilix-ver }}" ]; then
-            echo "correctVersion=1" >> $GITHUB_ENV
+            echo "correctVersion=true" >> $GITHUB_ENV
           else
-            echo "correctVersion=0" >> $GITHUB_ENV
+            echo "correctVersion=false" >> $GITHUB_ENV
           fi
 
       - name: Check Bilibili-global ver
         if: ${{ env.Is-Bilix-global == 'true' }}
         run: |
           if [ "${{ steps.apk-info.outputs.versionCode }}" == "${{ env.Bilix-global-vercode }}" ]; then
-            echo "correctVersionCode=1" >> $GITHUB_ENV
+            echo "correctVersionCode=true" >> $GITHUB_ENV
           else
-            echo "correctVersionCode=0" >> $GITHUB_ENV
+            echo "correctVersionCode=false" >> $GITHUB_ENV
           fi
           if [ "${{ steps.apk-info.outputs.versionNum }}" == "${{ env.Bilix-global-ver }}" ]; then
-            echo "correctVersion=1" >> $GITHUB_ENV
+            echo "correctVersion=true" >> $GITHUB_ENV
           else
-            echo "correctVersion=0" >> $GITHUB_ENV
+            echo "correctVersion=false" >> $GITHUB_ENV
           fi
 
-     - name: Check is Bilibili correct ver
+      - name: Check is Bilibili correct ver
         run: |
-          if [ "${{ env.correctVersionCode }}" == "1" ] && [ "${{ env.correctVersion }}" == "1" ]; then
+          if [ "${{ env.correctVersionCode }}" == "true" ] && [ "${{ env.correctVersion }}" == "true" ]; then
             echo "correctVer=true" >> $GITHUB_ENV
           else
             echo "correctVer=false" >> $GITHUB_ENV
