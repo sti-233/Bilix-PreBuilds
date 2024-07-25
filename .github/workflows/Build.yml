@@ -108,6 +108,9 @@ jobs:
           else
             echo "correctVersion= 0" >> $GITHUB_ENV
           fi
+
+     - name: Check is Bilibili correct ver
+        run: |
           if [ "${{ env.correctVersionCode }}" == "${{ env.correctVersion }}" ]; then
             echo "correctVer=true" >> $GITHUB_ENV
           else
