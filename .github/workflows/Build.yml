@@ -173,7 +173,7 @@ jobs:
           echo "sn=$sn_value" >> $GITHUB_ENV
 
       - name: Get sn from Bilix-global
-        if: ${{ env.Is-Bilix-global == 'true' && env.Build-Bilix-global == 'true' && env.correctVer == 'true'  }}
+#        if: ${{ env.Is-Bilix-global == 'true' && env.Build-Bilix-global == 'true' && env.correctVer == 'true'  }}
         run: |
           #New(Try auto get sn)
           sudo apt-get install aapt
