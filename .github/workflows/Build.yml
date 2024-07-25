@@ -15,12 +15,12 @@ jobs:
         apkname: [Bilix-8.6.0,Bilix-global-3.19.2]  #List of vanilla apk
     env:
       Build-Bilix: true
-      Build-Bilix-global: true
+      Build-Bilix-global: false
       Bilix-vercode: 8060200
       Bilix-global-vercode: 7750600
       Bilix-ver: 8.6.0
       Bilix-global-ver: 3.19.2
-      Bilix-sn: unknow
+      Bilix-sn: 15481705
       Bilix-global-sn: 15154452
       Bilix-torelease: false
       Bilix-draft: false
@@ -90,7 +90,54 @@ jobs:
         if: ${{ env.Is-Bilix-global == 'true' && env.Build-Bilix-global == 'true' }}
         run: java -jar revanced-cli.jar patch --merge integrations.apk --patch-bundle patches.jar --signing-levels 1,2,3 ${{ env.apkfile }}.apk
 
+      - name: "Get Apk Info"
+        id: "apk-info"
+        uses: "8Mi-Tech/get-apk-info-action@master"
+        with:
+          apkPath: "${{ env.apkfile }}-patched.apk"
+        #版本号：${{steps.apk-info.outputs.versionNum}}
+        #版本代码：${{steps.apk-info.outputs.versionCode}}
+
+      - name: Check Bilibili ver
+        if: ${{ env.Is-Bilix == 'true' }}
+        run: |
+          if [ "${{ steps.apk-info.outputs.versionCode }}" == "${{ env.Bilix-vercode }}" ]; then
+            echo "correctVersionCode=true" >> $GITHUB_ENV
+          else
+            echo "correctVersionCode=false" >> $GITHUB_ENV
+          fi
+          if [ "${{ steps.apk-info.outputs.versionNum }}" == "${{ env.Bilix-ver }}" ]; then
+            echo "correctVersion=true" >> $GITHUB_ENV
+          else
+            echo "correctVersion=false" >> $GITHUB_ENV
+          fi
+          if [ "${{ env.correctVersionCode }}" == "${{ env.correctVersion }}" ]; then
+            echo "correctVer=true" >> $GITHUB_ENV
+          else
+            echo "correctVer=false" >> $GITHUB_ENV
+          fi
+
+      - name: Check Bilibili-global ver
+        if: ${{ env.Is-Bilix-global == 'true' }}
+        run: |
+          if [ "${{ steps.apk-info.outputs.versionCode }}" == "${{ env.Bilix-global-vercode }}" ]; then
+            echo "correctVersionCode=true" >> $GITHUB_ENV
+          else
+            echo "correctVersionCode=false" >> $GITHUB_ENV
+          fi
+          if [ "${{ steps.apk-info.outputs.versionNum }}" == "${{ env.Bilix-global-ver }}" ]; then
+            echo "correctVersion=true" >> $GITHUB_ENV
+          else
+            echo "correctVersion=false" >> $GITHUB_ENV
+          fi
+          if [ "${{ env.correctVersionCode }}" == "${{ env.correctVersion }}" ]; then
+            echo "correctVer=true" >> $GITHUB_ENV
+          else
+            echo "correctVer=false" >> $GITHUB_ENV
+          fi
+
       - name: Rename Bilix
+        if: ${{ env.correctVer == 'true' }}
         run: mv ${{ env.apkfile }}-patched.apk ${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk
 
       - name: Upload Bilix (CI)
