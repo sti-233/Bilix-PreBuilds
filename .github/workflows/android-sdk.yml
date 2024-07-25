@@ -23,10 +23,8 @@ jobs:
         api-level: 35
         build-tools: 35.0.1
 
-    - name: Add build-tools to PATH
-      run: |
-        echo "ANDROID_HOME=${{ steps.setup-android.outputs.sdk-path }}" >> $GITHUB_ENV
-        echo "PATH=${{ steps.setup-android.outputs.sdk-path }}/build-tools/35.0.1:${PATH}" >> $GITHUB_ENV
+    - name: Update PATH
+      run: echo "PATH=${{ steps.setup-android.outputs.sdk-path }}/build-tools/35.0.1:${{ steps.setup-android.outputs.sdk-path }}/platform-tools:${{ env.PATH }}" >> $GITHUB_ENV
 
     - name: Verify aapt installation
       run: aapt version
