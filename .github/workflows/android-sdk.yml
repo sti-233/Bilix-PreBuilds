@@ -17,18 +17,13 @@ jobs:
         distribution: 'zulu'
         java-version: '11'
 
-    - name: Install dependencies
-      run: |
-        apt-get update
-        apt-get install -y wget unzip
-
-    - name: Download and install Android SDK
+    - name: Set up Android SDK environment
       env:
         ANDROID_HOME: ${{ runner.temp }}/android-sdk
         PATH: ${{ runner.temp }}/android-sdk/cmdline-tools/latest/bin:${{ runner.temp }}/android-sdk/platform-tools:${{ runner.temp }}/android-sdk/build-tools/35.0.1:$PATH
       run: |
         mkdir -p $ANDROID_HOME
-        wget https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip -O commandlinetools.zip
+        curl -o commandlinetools.zip https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip
         unzip commandlinetools.zip -d $ANDROID_HOME/cmdline-tools
         mv $ANDROID_HOME/cmdline-tools/cmdline-tools $ANDROID_HOME/cmdline-tools/latest
 
