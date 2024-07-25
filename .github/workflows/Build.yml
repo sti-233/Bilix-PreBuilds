@@ -161,18 +161,19 @@ jobs:
           name: ${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk
           path: ./${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk
 
-      - name: Get sn from Bilix
+       - name: Get sn from Bilix
 #        if: ${{ env.Is-Bilix == 'true' && env.Build-Bilix == 'true' && env.correctVer == 'true'  }}
         run: |
           #New(Try auto get sn)
           sudo apt-get install aapt
 #          aapt dump xmltree ./${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk AndroidManifest.xml > AndroidManifest_output.txt
 #          sn_value=$(awk '/meta-data/,/E:/ { if ($0 ~ /android:name\(0x01010003\)="BUILD_SN"/) { f=1 } if (f && $0 ~ /android:value\(0x01010024\)/) { match($0, /"[^"]+"/) print substr($0, RSTART+1, RLENGTH-2) exit } }' AndroidManifest_output.txt)
-#          aapt dump xmltree /path/to/your_app.apk AndroidManifest.xml > AndroidManifest_output.txt
-#          sn_value=$(awk '/meta-data/,/E:/ { if (/android:name\(0x01010003\)="BUILD_SN"/) { f=1 } if (f && /android:value\(0x01010024\)/) { match($0, /"[^"]+"/); print substr($0, RSTART+1, RLENGTH-2); exit } }' AndroidManifest_output.txt)
-          aapt dump xmltree ./${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk AndroidManifest.xml > AndroidManifest_output.txt
+          aapt dump xmltree /path/to/your_app.apk AndroidManifest.xml > AndroidManifest_output.txt
           cat AndroidManifest_output.txt
-          sn_value=meta-data/ && /android:name="BUILD_SN"/ '{ getline; if ($0 ~ /android:value/) { match($0, /android:value="([^"]+)"/, arr)"; print arr[1]; exit } }' AndroidManifest_output.txt)
+          sn_value=$(awk '/meta-data/,/E:/ { if (/android:name\(0x01010003\)="BUILD_SN"/) { f=1 } if (f && /android:value\(0x01010024\)/) { match($0, /"[^"]+"/); print substr($0, RSTART+1, RLENGTH-2); exit } }' AndroidManifest_output.txt)
+#          aapt dump xmltree ./${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk AndroidManifest.xml > AndroidManifest_output.txt
+#          cat AndroidManifest_output.txt
+#          sn_value=meta-data/ && /android:name="BUILD_SN"/ '{ getline; if ($0 ~ /android:value/) { match($0, /android:value="([^"]+)"/, arr)"; print arr[1]; exit } }' AndroidManifest_output.txt)
           echo "sn=$sn_value" >> $GITHUB_ENV
 
       - name: Get sn from Bilix-global
@@ -182,12 +183,14 @@ jobs:
           sudo apt-get install aapt
 #          aapt dump xmltree ./${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk AndroidManifest.xml > AndroidManifest_output.txt
 #          sn_value=$(awk '/meta-data/,/E:/ { if ($0 ~ /android:name\(0x01010003\)="BUILD_SN"/) { f=1 } if (f && $0 ~ /android:value\(0x01010024\)/) { match($0, /"[^"]+"/) print substr($0, RSTART+1, RLENGTH-2) exit } }' AndroidManifest_output.txt)
-#          aapt dump xmltree /path/to/your_app.apk AndroidManifest.xml > AndroidManifest_output.txt
-#          sn_value=$(awk '/meta-data/,/E:/ { if (/android:name\(0x01010003\)="BUILD_SN"/) { f=1 } if (f && /android:value\(0x01010024\)/) { match($0, /"[^"]+"/); print substr($0, RSTART+1, RLENGTH-2); exit } }' AndroidManifest_output.txt)
-          aapt dump xmltree ./${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk AndroidManifest.xml > AndroidManifest_output.txt
+          aapt dump xmltree /path/to/your_app.apk AndroidManifest.xml > AndroidManifest_output.txt
           cat AndroidManifest_output.txt
-          sn_value=meta-data/ && /android:name="BUILD_SN"/ '{ getline; if ($0 ~ /android:value/) { match($0, /android:value="([^"]+)"/, arr)"; print arr[1]; exit } }' AndroidManifest_output.txt)
+          sn_value=$(awk '/meta-data/,/E:/ { if (/android:name\(0x01010003\)="BUILD_SN"/) { f=1 } if (f && /android:value\(0x01010024\)/) { match($0, /"[^"]+"/); print substr($0, RSTART+1, RLENGTH-2); exit } }' AndroidManifest_output.txt)
+#          aapt dump xmltree ./${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk AndroidManifest.xml > AndroidManifest_output.txt
+#          cat AndroidManifest_output.txt
+#          sn_value=meta-data/ && /android:name="BUILD_SN"/ '{ getline; if ($0 ~ /android:value/) { match($0, /android:value="([^"]+)"/, arr)"; print arr[1]; exit } }' AndroidManifest_output.txt)
           echo "sn=$sn_value" >> $GITHUB_ENV
+
 
       - name: Get md5 from Bilix
         if: ${{ env.Is-Bilix == 'true' && env.Build-Bilix == 'true' && env.correctVer == 'true'  }}
