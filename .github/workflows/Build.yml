@@ -15,17 +15,15 @@ jobs:
         apkname: [Bilix-8.6.0,Bilix-global-3.19.2]  #List of vanilla apk
     env:
       Build-Bilix: true
-      Build-Bilix-global: false
+      Build-Bilix-global: true
       Bilix-vercode: 8060200
       Bilix-global-vercode: 7750600
       Bilix-ver: 8.6.0
       Bilix-global-ver: 3.19.2
-#      Bilix-sn: 15481705
-#      Bilix-global-sn: 15154452
-      Bilix-torelease: false
+      Bilix-torelease: true
       Bilix-draft: false
       Bilix-prerelease: true
-      Bilix-global-torelease: false
+      Bilix-global-torelease: true
       Bilix-global-draft: false
       Bilix-global-prerelease: true
       apkfile: ${{ matrix.apkname }}
@@ -82,14 +80,14 @@ jobs:
         if: ${{ env.Is-Bilix == 'true' }}
         run: |
           if [ "${{ steps.apk-info.outputs.versionCode }}" == "${{ env.Bilix-vercode }}" ]; then
-            echo "correctVersionCode=1" >> $GITHUB_ENV
+            echo "correctVersionCode= 1" >> $GITHUB_ENV
           else
-            echo "correctVersionCode=0" >> $GITHUB_ENV
+            echo "correctVersionCode= 0" >> $GITHUB_ENV
           fi
           if [ "${{ steps.apk-info.outputs.versionNum }}" == "${{ env.Bilix-ver }}" ]; then
-            echo "correctVersion=1" >> $GITHUB_ENV
+            echo "correctVersion= 1" >> $GITHUB_ENV
           else
-            echo "correctVersion=0" >> $GITHUB_ENV
+            echo "correctVersion= 0" >> $GITHUB_ENV
           fi
           if [ "${{ env.correctVersionCode }}" == "${{ env.correctVersion }}" ]; then
             echo "correctVer=true" >> $GITHUB_ENV
@@ -101,14 +99,14 @@ jobs:
         if: ${{ env.Is-Bilix-global == 'true' }}
         run: |
           if [ "${{ steps.apk-info.outputs.versionCode }}" == "${{ env.Bilix-global-vercode }}" ]; then
-            echo "correctVersionCode=1" >> $GITHUB_ENV
+            echo "correctVersionCode= 1" >> $GITHUB_ENV
           else
-            echo "correctVersionCode=0" >> $GITHUB_ENV
+            echo "correctVersionCode= 0" >> $GITHUB_ENV
           fi
           if [ "${{ steps.apk-info.outputs.versionNum }}" == "${{ env.Bilix-global-ver }}" ]; then
-            echo "correctVersion=1" >> $GITHUB_ENV
+            echo "correctVersion= 1" >> $GITHUB_ENV
           else
-            echo "correctVersion=0" >> $GITHUB_ENV
+            echo "correctVersion= 0" >> $GITHUB_ENV
           fi
           if [ "${{ env.correctVersionCode }}" == "${{ env.correctVersion }}" ]; then
             echo "correctVer=true" >> $GITHUB_ENV
