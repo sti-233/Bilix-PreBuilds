@@ -89,11 +89,6 @@ jobs:
           else
             echo "correctVersion= 0" >> $GITHUB_ENV
           fi
-          if [ "${{ env.correctVersionCode }}" == "${{ env.correctVersion }}" ]; then
-            echo "correctVer=true" >> $GITHUB_ENV
-          else
-            echo "correctVer=false" >> $GITHUB_ENV
-          fi
 
       - name: Check Bilibili-global ver
         if: ${{ env.Is-Bilix-global == 'true' }}
