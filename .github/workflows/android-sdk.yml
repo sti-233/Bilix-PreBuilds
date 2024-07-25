@@ -17,14 +17,13 @@ jobs:
         distribution: 'zulu'
         java-version: '11'
 
-    - name: Set up Android SDK
-      uses: android-actions/setup-android@v2
-      with:
-        api-level: 35
-        build-tools: 35.0.1
-
-    - name: Update PATH
-      run: echo "PATH=${{ steps.setup-android.outputs.sdk-path }}/build-tools/35.0.1:${{ steps.setup-android.outputs.sdk-path }}/platform-tools:${{ env.PATH }}" >> $GITHUB_ENV
+#    - name: Set up Android SDK
+#      uses: android-actions/setup-android@v3
+#      with:
+#        api-level: '35'
+#        build-tools: '35.0.1'
 
     - name: Verify aapt installation
-      run: aapt version
+      run: |
+        sudo apt-get install aapt
+        aapt version
