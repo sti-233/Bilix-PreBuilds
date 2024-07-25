@@ -20,8 +20,8 @@ jobs:
       Bilix-global-vercode: 7750600
       Bilix-ver: 8.6.0
       Bilix-global-ver: 3.19.2
-      Bilix-sn: 15481705
-      Bilix-global-sn: 15154452
+#      Bilix-sn: 15481705
+#      Bilix-global-sn: 15154452
       Bilix-torelease: false
       Bilix-draft: false
       Bilix-prerelease: true
@@ -102,14 +102,14 @@ jobs:
         if: ${{ env.Is-Bilix == 'true' }}
         run: |
           if [ "${{ steps.apk-info.outputs.versionCode }}" == "${{ env.Bilix-vercode }}" ]; then
-            echo "correctVersionCode=true" >> $GITHUB_ENV
+            echo "correctVersionCode=1" >> $GITHUB_ENV
           else
-            echo "correctVersionCode=false" >> $GITHUB_ENV
+            echo "correctVersionCode=0" >> $GITHUB_ENV
           fi
           if [ "${{ steps.apk-info.outputs.versionNum }}" == "${{ env.Bilix-ver }}" ]; then
-            echo "correctVersion=true" >> $GITHUB_ENV
+            echo "correctVersion=1" >> $GITHUB_ENV
           else
-            echo "correctVersion=false" >> $GITHUB_ENV
+            echo "correctVersion=0" >> $GITHUB_ENV
           fi
           if [ "${{ env.correctVersionCode }}" == "${{ env.correctVersion }}" ]; then
             echo "correctVer=true" >> $GITHUB_ENV
@@ -121,14 +121,14 @@ jobs:
         if: ${{ env.Is-Bilix-global == 'true' }}
         run: |
           if [ "${{ steps.apk-info.outputs.versionCode }}" == "${{ env.Bilix-global-vercode }}" ]; then
-            echo "correctVersionCode=true" >> $GITHUB_ENV
+            echo "correctVersionCode=1" >> $GITHUB_ENV
           else
-            echo "correctVersionCode=false" >> $GITHUB_ENV
+            echo "correctVersionCode=0" >> $GITHUB_ENV
           fi
           if [ "${{ steps.apk-info.outputs.versionNum }}" == "${{ env.Bilix-global-ver }}" ]; then
-            echo "correctVersion=true" >> $GITHUB_ENV
+            echo "correctVersion=1" >> $GITHUB_ENV
           else
-            echo "correctVersion=false" >> $GITHUB_ENV
+            echo "correctVersion=0" >> $GITHUB_ENV
           fi
           if [ "${{ env.correctVersionCode }}" == "${{ env.correctVersion }}" ]; then
             echo "correctVer=true" >> $GITHUB_ENV
@@ -151,6 +151,10 @@ jobs:
           cp ./${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk ./${{ env.apkfile }}_patched.zip
           unzip ./${{ env.apkfile }}_patched.zip
           mv AndroidManifest.xml ${{ env.apkfile }}-AndroidManifest.xml
+          #New(Try auto get sn)
+          aapt dump xmltree ./${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk AndroidManifest.xml > AndroidManifest_output.txt
+          sn=$(awk '/meta-data/,/E:/ { if ($0 ~ /android:name\(0x01010003\)="BUILD_SN"/) { f=1 } if (f && $0 ~ /android:value\(0x01010024\)/) { match($0, /"[^"]+"/) print substr($0, RSTART+1, RLENGTH-2) exit } }' AndroidManifest_output.txt)
+          echo "sn=$sn" >> $GITHUB_ENV
 
       - name: Upload sn-AndroidManifest.xml (CI)
         uses: actions/upload-artifact@v4
@@ -177,8 +181,8 @@ jobs:
           prerelease: ${{ env.Bilix-prerelease }}
           fail_on_unmatched_files: true
           name: 'Bilix ${{ env.Bilix-ver }}(${{ env.Bilix-vercode }}) with BiliroamingX ${{ env.ver }}'
-          tag_name: 'android-v${{ env.Bilix-ver }}-b${{ env.Bilix-sn }}-p${{ env.ver }}'
-          body: '版本信息：${{ env.Bilix-ver }} ${{ env.Bilix-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.Bilix-sn }} ${{ env.size }} ${{ env.md5 }} ${{ env.TIME }}'
+          tag_name: 'android-v${{ env.Bilix-ver }}-b${{ env.sn }}-p${{ env.ver }}'
+          body: '版本信息：${{ env.Bilix-ver }} ${{ env.Bilix-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.sn }} ${{ env.size }} ${{ env.md5 }} ${{ env.TIME }}'
           files: ./Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk
         continue-on-error: true
 
@@ -191,19 +195,21 @@ jobs:
           prerelease: ${{ env.Bilix-global-prerelease }}
           fail_on_unmatched_files: true
           name: 'Bilix global ${{ env.Bilix-global-ver }}(${{ env.Bilix-global-vercode }}) with BiliroamingX ${{ env.ver }}'
-          tag_name: 'android_i-v${{ env.Bilix-global-ver }}-b${{ env.Bilix-global-sn }}-p${{ env.ver }}'
-          body: '版本信息：${{ env.Bilix-global-ver }} ${{ env.Bilix-global-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.Bilix-global-sn }} ${{ env.Bilix-size }} ${{ env.md5 }} ${{ env.TIME }}'
+          tag_name: 'android_i-v${{ env.Bilix-global-ver }}-b${{ env.sn }}-p${{ env.ver }}'
+          body: '版本信息：${{ env.Bilix-global-ver }} ${{ env.Bilix-global-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.sn }} ${{ env.size }} ${{ env.md5 }} ${{ env.TIME }}'
           files: ./Bilix-global-${{ env.Bilix-global-ver }}-${{ env.ver }}@Aniruf_x.apk
         continue-on-error: true
 
       - name: Build Bilix Success
         if: ${{ env.Is-Bilix == 'true' }}
-        run: echo "### Build Bilix Success <br/> 版本信息：${{ env.Bilix-ver }} ${{ env.Bilix-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.Bilix-sn }} ${{ env.size }} ${{ env.md5 }} ${{ env.TIME }}" >> $GITHUB_STEP_SUMMARY
+        run: echo "### Build Bilix Success
+版本信息：${{ env.Bilix-ver }} ${{ env.Bilix-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.sn }} ${{ env.size }} ${{ env.md5 }} ${{ env.TIME }}" >> $GITHUB_STEP_SUMMARY
         continue-on-error: true
 
       - name: Build Bilix-global Success
         if: ${{ env.Is-Bilix-global == 'true' }}
-        run: echo "### Build Bilix-global Success <br/> 版本信息：${{ env.Bilix-global-ver }} ${{ env.Bilix-global-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.Bilix-global-sn }} ${{ env.Bilix-size }} ${{ env.md5 }} ${{ env.TIME }}" >> $GITHUB_STEP_SUMMARY
+        run: echo "### Build Bilix-global Success
+版本信息：${{ env.Bilix-global-ver }} ${{ env.Bilix-global-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.sn }} ${{ env.size }} ${{ env.md5 }} ${{ env.TIME }}" >> $GITHUB_STEP_SUMMARY
         continue-on-error: true
 
       - name: End
