@@ -15,8 +15,14 @@ Bilix patches from [BiliroamingX-fork](https://github.com/sti-233/BiliRoamingX)<
 - 自动获取bilibili-cn/play原包
 - 自动获取BiliroamingX-fork的ci构建
 - 自动获取BiliroamingX-fork的构建ci版本
-- 可自动检测bilibili是否符合版本要求
-- more...
+- 同时构建cn/play版bilibili
+- 自动检测bilibili是否为正确的版本
+- 自动上传Bilix至ci/release
+- 自动获取自动更新所需的sn
+- 自动获取自动更新所需的md5
+- 自动获取自动更新所需的字节大小
+- 自动获取自动更新所需的发布时间时间戳
+- (待实现)自动填充更新日志
 ```
 
 ## 使用/参考的项目
