@@ -23,5 +23,8 @@ jobs:
         api-level: 35
         build-tools: 35.0.1
 
+    - name: Add build-tools to PATH
+      run: echo "::add-path::${ANDROID_SDK_ROOT}/build-tools/35.0.1"
+
     - name: Verify aapt installation
       run: aapt version
