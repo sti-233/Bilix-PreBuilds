@@ -54,8 +54,8 @@ jobs:
           sudo apt-get install -y wget unzip
           # Download and unzip Android SDK Command-line tools
           wget https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip -O commandlinetools-linux.zip
-          mkdir -p $HOME/android-sdk/cmdline-tools
-          unzip commandlinetools-linux.zip -d $HOME/android-sdk/cmdline-tools
+          mkdir -p $HOME/android-sdk
+          unzip commandlinetools-linux.zip -d $HOME/android-sdk
           # Install SDK packages
           yes | $HOME/android-sdk/cmdline-tools/bin/sdkmanager --sdk_root=$HOME/android-sdk "platform-tools" "build-tools;30.0.3" "platforms;android-30"
           # Add SDK tools to PATH
