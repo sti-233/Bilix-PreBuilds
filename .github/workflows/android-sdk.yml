@@ -1,0 +1,40 @@
+name: Android SDK Setup
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up JDK 11
+      uses: actions/setup-java@v2
+      with:
+        distribution: 'zulu'
+        java-version: '11'
+
+    - name: Download and install Android SDK
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y wget unzip
+        wget https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip -O cmdline-tools.zip
+        unzip cmdline-tools.zip -d $HOME/
+        mkdir -p $ANDROID_HOME/cmdline-tools
+        mv $HOME/cmdline-tools $ANDROID_HOME/cmdline-tools/latest
+        export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin
+        export PATH=$PATH:$ANDROID_HOME/platform-tools
+        
+    - name: Accept licenses
+      run: yes | sdkmanager --licenses
+
+    - name: Install Android SDK 35.0.1
+      run: |
+        sdkmanager "platform-tools" "build-tools;35.0.1"
+        export PATH=$PATH:$ANDROID_HOME/build-tools/35.0.1
+
+    - name: Verify aapt installation
+      run: aapt version
