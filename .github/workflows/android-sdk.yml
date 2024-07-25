@@ -17,30 +17,11 @@ jobs:
         distribution: 'zulu'
         java-version: '11'
 
-    - name: Set up Android SDK environment
-      env:
-        ANDROID_HOME: ${{ runner.temp }}/android-sdk
-        PATH: ${{ runner.temp }}/android-sdk/cmdline-tools/latest/bin:${{ runner.temp }}/android-sdk/platform-tools:${{ runner.temp }}/android-sdk/build-tools/35.0.1:$PATH
-      run: |
-        mkdir -p $ANDROID_HOME
-        curl -o commandlinetools.zip https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip
-        unzip commandlinetools.zip -d $ANDROID_HOME/cmdline-tools
-        mv $ANDROID_HOME/cmdline-tools/cmdline-tools $ANDROID_HOME/cmdline-tools/latest
-
-    - name: Accept licenses
-      env:
-        ANDROID_HOME: ${{ runner.temp }}/android-sdk
-        PATH: ${{ runner.temp }}/android-sdk/cmdline-tools/latest/bin:${{ runner.temp }}/android-sdk/platform-tools:${{ runner.temp }}/android-sdk/build-tools/35.0.1:$PATH
-      run: yes | sdkmanager --licenses
-
-    - name: Install Android SDK 35.0.1
-      env:
-        ANDROID_HOME: ${{ runner.temp }}/android-sdk
-        PATH: ${{ runner.temp }}/android-sdk/cmdline-tools/latest/bin:${{ runner.temp }}/android-sdk/platform-tools:${{ runner.temp }}/android-sdk/build-tools/35.0.1:$PATH
-      run: sdkmanager "platform-tools" "build-tools;35.0.1"
+    - name: Set up Android SDK
+      uses: android-actions/setup-android@v2
+      with:
+        api-level: 35
+        build-tools: 35.0.1
 
     - name: Verify aapt installation
-      env:
-        ANDROID_HOME: ${{ runner.temp }}/android-sdk
-        PATH: ${{ runner.temp }}/android-sdk/cmdline-tools/latest/bin:${{ runner.temp }}/android-sdk/platform-tools:${{ runner.temp }}/android-sdk/build-tools/35.0.1:$PATH
       run: aapt version
