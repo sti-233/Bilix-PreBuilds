@@ -1,0 +1,40 @@
+name: Test use js
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Try get Changelog
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Set up dependencies
+        run: |
+          apt install -y libx11-xcb1 libxtst6 libxrandr2 libgtk-3-0 libnss3 libxss1 libasound2 libpangocairo-1.0-0 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2
+          apt install nodejs npm
+          npm install puppeteer
+
+      - name: Get javascript
+        run: |
+          git clone --recurse-submodules https://github.com/sti-233/BiliRoamingX.git
+          cp -r ./BiliRoamingX/download_page.js ./download_page.js
+
+      - name: Run javascript
+        run: |
+          node download_page.js
+
+      - name: Upload CI resource
+        uses: actions/upload-artifact@v4
+        with:
+          name: page.html
+          path: ./page.html
