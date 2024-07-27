@@ -24,6 +24,9 @@ jobs:
           sudo apt install nodejs
           sudo apt install nodejs npm
           sudo apt install chromium-chromedriver
+
+      - name: Set up puppeteer
+        run: |
           npm install puppeteer@latest
 
       - name: Get javascript
