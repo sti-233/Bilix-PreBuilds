@@ -22,6 +22,7 @@ jobs:
         run: |
           sudo apt install -y libx11-xcb1 libxtst6 libxrandr2 libgtk-3-0 libnss3 libxss1 libasound2 libpangocairo-1.0-0 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2
           sudo apt install nodejs npm
+          sudo apt install chromium-chromedriver
           npm install puppeteer
 
       - name: Get javascript
