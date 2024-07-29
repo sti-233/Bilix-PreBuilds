@@ -66,18 +66,19 @@ jobs:
       # Get BiliRoamingX ci Changelog
       - name: Get Changelog from commits
         run: |
-          wget https://github.com/sti-233/BiliRoamingX/compare/${{ env.old-commit-id }}...main
-          mv ${{ env.old-commit-id }}...main Changelog.txt
+          wget https://github.com/sti-233/BiliRoamingX/compare/${{ env.old_commit_id }}...main
+          mv ${{ env.old_commit_id }}...main Changelog.txt
           results=$(grep -rHn '<a class="Link--primary text-bold js-navigation-open markdown-title" href="/sti-233/BiliRoamingX/commit/' Changelog.txt)
           echo "$results" | while IFS=: read -r filename lineno content; do
             end_line=$((lineno + 30))
             lines=$(sed -n "${lineno},${end_line}p" "$filename")
             if echo "$lines" | grep -q "@zjns"; then
               getlog=$(echo "$content" | sed -n 's/.*<a class="Link--primary text-bold js-navigation-open markdown-title" href="\/sti-233\/BiliRoamingX\/commit\/[^"]*">\([^<]*\)<\/a>.*/\1/p')
-              if [ -n "$log" ]; then
-              echo "log="- $getlog <br/>""
+              if [ -n "$getlog" ]; then
+                echo "log=- $getlog <br/>"
               fi
             fi
+          done
           echo "changelog=$log" >> $GITHUB_ENV
 
       - name: Is Bilix?
