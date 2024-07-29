@@ -22,7 +22,7 @@ Bilix patches from [BiliroamingX-fork](https://github.com/sti-233/BiliRoamingX)<
 - 自动获取自动更新所需的md5
 - 自动获取自动更新所需的字节大小
 - 自动获取自动更新所需的发布时间时间戳
-- (待实现)自动填充更新日志
+- (有限制的)自动填充更新日志
 ```
 
 ## 使用/参考的项目
