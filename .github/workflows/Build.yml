@@ -75,7 +75,7 @@ jobs:
             if echo "$lines" | grep -q "@zjns"; then
               getlog=$(echo "$content" | sed -n 's/.*<a class="Link--primary text-bold js-navigation-open markdown-title" href="\/sti-233\/BiliRoamingX\/commit\/[^"]*">\([^<]*\)<\/a>.*/\1/p')
               if [ -n "$getlog" ]; then
-                echo -e "- $getlog \n" >> Changelog.txt
+                echo -e " - $getlog " >> Changelog.txt
                 cat Changelog.txt
               fi
             fi
@@ -241,7 +241,7 @@ jobs:
           fail_on_unmatched_files: true
           name: 'Bilix ${{ env.Bilix-ver }}(${{ env.Bilix-vercode }}) with BiliroamingX ${{ env.ver }}'
           tag_name: 'android-v${{ env.Bilix-ver }}-b${{ env.sn }}-p${{ env.ver }}'
-          body: '版本信息：${{ env.Bilix-ver }} ${{ env.Bilix-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.sn }} ${{ env.size }} ${{ env.md5 }} ${{ env.TIME }}<br/><br/> > 合并主分支 <br/> > Bump bili ver to ${{ env.Bilix-vercode }} <br/><br/>$(cat Changelog.txt)'
+          body: '版本信息：${{ env.Bilix-ver }} ${{ env.Bilix-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.sn }} ${{ env.size }} ${{ env.md5 }} ${{ env.TIME }}<br/><br/> > 合并主分支 <br/> > Bump bili ver to ${{ env.Bilix-vercode }} <br/><br/> $(cat Changelog.txt)'
           files: ./Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk
         continue-on-error: true
 
@@ -255,7 +255,7 @@ jobs:
           fail_on_unmatched_files: true
           name: 'Bilix global ${{ env.Bilix-global-ver }}(${{ env.Bilix-global-vercode }}) with BiliroamingX ${{ env.ver }}'
           tag_name: 'android_i-v${{ env.Bilix-global-ver }}-b${{ env.sn }}-p${{ env.ver }}'
-          body: '版本信息：${{ env.Bilix-global-ver }} ${{ env.Bilix-global-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.sn }} ${{ env.size }} ${{ env.md5 }} ${{ env.TIME }}<br/><br/> > 合并主分支 <br/> > Bump bili ver to ${{ env.Bilix-global-vercode }} <br/><br/>$(cat Changelog.txt)'
+          body: '版本信息：${{ env.Bilix-global-ver }} ${{ env.Bilix-global-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.sn }} ${{ env.size }} ${{ env.md5 }} ${{ env.TIME }}<br/><br/> > 合并主分支 <br/> > Bump bili ver to ${{ env.Bilix-global-vercode }} <br/><br/> $(cat Changelog.txt)'
           files: ./Bilix-global-${{ env.Bilix-global-ver }}-${{ env.ver }}@Aniruf_x.apk
         continue-on-error: true
 
@@ -263,14 +263,14 @@ jobs:
         if: ${{ env.Is-Bilix == 'true' && env.Build-Bilix == 'true' && env.correctVer == 'true'  }}
         run: |
           echo "### Build Bilix Success" >> $GITHUB_STEP_SUMMARY
-          echo "版本信息：${{ env.Bilix-ver }} ${{ env.Bilix-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.sn }} ${{ env.size }} ${{ env.md5 }} ${{ env.TIME }}<br/><br/> > 合并主分支 <br/> > Bump bili ver to ${{ env.Bilix-vercode }} <br/><br/>$(cat Changelog.txt)" >> $GITHUB_STEP_SUMMARY
+          echo "版本信息：${{ env.Bilix-ver }} ${{ env.Bilix-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.sn }} ${{ env.size }} ${{ env.md5 }} ${{ env.TIME }}<br/><br/> > 合并主分支 <br/> > Bump bili ver to ${{ env.Bilix-vercode }} <br/><br/> $(cat Changelog.txt)" >> $GITHUB_STEP_SUMMARY
         continue-on-error: true
 
       - name: Build Bilix-global Success
         if: ${{ env.Is-Bilix-global == 'true' && env.Build-Bilix-global == 'true' && env.correctVer == 'true'  }}
         run: |
           echo "### Build Bilix-global Success" >> $GITHUB_STEP_SUMMARY
-          echo "版本信息：${{ env.Bilix-global-ver }} ${{ env.Bilix-global-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.sn }} ${{ env.size }} ${{ env.md5 }} ${{ env.TIME }}<br/><br/> > 合并主分支 <br/> > Bump bili ver to ${{ env.Bilix-global-vercode }} <br/><br/>$(cat Changelog.txt)" >> $GITHUB_STEP_SUMMARY
+          echo "版本信息：${{ env.Bilix-global-ver }} ${{ env.Bilix-global-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.sn }} ${{ env.size }} ${{ env.md5 }} ${{ env.TIME }}<br/><br/> > 合并主分支 <br/> > Bump bili ver to ${{ env.Bilix-global-vercode }} <br/><br/> $(cat Changelog.txt)" >> $GITHUB_STEP_SUMMARY
         continue-on-error: true
 
       - name: End
