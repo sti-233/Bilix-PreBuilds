@@ -81,12 +81,14 @@ jobs:
             fi
           done
 
+      # Check version is cn or play
       - name: Is Bilix?
         run: echo "Is-Bilix=$(if [ '${{ env.apkfile }}' == 'Bilix-${{ env.Bilix-ver }}' ]; then echo true; else echo false; fi)" >> $GITHUB_ENV
 
       - name: Is Bilix-global?
         run: echo "Is-Bilix-global=$(if [ '${{ env.apkfile }}' == 'Bilix-global-${{ env.Bilix-global-ver }}' ]; then echo true; else echo false; fi)" >> $GITHUB_ENV
 
+      # Get original bilibili
       - name: Get bilibili
         if: ${{ env.Is-Bilix == 'true' }}
         run: |
@@ -152,12 +154,14 @@ jobs:
           bigver=$(echo "$getbigver" | awk -F. '{printf "%d0%d00%d\n", $1, $2, $3}')
           echo "bigver=$bigver" >> $GITHUB_ENV
 
+      # get build resource in ci zip
       - name: Unzip CI zip and Rename
         run: |
           unzip BiliRoamingX-CI-Build.zip
           mv BiliRoamingX-integrations-${{ env.ver }}.apk integrations.apk
           mv BiliRoamingX-patches-${{ env.ver }}.jar patches.jar
 
+      # build part
       - name: Build Bilix
         if: ${{ env.Is-Bilix == 'true' && env.Build-Bilix == 'true' && env.correctVer == 'true'  }}
         run: java -jar revanced-cli.jar patch --merge integrations.apk --patch-bundle patches.jar --signing-levels 1,2,3 ${{ env.apkfile }}.apk
@@ -166,6 +170,7 @@ jobs:
         if: ${{ env.Is-Bilix-global == 'true' && env.Build-Bilix-global == 'true' && env.correctVer == 'true'  }}
         run: java -jar revanced-cli.jar patch --merge integrations.apk --patch-bundle patches.jar --signing-levels 1,2,3 ${{ env.apkfile }}.apk
 
+      # named Bilix
       - name: Rename Bilix
         if: ${{ env.Is-Bilix == 'true' && env.Build-Bilix == 'true' && env.correctVer == 'true'  }}
         run: mv ${{ env.apkfile }}-patched.apk ${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk
@@ -174,6 +179,7 @@ jobs:
         if: ${{ env.Is-Bilix-global == 'true' && env.Build-Bilix-global == 'true' && env.correctVer == 'true'  }}
         run: mv ${{ env.apkfile }}-patched.apk ${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk
 
+      # push Bilix to ci
       - name: Upload Bilix (CI)
         if: ${{ env.Is-Bilix == 'true' && env.Build-Bilix == 'true' && env.correctVer == 'true'  }}
         uses: actions/upload-artifact@v4
@@ -231,6 +237,7 @@ jobs:
           size=$(stat -c %s ./${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk)
           echo "size=$size" >> $GITHUB_ENV
 
+      # Release part
       - name: Release Bilix
         if: ${{ env.Is-Bilix == 'true' && env.Bilix-torelease == 'true' && env.correctVer == 'true' && env.Build-Bilix == 'true' }}
         uses: softprops/action-gh-release@v2
@@ -241,7 +248,10 @@ jobs:
           fail_on_unmatched_files: true
           name: 'Bilix ${{ env.Bilix-ver }}(${{ env.Bilix-vercode }}) with BiliroamingX ${{ env.ver }}'
           tag_name: 'android-v${{ env.Bilix-ver }}-b${{ env.sn }}-p${{ env.ver }}'
-          body: '版本信息：${{ env.Bilix-ver }} ${{ env.Bilix-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.sn }} ${{ env.size }} ${{ env.md5 }} ${{ env.TIME }}<br/><br/> > 合并主分支 <br/> > Bump bili ver to ${{ env.Bilix-vercode }} <br/><br/> $(cat Changelog.txt)'
+          body: '版本信息：${{ env.Bilix-ver }} ${{ env.Bilix-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.sn }} ${{ env.size }} ${{ env.md5 }} ${{ env.TIME }}'
+            ' > 合并主分支'
+            ' > Bump bili ver to ${{ env.Bilix-global-vercode }}'
+            ' $(cat Changelog.txt)'
           files: ./Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk
         continue-on-error: true
 
@@ -255,22 +265,37 @@ jobs:
           fail_on_unmatched_files: true
           name: 'Bilix global ${{ env.Bilix-global-ver }}(${{ env.Bilix-global-vercode }}) with BiliroamingX ${{ env.ver }}'
           tag_name: 'android_i-v${{ env.Bilix-global-ver }}-b${{ env.sn }}-p${{ env.ver }}'
-          body: '版本信息：${{ env.Bilix-global-ver }} ${{ env.Bilix-global-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.sn }} ${{ env.size }} ${{ env.md5 }} ${{ env.TIME }}<br/><br/> > 合并主分支 <br/> > Bump bili ver to ${{ env.Bilix-global-vercode }} <br/><br/> $(cat Changelog.txt)'
+          body: |
+            '版本信息：${{ env.Bilix-global-ver }} ${{ env.Bilix-global-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.sn }} ${{ env.size }} ${{ env.md5 }} ${{ env.TIME }}'
+            ' > 合并主分支'
+            ' > Bump bili ver to ${{ env.Bilix-global-vercode }}'
+            ' $(cat Changelog.txt)'
           files: ./Bilix-global-${{ env.Bilix-global-ver }}-${{ env.ver }}@Aniruf_x.apk
         continue-on-error: true
 
+      # output Bilix informations
       - name: Build Bilix Success
         if: ${{ env.Is-Bilix == 'true' && env.Build-Bilix == 'true' && env.correctVer == 'true'  }}
         run: |
           echo "### Build Bilix Success" >> $GITHUB_STEP_SUMMARY
-          echo "版本信息：${{ env.Bilix-ver }} ${{ env.Bilix-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.sn }} ${{ env.size }} ${{ env.md5 }} ${{ env.TIME }}<br/><br/> > 合并主分支 <br/> > Bump bili ver to ${{ env.Bilix-vercode }} <br/><br/> $(cat Changelog.txt)" >> $GITHUB_STEP_SUMMARY
+          echo "版本信息：${{ env.Bilix-ver }} ${{ env.Bilix-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.sn }} ${{ env.size }} ${{ env.md5 }} ${{ env.TIME }}" >> $GITHUB_STEP_SUMMARY
+          echo " " >> $GITHUB_STEP_SUMMARY
+          echo " > 合并主分支" >> $GITHUB_STEP_SUMMARY
+          echo " > Bump bili ver to ${{ env.Bilix-global-vercode }}" >> $GITHUB_STEP_SUMMARY
+          echo " " >> $GITHUB_STEP_SUMMARY
+          echo "$(cat Changelog.txt)" >> $GITHUB_STEP_SUMMARY
         continue-on-error: true
 
       - name: Build Bilix-global Success
         if: ${{ env.Is-Bilix-global == 'true' && env.Build-Bilix-global == 'true' && env.correctVer == 'true'  }}
         run: |
           echo "### Build Bilix-global Success" >> $GITHUB_STEP_SUMMARY
-          echo "版本信息：${{ env.Bilix-global-ver }} ${{ env.Bilix-global-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.sn }} ${{ env.size }} ${{ env.md5 }} ${{ env.TIME }}<br/><br/> > 合并主分支 <br/> > Bump bili ver to ${{ env.Bilix-global-vercode }} <br/><br/> $(cat Changelog.txt)" >> $GITHUB_STEP_SUMMARY
+          echo "版本信息：${{ env.Bilix-global-ver }} ${{ env.Bilix-global-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.sn }} ${{ env.size }} ${{ env.md5 }} ${{ env.TIME }}" >> $GITHUB_STEP_SUMMARY
+          echo " " >> $GITHUB_STEP_SUMMARY
+          echo " > 合并主分支" >> $GITHUB_STEP_SUMMARY
+          echo " > Bump bili ver to ${{ env.Bilix-global-vercode }}" >> $GITHUB_STEP_SUMMARY
+          echo " " >> $GITHUB_STEP_SUMMARY
+          echo "$(cat Changelog.txt)" >> $GITHUB_STEP_SUMMARY
         continue-on-error: true
 
       - name: End
