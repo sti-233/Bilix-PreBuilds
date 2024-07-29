@@ -12,27 +12,33 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        apkname: [Bilix-8.6.0,Bilix-global-3.19.2]  #List of vanilla apk
+        apkname: [Bilix-8.6.0,Bilix-global-3.19.2]  #List of original apk
     env:
+      # build need
       Build-Bilix: true
-      Build-Bilix-global: true
-      Bilix-vercode: 8060200
-      Bilix-global-vercode: 7750600
+      Build-Bilix-global: false
+      # Check ver
       Bilix-ver: 8.6.0
       Bilix-global-ver: 3.19.2
-      Bilix-torelease: true
+      Bilix-vercode: 8060200
+      Bilix-global-vercode: 7750600
+      # torelease
+      Bilix-torelease: false
+      Bilix-global-torelease: false
+      # release type
       Bilix-draft: false
       Bilix-prerelease: true
-      Bilix-global-torelease: true
       Bilix-global-draft: false
       Bilix-global-prerelease: true
+      # name
       apkfile: ${{ matrix.apkname }}
     runs-on: ubuntu-latest
     steps:
 
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
+      # Get $publishTime
       - name: Get Current Time
         run: |
           TIME=$EPOCHSECONDS
@@ -53,6 +59,27 @@ jobs:
           echo Downloading modified revanced-cli
           wget https://github.com/zjns/revanced-cli/releases/download/v4.6.0.1/revanced-cli.jar
 
+      - name: Cat commit ids
+        run: |
+          echo "old-commit-id=$(cat old-commit-id.txt)" >> $GITHUB_ENV
+
+      # Get BiliRoamingX ci Changelog
+      - name: Get Changelog from commits
+        run: |
+          wget https://github.com/sti-233/BiliRoamingX/compare/${{ env.old-commit-id }}...main
+          mv ${{ env.old-commit-id }}...main Changelog.txt
+          results=$(grep -rHn '<a class="Link--primary text-bold js-navigation-open markdown-title" href="/sti-233/BiliRoamingX/commit/' Changelog.txt)
+          echo "$results" | while IFS=: read -r filename lineno content; do
+            end_line=$((lineno + 30))
+            lines=$(sed -n "${lineno},${end_line}p" "$filename")
+            if echo "$lines" | grep -q "@zjns"; then
+              getlog=$(echo "$content" | sed -n 's/.*<a class="Link--primary text-bold js-navigation-open markdown-title" href="\/sti-233\/BiliRoamingX\/commit\/[^"]*">\([^<]*\)<\/a>.*/\1/p')
+              if [ -n "$log" ]; then
+              echo "log="- $getlog <br/>""
+              fi
+            fi
+          echo "changelog=$log" >> $GITHUB_ENV
+
       - name: Is Bilix?
         run: echo "Is-Bilix=$(if [ '${{ env.apkfile }}' == 'Bilix-${{ env.Bilix-ver }}' ]; then echo true; else echo false; fi)" >> $GITHUB_ENV
 
@@ -68,6 +95,7 @@ jobs:
         if: ${{ env.Is-Bilix-global == 'true' }}
         run: aria2c --out "${{ env.apkfile }}.apk" https://d.apkpure.com/b/APK/com.bilibili.app.in?version=latest
 
+      # Check $version & $versionCode
       - name: "Get Apk Info"
         id: "apk-info"
         uses: "8Mi-Tech/get-apk-info-action@master"
@@ -112,9 +140,11 @@ jobs:
             echo "correctVer=false" >> $GITHUB_ENV
           fi
 
+      # Get $patchVersion
       - name: Get version
         run: echo "ver=$(cat version.txt)" >> $GITHUB_ENV
 
+      # Get $patchVersionCode
       - name: Get bigver
         run: |
           getbigver=$(echo ${{ env.ver }} | cut -d '.' -f 1-3)
@@ -157,10 +187,10 @@ jobs:
           name: ${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk
           path: ./${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk
 
+      # Get $sn
       - name: Get sn from Bilix
         if: ${{ env.Is-Bilix == 'true' && env.Build-Bilix == 'true' && env.correctVer == 'true' }}
         run: |
-          #New(Try auto get sn)
           sudo apt-get install aapt
           aapt dump xmltree ./${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk AndroidManifest.xml > AndroidManifest_output.txt
           sn_value=$(grep "BUILD_SN" ./AndroidManifest_output.txt -A 1 | grep "android:value" | cut -d'=' -f2 | cut -d')' -f2 | awk '{printf "%d\n", strtonum($1)}')
@@ -169,12 +199,12 @@ jobs:
       - name: Get sn from Bilix-global
         if: ${{ env.Is-Bilix-global == 'true' && env.Build-Bilix-global == 'true' && env.correctVer == 'true'  }}
         run: |
-          #New(Try auto get sn)
           sudo apt-get install aapt
           aapt dump xmltree ./${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk AndroidManifest.xml > AndroidManifest_output.txt
           sn_value=$(grep "BUILD_SN" ./AndroidManifest_output.txt -A 1 | grep "android:value" | cut -d'=' -f2 | cut -d')' -f2 | awk '{printf "%d\n", strtonum($1)}')
           echo "sn=$sn_value" >> $GITHUB_ENV
 
+      # Get $md5
       - name: Get md5 from Bilix
         if: ${{ env.Is-Bilix == 'true' && env.Build-Bilix == 'true' && env.correctVer == 'true'  }}
         run: |
@@ -187,6 +217,7 @@ jobs:
           md5=$(md5sum ./${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk | cut -d ' ' -f 1)
           echo "md5=$md5" >> $GITHUB_ENV
 
+      # Get $size
       - name: Get size from Bilix
         if: ${{ env.Is-Bilix == 'true' && env.Build-Bilix == 'true' && env.correctVer == 'true'  }}
         run: |
@@ -209,7 +240,7 @@ jobs:
           fail_on_unmatched_files: true
           name: 'Bilix ${{ env.Bilix-ver }}(${{ env.Bilix-vercode }}) with BiliroamingX ${{ env.ver }}'
           tag_name: 'android-v${{ env.Bilix-ver }}-b${{ env.sn }}-p${{ env.ver }}'
-          body: '版本信息：${{ env.Bilix-ver }} ${{ env.Bilix-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.sn }} ${{ env.size }} ${{ env.md5 }} ${{ env.TIME }}'
+          body: '版本信息：${{ env.Bilix-ver }} ${{ env.Bilix-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.sn }} ${{ env.size }} ${{ env.md5 }} ${{ env.TIME }}<br/><br/> > 合并主分支 <br/> > Bump bili ver to ${{ env.Bilix-vercode }} <br/><br/>${{ env.changelog }}'
           files: ./Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk
         continue-on-error: true
 
@@ -223,7 +254,7 @@ jobs:
           fail_on_unmatched_files: true
           name: 'Bilix global ${{ env.Bilix-global-ver }}(${{ env.Bilix-global-vercode }}) with BiliroamingX ${{ env.ver }}'
           tag_name: 'android_i-v${{ env.Bilix-global-ver }}-b${{ env.sn }}-p${{ env.ver }}'
-          body: '版本信息：${{ env.Bilix-global-ver }} ${{ env.Bilix-global-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.sn }} ${{ env.size }} ${{ env.md5 }} ${{ env.TIME }}'
+          body: '版本信息：${{ env.Bilix-global-ver }} ${{ env.Bilix-global-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.sn }} ${{ env.size }} ${{ env.md5 }} ${{ env.TIME }}<br/><br/> > 合并主分支 <br/> > Bump bili ver to ${{ env.Bilix-global-vercode }} <br/><br/>${{ env.changelog }}'
           files: ./Bilix-global-${{ env.Bilix-global-ver }}-${{ env.ver }}@Aniruf_x.apk
         continue-on-error: true
 
@@ -231,14 +262,14 @@ jobs:
         if: ${{ env.Is-Bilix == 'true' && env.Build-Bilix == 'true' && env.correctVer == 'true'  }}
         run: |
           echo "### Build Bilix Success" >> $GITHUB_STEP_SUMMARY
-          echo "版本信息：${{ env.Bilix-ver }} ${{ env.Bilix-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.sn }} ${{ env.size }} ${{ env.md5 }} ${{ env.TIME }}" >> $GITHUB_STEP_SUMMARY
+          echo "版本信息：${{ env.Bilix-ver }} ${{ env.Bilix-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.sn }} ${{ env.size }} ${{ env.md5 }} ${{ env.TIME }}<br/><br/> > 合并主分支 <br/> > Bump bili ver to ${{ env.Bilix-vercode }} <br/><br/>${{ env.changelog }}" >> $GITHUB_STEP_SUMMARY
         continue-on-error: true
 
       - name: Build Bilix-global Success
         if: ${{ env.Is-Bilix-global == 'true' && env.Build-Bilix-global == 'true' && env.correctVer == 'true'  }}
         run: |
           echo "### Build Bilix-global Success" >> $GITHUB_STEP_SUMMARY
-          echo "版本信息：${{ env.Bilix-global-ver }} ${{ env.Bilix-global-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.sn }} ${{ env.size }} ${{ env.md5 }} ${{ env.TIME }}" >> $GITHUB_STEP_SUMMARY
+          echo "版本信息：${{ env.Bilix-global-ver }} ${{ env.Bilix-global-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.sn }} ${{ env.size }} ${{ env.md5 }} ${{ env.TIME }}<br/><br/> > 合并主分支 <br/> > Bump bili ver to ${{ env.Bilix-global-vercode }} <br/><br/>${{ env.changelog }}" >> $GITHUB_STEP_SUMMARY
         continue-on-error: true
 
       - name: End
