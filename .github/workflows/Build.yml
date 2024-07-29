@@ -66,8 +66,8 @@ jobs:
       # Get BiliRoamingX ci Changelog
       - name: Get Changelog from commits
         run: |
-          wget https://github.com/sti-233/BiliRoamingX/compare/${{ env.old_commit_id }}...main
-          mv ${{ env.old_commit_id }}...main commit-resource.txt
+          wget https://github.com/sti-233/BiliRoamingX/compare/${{ env.old-commit-id }}...main
+          mv ${{ env.old-commit-id }}...main commit-resource.txt
           results=$(grep -rHn '<a class="Link--primary text-bold js-navigation-open markdown-title" href="/sti-233/BiliRoamingX/commit/' commit-resource.txt)
           echo "$results" | while IFS=: read -r filename lineno content; do
             end_line=$((lineno + 30))
