@@ -16,7 +16,7 @@ jobs:
     env:
       # build need
       Build-Bilix: true
-      Build-Bilix-global: false
+      Build-Bilix-global: true
       # Check ver
       Bilix-ver: 8.6.0
       Bilix-global-ver: 3.19.2
