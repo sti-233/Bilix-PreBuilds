@@ -16,7 +16,7 @@ jobs:
     env:
       # build need
       Build-Bilix: true
-      Build-Bilix-global: true
+      Build-Bilix-global: false
       # Check ver
       Bilix-ver: 8.6.0
       Bilix-global-ver: 3.19.2
@@ -259,6 +259,7 @@ jobs:
             版本信息：${{ env.Bilix-ver }} ${{ env.Bilix-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.sn }} ${{ env.size }} ${{ env.md5 }} ${{ env.TIME }}
              > 合并主分支
              > Bump bili ver to ${{ env.Bilix-vercode }}
+            
             $(cat Changelog.txt)
           files: ./Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk
         continue-on-error: true
@@ -277,6 +278,7 @@ jobs:
             版本信息：${{ env.Bilix-global-ver }} ${{ env.Bilix-global-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.sn }} ${{ env.size }} ${{ env.md5 }} ${{ env.TIME }}
              > 合并主分支
              > Bump bili ver to ${{ env.Bilix-global-vercode }}
+            
             $(cat Changelog.txt)
           files: ./Bilix-global-${{ env.Bilix-global-ver }}-${{ env.ver }}@Aniruf_x.apk
         continue-on-error: true
