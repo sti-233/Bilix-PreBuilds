@@ -33,5 +33,5 @@ Bilix patches from [BiliroamingX-fork](https://github.com/sti-233/BiliRoamingX)<
 - [8Mi-Tech/LSPatch-ApkFactory](https://github.com/8Mi-Tech/LSPatch-ApkFactory)<br/>
   (bilibili原包下载部分参考)
 > **Actions**
-> - 
+> - [8Mi-Tech/get-apk-info-action](https://github.com/8Mi-Tech/get-apk-info-action)
 
