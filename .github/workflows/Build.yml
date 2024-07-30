@@ -26,7 +26,7 @@ jobs:
       Bilix-torelease: true
       Bilix-global-torelease: true
       # Changelog need
-      push-Changelog: true
+      push-Changelog: false
       # release type
       Bilix-draft: false
       Bilix-prerelease: true
@@ -256,10 +256,10 @@ jobs:
           name: 'Bilix ${{ env.Bilix-ver }}(${{ env.Bilix-vercode }}) with BiliroamingX ${{ env.ver }}'
           tag_name: 'android-v${{ env.Bilix-ver }}-b${{ env.sn }}-p${{ env.ver }}'
           body: |
-            '版本信息：${{ env.Bilix-ver }} ${{ env.Bilix-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.sn }} ${{ env.size }} ${{ env.md5 }} ${{ env.TIME }}'
-            ' > 合并主分支'
-            ' > Bump bili ver to ${{ env.Bilix-global-vercode }}'
-            ' $(cat Changelog.txt)'
+            版本信息：${{ env.Bilix-ver }} ${{ env.Bilix-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.sn }} ${{ env.size }} ${{ env.md5 }} ${{ env.TIME }}
+             > 合并主分支
+             > Bump bili ver to ${{ env.Bilix-vercode }}
+            $(cat Changelog.txt)
           files: ./Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk
         continue-on-error: true
 
@@ -274,10 +274,10 @@ jobs:
           name: 'Bilix global ${{ env.Bilix-global-ver }}(${{ env.Bilix-global-vercode }}) with BiliroamingX ${{ env.ver }}'
           tag_name: 'android_i-v${{ env.Bilix-global-ver }}-b${{ env.sn }}-p${{ env.ver }}'
           body: |
-            '版本信息：${{ env.Bilix-global-ver }} ${{ env.Bilix-global-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.sn }} ${{ env.size }} ${{ env.md5 }} ${{ env.TIME }}'
-            ' > 合并主分支'
-            ' > Bump bili ver to ${{ env.Bilix-global-vercode }}'
-            ' $(cat Changelog.txt)'
+            版本信息：${{ env.Bilix-global-ver }} ${{ env.Bilix-global-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.sn }} ${{ env.size }} ${{ env.md5 }} ${{ env.TIME }}
+             > 合并主分支
+             > Bump bili ver to ${{ env.Bilix-global-vercode }}
+            $(cat Changelog.txt)
           files: ./Bilix-global-${{ env.Bilix-global-ver }}-${{ env.ver }}@Aniruf_x.apk
         continue-on-error: true
 
