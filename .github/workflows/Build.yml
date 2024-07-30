@@ -23,8 +23,10 @@ jobs:
       Bilix-vercode: 8060200
       Bilix-global-vercode: 7750600
       # torelease
-      Bilix-torelease: false
-      Bilix-global-torelease: false
+      Bilix-torelease: true
+      Bilix-global-torelease: true
+      # Changelog need
+      push-Changelog: true
       # release type
       Bilix-draft: false
       Bilix-prerelease: true
@@ -65,6 +67,7 @@ jobs:
 
       # Get BiliRoamingX ci Changelog
       - name: Get Changelog from commits
+        if: ${{ env.push-Changelog == 'true' }}
         run: |
           wget https://github.com/sti-233/BiliRoamingX/compare/${{ env.old-commit-id }}...main
           mv ${{ env.old-commit-id }}...main commit-resource.txt
@@ -80,6 +83,10 @@ jobs:
               fi
             fi
           done
+
+      - name: val empty to Changelog
+        if: ${{ env.push-Changelog == 'false' }}
+        run: echo -e " - no changlog now " >> Changelog.txt
 
       # Check version is cn or play
       - name: Is Bilix?
