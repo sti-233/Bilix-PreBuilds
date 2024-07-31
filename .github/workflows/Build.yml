@@ -12,15 +12,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        apkname: [Bilix-8.6.0,Bilix-global-3.19.2]  #List of original apk
+        apkname: [Bilix-8.7.0,Bilix-global-3.19.2]  #List of original apk
     env:
       # build need
       Build-Bilix: true
-      Build-Bilix-global: false
+      Build-Bilix-global: true
       # Check ver
-      Bilix-ver: 8.6.0
+      Bilix-ver: 8.7.0
       Bilix-global-ver: 3.19.2
-      Bilix-vercode: 8060200
+      Bilix-vercode: 8070300
       Bilix-global-vercode: 7750600
       # torelease
       Bilix-torelease: true
@@ -83,10 +83,14 @@ jobs:
               fi
             fi
           done
+          cat Changelog.txt
+          echo "changelog-in-env=$(cat Changelog.txt)" >> $GITHUB_ENV
 
       - name: val empty to Changelog
         if: ${{ env.push-Changelog == 'false' }}
-        run: echo -e " - no changlog now " >> Changelog.txt
+        run: |
+          echo -e " - no changlog now " >> Changelog.txt
+          echo "changelog-in-env=$(cat Changelog.txt)" >> $GITHUB_ENV
 
       # Check version is cn or play
       - name: Is Bilix?
@@ -260,7 +264,7 @@ jobs:
              > 合并主分支
              > Bump bili ver to ${{ env.Bilix-vercode }}
             
-            $(cat Changelog.txt)
+            "${{ env.changelog-in-env }}"
           files: ./Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk
         continue-on-error: true
 
@@ -279,7 +283,7 @@ jobs:
              > 合并主分支
              > Bump bili ver to ${{ env.Bilix-global-vercode }}
             
-            $(cat Changelog.txt)
+            "${{ env.changelog-in-env }}"
           files: ./Bilix-global-${{ env.Bilix-global-ver }}-${{ env.ver }}@Aniruf_x.apk
         continue-on-error: true
 
