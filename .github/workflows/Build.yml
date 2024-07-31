@@ -81,7 +81,6 @@ jobs:
                 echo -e " - $getlog " >> Changelog.txt
               fi
             fi
-          cat Changelog.txt
           done
 
       - name: Write Changelog
