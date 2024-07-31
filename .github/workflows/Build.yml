@@ -64,7 +64,8 @@ jobs:
       - name: Cat commit ids
         if: ${{ env.push-Changelog == 'true' }}
         run: |
-          echo "old-commit-id=$(cat old-commit-id.txt | cut -c1-7)" >> $GITHUB_ENV
+          old_commit_id=$(cat old-commit-id.txt | cut -c1-7)
+          echo "old-commit-id=$old_commit_id" >> $GITHUB_ENV
 
       # Get BiliRoamingX ci Changelog
       - name: Get Changelog from commits
