@@ -26,7 +26,7 @@ jobs:
       Bilix-torelease: true
       Bilix-global-torelease: true
       # Changelog need
-      push-Changelog: false
+      push-Changelog: true
       # release type
       Bilix-draft: false
       Bilix-prerelease: true
@@ -84,6 +84,10 @@ jobs:
               fi
             fi
           done
+
+      - name: Write Changelog
+        if: ${{ env.push-Changelog == 'true' }}
+        run: |
           cat Changelog.txt
           echo "changelog-in-env=$(cat Changelog.txt)" >> $GITHUB_ENV
 
@@ -265,7 +269,7 @@ jobs:
              > 合并主分支
              > Bump bili ver to ${{ env.Bilix-vercode }}
             
-            "${{ env.changelog-in-env }}"
+            ${{ env.changelog-in-env }}
           files: ./Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk
         continue-on-error: true
 
@@ -284,7 +288,7 @@ jobs:
              > 合并主分支
              > Bump bili ver to ${{ env.Bilix-global-vercode }}
             
-            "${{ env.changelog-in-env }}"
+            ${{ env.changelog-in-env }}
           files: ./Bilix-global-${{ env.Bilix-global-ver }}-${{ env.ver }}@Aniruf_x.apk
         continue-on-error: true
 
