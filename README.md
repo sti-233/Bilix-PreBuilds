@@ -34,4 +34,5 @@ Bilix patches from [BiliroamingX-fork](https://github.com/sti-233/BiliRoamingX)<
   (bilibili原包下载部分参考)
 > **Actions**
 > - [8Mi-Tech/get-apk-info-action](https://github.com/8Mi-Tech/get-apk-info-action)
+> - [softprops/action-gh-release](https://github.com/softprops/action-gh-release)
 
