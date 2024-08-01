@@ -10,7 +10,9 @@
 </div>
 
 Bilix patches from [BiliroamingX-fork](https://github.com/sti-233/BiliRoamingX)<br/>
-本仓库现基本可完全通过 Github Action 进行构建并预发布<br/>
+本仓库现可通过 Github Action 进行构建并预发布<br/>
+<br/>
+! 注: 原包获取因渠道原因 可能无法及时更新最新包<br/>
 ```
 - 自动获取bilibili-cn/play原包
 - 自动获取BiliroamingX-fork的ci构建
@@ -24,6 +26,7 @@ Bilix patches from [BiliroamingX-fork](https://github.com/sti-233/BiliRoamingX)<
 - 自动获取自动更新所需的发布时间时间戳
 - (test-有限制的)自动填充更新日志
 ```
+! 本仓库以上功能多依赖[BiliroamingX-fork](https://github.com/sti-233/BiliRoamingX)项目中ci构建
 
 ## 使用/参考的项目
 - [BiliRoamingX/BiliRoamingX-PreBuilds](https://github.com/BiliRoamingX/BiliRoamingX-PreBuilds)<br/>
@@ -32,7 +35,7 @@ Bilix patches from [BiliroamingX-fork](https://github.com/sti-233/BiliRoamingX)<
   (ci基本框架)
 - [8Mi-Tech/LSPatch-ApkFactory](https://github.com/8Mi-Tech/LSPatch-ApkFactory)<br/>
   (bilibili原包下载部分参考)
-> **Actions**
+> **Actions Used**
 > - [8Mi-Tech/get-apk-info-action](https://github.com/8Mi-Tech/get-apk-info-action)
 > - [softprops/action-gh-release](https://github.com/softprops/action-gh-release)
 
