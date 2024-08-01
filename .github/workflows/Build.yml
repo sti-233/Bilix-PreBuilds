@@ -87,8 +87,6 @@ jobs:
         if: ${{ env.push-Changelog == 'true' }}
         run: |
           cat Changelog.txt
-         # tr -d '\n' < Changelog.txt > NewChangelog.txt
-         # mv NewChangelog.txt Changelog.txt
           sed -i ':a;N;$!ba;s/\n/<br\/>/g' Changelog.txt
           cat Changelog.txt
           echo "changelog-in-env=$(cat Changelog.txt)" >> $GITHUB_ENV
