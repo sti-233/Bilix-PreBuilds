@@ -63,7 +63,7 @@ jobs:
 
       - name: Cat commit ids
         if: ${{ env.push-Changelog == 'true' }}
-        run: echo "old-commit-id=$(cat old-commit-id.txt | cut -c1-7)" >> $GITHUB_ENV
+        run: echo "old-commit-id=$(head -n 1 old-commit-id.txt | cut -c1-7)" >> $GITHUB_ENV
 
       # Get BiliRoamingX ci Changelog
       - name: Get Changelog from commits
@@ -79,7 +79,6 @@ jobs:
               getlog=$(echo "$content" | sed -n 's/.*<a class="Link--primary text-bold js-navigation-open markdown-title" href="\/sti-233\/BiliRoamingX\/commit\/[^"]*">\([^<]*\)<\/a>.*/\1/p')
               if [ -n "$getlog" ]; then
                 echo -e " - $getlog " >> Changelog.txt
-                cat Changelog.txt
               fi
             fi
           done
