@@ -63,7 +63,7 @@ jobs:
 
       - name: Cat commit ids
         if: ${{ env.push-Changelog == 'true' }}
-        run: echo "old-commit-id=$(head -n 1 old-commit-id.txt | cut -c1-7)" >> $GITHUB_ENV
+        run: echo "old-commit-id=$(cat old-commit-id.txt | cut -c1-7)" >> $GITHUB_ENV
 
       # Get BiliRoamingX ci Changelog
       - name: Get Changelog from commits
@@ -79,6 +79,7 @@ jobs:
               getlog=$(echo "$content" | sed -n 's/.*<a class="Link--primary text-bold js-navigation-open markdown-title" href="\/sti-233\/BiliRoamingX\/commit\/[^"]*">\([^<]*\)<\/a>.*/\1/p')
               if [ -n "$getlog" ]; then
                 echo -e " - $getlog " >> Changelog.txt
+                cat Changelog.txt
               fi
             fi
           done
@@ -87,7 +88,11 @@ jobs:
         if: ${{ env.push-Changelog == 'true' }}
         run: |
           cat Changelog.txt
-         # echo "changelog-in-env=$(cat Changelog.txt)" >> $GITHUB_ENV
+         # tr -d '\n' < Changelog.txt > NewChangelog.txt
+         # mv NewChangelog.txt Changelog.txt
+          sed -i ':a;N;$!ba;s/\n/<br\/>/g' Changelog.txt
+          cat Changelog.txt
+          echo "changelog-in-env=$(cat Changelog.txt)" >> $GITHUB_ENV
 
       - name: val empty to Changelog
         if: ${{ env.push-Changelog == 'false' }}
@@ -267,7 +272,7 @@ jobs:
              > 合并主分支
              > Bump bili ver to ${{ env.Bilix-vercode }}
             
-            $(cat Changelog.txt)
+            ${{ env.changelog-in-env }}
           files: ./Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk
         continue-on-error: true
 
@@ -286,7 +291,7 @@ jobs:
              > 合并主分支
              > Bump bili ver to ${{ env.Bilix-global-vercode }}
             
-            $(cat Changelog.txt)
+            ${{ env.changelog-in-env }}
           files: ./Bilix-global-${{ env.Bilix-global-ver }}-${{ env.ver }}@Aniruf_x.apk
         continue-on-error: true
 
