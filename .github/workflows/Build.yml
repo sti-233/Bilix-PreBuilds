@@ -334,7 +334,7 @@ jobs:
           name: 'Bilix Nightly - BiliRoamingX ${{ env.ver }}'
           tag_name: 'Nightly'
           body: |
-             ![115108090](https://www.pixiv.net/artworks/115108090)
+             ![Nightly.jpg](https://github.com/sti-233/Bilix-PreBuilds/blob/main/Nightly.jpg)
              > 合并主分支
              > Bump bili-cn ver to ${{ env.Bilix-vercode }}
              > Bump bili-play ver to ${{ env.Bilix-global-vercode }}
