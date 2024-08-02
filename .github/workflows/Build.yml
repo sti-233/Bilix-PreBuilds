@@ -28,7 +28,7 @@ jobs:
       Bilix-torelease: true
       Bilix-global-torelease: true
       # Changelog need
-      push-Changelog: false
+      push-Changelog: true
       # release type
       Bilix-prerelease: true
       Bilix-global-prerelease: true
@@ -344,7 +344,7 @@ jobs:
         continue-on-error: true
 
       - name: Release Bilix-Nightly Changelog
-        if: ${{ env.correctVer == 'true' && env.Is-Bilix == 'true' && env.Nightly == 'true' }}
+        if: ${{ env.correctVer == 'true' && env.Nightly == 'true' }}
         uses: softprops/action-gh-release@v2
         with:
           append_body: true
