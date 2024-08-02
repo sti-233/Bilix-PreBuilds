@@ -193,7 +193,7 @@ jobs:
 
       - name: Rename Bilix-play
         if: ${{ env.Build-Bilix-play == 'true' && env.correctVer == 'true'  }}
-        run: mv ${{ env.apkfile }}-patched.apk Bilix-play-${{ env.Bilix-play-ver }}-${{ env.ver }}@Aniruf_x.apk
+        run: mv play-patched.apk Bilix-play-${{ env.Bilix-play-ver }}-${{ env.ver }}@Aniruf_x.apk
 
       # push Bilix to ci
       - name: Upload Bilix (CI)
