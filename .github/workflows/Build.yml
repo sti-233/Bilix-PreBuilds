@@ -28,7 +28,7 @@ jobs:
       Bilix-torelease: true
       Bilix-global-torelease: true
       # Changelog need
-      push-Changelog: true
+      push-Changelog: false
       # release type
       Bilix-prerelease: true
       Bilix-global-prerelease: true
