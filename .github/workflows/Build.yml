@@ -22,15 +22,15 @@ jobs:
       Bilix-global-ver: 3.19.2
       Bilix-vercode: 8070300
       Bilix-global-vercode: 7750600
+      # push type
+      Nightly: true
       # torelease
       Bilix-torelease: true
       Bilix-global-torelease: true
       # Changelog need
-      push-Changelog: false
+      push-Changelog: true
       # release type
-      Bilix-draft: false
       Bilix-prerelease: true
-      Bilix-global-draft: false
       Bilix-global-prerelease: true
       # name
       apkfile: ${{ matrix.apkname }}
@@ -63,7 +63,7 @@ jobs:
 
       - name: Cat commit ids
         if: ${{ env.push-Changelog == 'true' }}
-        run: echo "old-commit-id=$(head -n 1 old-commit-id.txt | cut -c1-7)" >> $GITHUB_ENV
+        run: echo "old-commit-id=$(head -n 1 old-commit-id.txt)" >> $GITHUB_ENV
 
       # Get BiliRoamingX ci Changelog
       - name: Get Changelog from commits
@@ -83,19 +83,10 @@ jobs:
             fi
           done
 
-      - name: Write Changelog
-        if: ${{ env.push-Changelog == 'true' }}
-        run: |
-          cat Changelog.txt
-          sed -i ':a;N;$!ba;s/\n/<br\/>/g' Changelog.txt
-          cat Changelog.txt
-          echo "changelog-in-env=$(cat Changelog.txt)" >> $GITHUB_ENV
-
       - name: val empty to Changelog
         if: ${{ env.push-Changelog == 'false' }}
         run: |
           echo -e " - no changlog now " >> Changelog.txt
-          echo "changelog-in-env=$(cat Changelog.txt)" >> $GITHUB_ENV
 
       # Check version is cn or play
       - name: Is Bilix?
@@ -242,7 +233,7 @@ jobs:
 
       # Get $size
       - name: Get size from Bilix
-        if: ${{ env.Is-Bilix == 'true' && env.Build-Bilix == 'true' && env.correctVer == 'true'  }}
+        if: ${{ env.Is-Bilix == 'true' && env.Build-Bilix == 'true' && env.correctVer == 'true' }}
         run: |
           size=$(stat -c %s ./${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk)
           echo "size=$size" >> $GITHUB_ENV
@@ -254,12 +245,13 @@ jobs:
           echo "size=$size" >> $GITHUB_ENV
 
       # Release part
+      # 请使用append_body=true追加body
+      # 使用body_path指定Changelog路径
       - name: Release Bilix
-        if: ${{ env.Is-Bilix == 'true' && env.Bilix-torelease == 'true' && env.correctVer == 'true' && env.Build-Bilix == 'true' }}
+        if: ${{ env.Is-Bilix == 'true' && env.Bilix-torelease == 'true' && env.correctVer == 'true' && env.Build-Bilix == 'true' && env.Nightly == 'false' }}
         uses: softprops/action-gh-release@v2
         with:
           token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
-          draft: ${{ env.Bilix-draft }}
           prerelease: ${{ env.Bilix-prerelease }}
           fail_on_unmatched_files: true
           name: 'Bilix ${{ env.Bilix-ver }}(${{ env.Bilix-vercode }}) with BiliroamingX ${{ env.ver }}'
@@ -268,17 +260,26 @@ jobs:
             版本信息：${{ env.Bilix-ver }} ${{ env.Bilix-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.sn }} ${{ env.size }} ${{ env.md5 }} ${{ env.TIME }}
              > 合并主分支
              > Bump bili ver to ${{ env.Bilix-vercode }}
-            
-            ${{ env.changelog-in-env }}
           files: ./Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk
         continue-on-error: true
 
+      - name: Release Bilix Changelog
+        if: ${{ env.Is-Bilix == 'true' && env.Bilix-torelease == 'true' && env.correctVer == 'true' && env.Build-Bilix == 'true' && env.Nightly == 'false' }}
+        uses: softprops/action-gh-release@v2
+        with:
+          append_body: true
+          token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+          prerelease: ${{ env.Bilix-prerelease }}
+          fail_on_unmatched_files: true
+          name: 'Bilix ${{ env.Bilix-ver }}(${{ env.Bilix-vercode }}) with BiliroamingX ${{ env.ver }}'
+          tag_name: 'android-v${{ env.Bilix-ver }}-b${{ env.sn }}-p${{ env.ver }}'
+          body_path: Changelog.txt
+
       - name: Release Bilix-global
-        if: ${{ env.Is-Bilix-global == 'true' && env.Bilix-global-torelease == 'true' && env.correctVer == 'true' && env.Build-Bilix-global == 'true' }}
+        if: ${{ env.Is-Bilix-global == 'true' && env.Bilix-global-torelease == 'true' && env.correctVer == 'true' && env.Build-Bilix-global == 'true' && env.Nightly == 'false' }}
         uses: softprops/action-gh-release@v2
         with:
           token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
-          draft: ${{ env.Bilix-global-draft }}
           prerelease: ${{ env.Bilix-global-prerelease }}
           fail_on_unmatched_files: true
           name: 'Bilix global ${{ env.Bilix-global-ver }}(${{ env.Bilix-global-vercode }}) with BiliroamingX ${{ env.ver }}'
@@ -287,14 +288,60 @@ jobs:
             版本信息：${{ env.Bilix-global-ver }} ${{ env.Bilix-global-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.sn }} ${{ env.size }} ${{ env.md5 }} ${{ env.TIME }}
              > 合并主分支
              > Bump bili ver to ${{ env.Bilix-global-vercode }}
-            
-            ${{ env.changelog-in-env }}
           files: ./Bilix-global-${{ env.Bilix-global-ver }}-${{ env.ver }}@Aniruf_x.apk
         continue-on-error: true
 
+      - name: Release Bilix-global Changelog
+        if: ${{ env.Is-Bilix-global == 'true' && env.Bilix-global-torelease == 'true' && env.correctVer == 'true' && env.Build-Bilix-global == 'true' && env.Nightly == 'false' }}
+        uses: softprops/action-gh-release@v2
+        with:
+          append_body: true
+          token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+          prerelease: ${{ env.Bilix-global-prerelease }}
+          fail_on_unmatched_files: true
+          name: 'Bilix global ${{ env.Bilix-global-ver }}(${{ env.Bilix-global-vercode }}) with BiliroamingX ${{ env.ver }}'
+          tag_name: 'android_i-v${{ env.Bilix-global-ver }}-b${{ env.sn }}-p${{ env.ver }}'
+          body_path: Changelog.txt
+
+      - name: Delete release if exist then create release
+        if: ${{ env.correctVer == 'true' && env.Nightly == 'true' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+        run: |
+          gh release view "Nightly" && gh release delete "Nightly" -y --cleanup-tag
+        continue-on-error: true
+
+      - name: Release Bilix-Nightly
+        if: ${{ env.correctVer == 'true' && env.Nightly == 'true' }}
+        uses: softprops/action-gh-release@v2
+        with:
+          token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+          prerelease: true
+          fail_on_unmatched_files: true
+          name: 'Bilix Nightly'
+          tag_name: 'Nightly'
+          body: |
+             > 合并主分支
+             > Bump bili-cn ver to ${{ env.Bilix-vercode }}
+             > Bump bili-play ver to ${{ env.Bilix-global-vercode }}
+          files: ./${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk
+        continue-on-error: true
+
+      - name: Release Bilix-Nightly Changelog
+        if: ${{ env.correctVer == 'true' && env.Nightly == 'true' }}
+        uses: softprops/action-gh-release@v2
+        with:
+          append_body: true
+          token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+          prerelease: true
+          fail_on_unmatched_files: true
+          name: 'Bilix Nightly'
+          tag_name: 'Nightly'
+          body_path: Changelog.txt
+
       # output Bilix informations
       - name: Build Bilix Success
-        if: ${{ env.Is-Bilix == 'true' && env.Build-Bilix == 'true' && env.correctVer == 'true'  }}
+        if: ${{ env.Is-Bilix == 'true' && env.Build-Bilix == 'true' && env.correctVer == 'true' && env.Nightly == 'false' }}
         run: |
           echo "### Build Bilix Success" >> $GITHUB_STEP_SUMMARY
           echo "版本信息：${{ env.Bilix-ver }} ${{ env.Bilix-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.sn }} ${{ env.size }} ${{ env.md5 }} ${{ env.TIME }}" >> $GITHUB_STEP_SUMMARY
@@ -306,13 +353,27 @@ jobs:
         continue-on-error: true
 
       - name: Build Bilix-global Success
-        if: ${{ env.Is-Bilix-global == 'true' && env.Build-Bilix-global == 'true' && env.correctVer == 'true'  }}
+        if: ${{ env.Is-Bilix-global == 'true' && env.Build-Bilix-global == 'true' && env.correctVer == 'true' && env.Nightly == 'false' }}
         run: |
           echo "### Build Bilix-global Success" >> $GITHUB_STEP_SUMMARY
           echo "版本信息：${{ env.Bilix-global-ver }} ${{ env.Bilix-global-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.sn }} ${{ env.size }} ${{ env.md5 }} ${{ env.TIME }}" >> $GITHUB_STEP_SUMMARY
           echo " " >> $GITHUB_STEP_SUMMARY
           echo " > 合并主分支" >> $GITHUB_STEP_SUMMARY
           echo " > Bump bili ver to ${{ env.Bilix-global-vercode }}" >> $GITHUB_STEP_SUMMARY
+          echo " " >> $GITHUB_STEP_SUMMARY
+          echo "$(cat Changelog.txt)" >> $GITHUB_STEP_SUMMARY
+        continue-on-error: true
+
+      - name: Build Bilix-Nightly Success
+        if: ${{ env.correctVer == 'true' && env.Nightly == 'true' }}
+        run: |
+          echo "### Build Bilix-Nightly Success" >> $GITHUB_STEP_SUMMARY
+          echo "Cn版本信息：${{ env.Bilix-ver }} ${{ env.Bilix-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.sn }} ${{ env.size }} ${{ env.md5 }} ${{ env.TIME }}" >> $GITHUB_STEP_SUMMARY
+          echo "Global版本信息：${{ env.Bilix-global-ver }} ${{ env.Bilix-global-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.sn }} ${{ env.size }} ${{ env.md5 }} ${{ env.TIME }}" >> $GITHUB_STEP_SUMMARY
+          echo " " >> $GITHUB_STEP_SUMMARY
+          echo " > 合并主分支" >> $GITHUB_STEP_SUMMARY
+          echo " > Bump bili-cn ver to ${{ env.Bilix-vercode }}" >> $GITHUB_STEP_SUMMARY
+          echo " > Bump bili-play ver to ${{ env.Bilix-global-vercode }}" >> $GITHUB_STEP_SUMMARY
           echo " " >> $GITHUB_STEP_SUMMARY
           echo "$(cat Changelog.txt)" >> $GITHUB_STEP_SUMMARY
         continue-on-error: true
