@@ -37,6 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
+      # Check repo
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -53,6 +54,7 @@ jobs:
           java-version: '17'
           java-package: 'jre'
 
+      # Get ci & revanced-cli
       - name: Get build resource
         run: |
           echo Downloading CI zip
@@ -66,6 +68,7 @@ jobs:
         run: echo "old-commit-id=$(head -n 1 old-commit-id.txt)" >> $GITHUB_ENV
 
       # Get BiliRoamingX ci Changelog
+      # Can't use now
       - name: Get Changelog from commits
         if: ${{ env.push-Changelog == 'true' }}
         run: |
@@ -83,6 +86,7 @@ jobs:
             fi
           done
 
+      # return nothing to Changelog
       - name: val empty to Changelog
         if: ${{ env.push-Changelog == 'false' }}
         run: |
@@ -245,8 +249,6 @@ jobs:
           echo "size=$size" >> $GITHUB_ENV
 
       # Release part
-      # 请使用append_body=true追加body
-      # 使用body_path指定Changelog路径
       - name: Release Bilix
         if: ${{ env.Is-Bilix == 'true' && env.Bilix-torelease == 'true' && env.correctVer == 'true' && env.Build-Bilix == 'true' && env.Nightly == 'false' }}
         uses: softprops/action-gh-release@v2
@@ -303,32 +305,46 @@ jobs:
           tag_name: 'android_i-v${{ env.Bilix-global-ver }}-b${{ env.sn }}-p${{ env.ver }}'
           body_path: Changelog.txt
 
-      - name: Delete release if exist then create release
-        if: ${{ env.correctVer == 'true' && env.Nightly == 'true' }}
+      # Del Release Nightly ver
+      - name: Delete old Nightly Bilix
+        if: ${{ env.correctVer == 'true' && env.Is-Bilix == 'true' && env.Nightly == 'true' }}
         env:
           GITHUB_TOKEN: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
         run: |
           gh release view "Nightly" && gh release delete "Nightly" -y --cleanup-tag
         continue-on-error: true
+      
+     # named Bilix-Nightly
+      - name: Rename Bilix-Nightly
+        if: ${{ env.Is-Bilix == 'true' && env.Build-Bilix == 'true' && env.correctVer == 'true' && env.Nightly == 'true' }}
+        run: mv ${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk Bilix-cn-Nightly@Aniruf_x.apk
 
+      - name: Rename Bilix-global-Nightly
+        if: ${{ env.Is-Bilix-global == 'true' && env.Build-Bilix-global == 'true' && env.correctVer == 'true' && env.Nightly == 'true' }}
+        run: mv ${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk Bilix-play-Nightly@Aniruf_x.apk
+
+      # Release Nightly
       - name: Release Bilix-Nightly
         if: ${{ env.correctVer == 'true' && env.Nightly == 'true' }}
         uses: softprops/action-gh-release@v2
         with:
           token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
           prerelease: true
-          fail_on_unmatched_files: true
-          name: 'Bilix Nightly'
+          fail_on_unmatched_files: false
+          name: 'Bilix Nightly - BiliRoamingX ${{ env.ver }}'
           tag_name: 'Nightly'
           body: |
+             ![115108090](https://www.pixiv.net/artworks/115108090)
              > 合并主分支
              > Bump bili-cn ver to ${{ env.Bilix-vercode }}
              > Bump bili-play ver to ${{ env.Bilix-global-vercode }}
-          files: ./${{ env.apkfile }}-${{ env.ver }}@Aniruf_x.apk
+          files: |
+            ./Bilix-cn-Nightly@Aniruf_x.apk
+            ./Bilix-play-Nightly@Aniruf_x.apk
         continue-on-error: true
 
       - name: Release Bilix-Nightly Changelog
-        if: ${{ env.correctVer == 'true' && env.Nightly == 'true' }}
+        if: ${{ env.correctVer == 'true' && env.Is-Bilix == 'true' && env.Nightly == 'true' }}
         uses: softprops/action-gh-release@v2
         with:
           append_body: true
@@ -364,6 +380,7 @@ jobs:
           echo "$(cat Changelog.txt)" >> $GITHUB_STEP_SUMMARY
         continue-on-error: true
 
+      # output Nightly ver info
       - name: Build Bilix-Nightly Success
         if: ${{ env.correctVer == 'true' && env.Nightly == 'true' }}
         run: |
@@ -378,5 +395,6 @@ jobs:
           echo "$(cat Changelog.txt)" >> $GITHUB_STEP_SUMMARY
         continue-on-error: true
 
+      # Success
       - name: End
         run: echo "Build end."
