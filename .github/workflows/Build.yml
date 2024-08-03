@@ -228,27 +228,23 @@ jobs:
       - name: Get md5 from Bilix
         if: ${{ env.Build-Bilix == 'true' && env.correctVer == 'true'  }}
         run: |
-          cn-md5=$(md5sum ./Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk | cut -d ' ' -f 1)
-          echo "cn-md5=$cn-md5" >> $GITHUB_ENV
+          echo "cn-md5=$(md5sum ./Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk | cut -d ' ' -f 1)" >> $GITHUB_ENV
 
       - name: Get md5 from Bilix-play
         if: ${{ env.Build-Bilix-play == 'true' && env.correctVer == 'true'  }}
         run: |
-          play-md5=$(md5sum ./Bilix-play-${{ env.Bilix-play-ver }}-${{ env.ver }}@Aniruf_x.apk | cut -d ' ' -f 1)
-          echo "play-md5=$play-md5" >> $GITHUB_ENV
+          echo "play-md5=$(md5sum ./Bilix-play-${{ env.Bilix-play-ver }}-${{ env.ver }}@Aniruf_x.apk | cut -d ' ' -f 1)" >> $GITHUB_ENV
 
       # Get $size
       - name: Get size from Bilix
         if: ${{ env.Build-Bilix == 'true' && env.correctVer == 'true' }}
         run: |
-          cn-size=$(stat -c %s ./Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk)
-          echo "cn-size=$cn-size" >> $GITHUB_ENV
+          echo "cn-size=$(stat -c %s ./Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk)" >> $GITHUB_ENV
 
       - name: Get size from Bilix-play
         if: ${{ env.Build-Bilix-play == 'true' && env.correctVer == 'true'  }}
         run: |
-          play-size=$(stat -c %s ./Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk)
-          echo "play-size=$play-size" >> $GITHUB_ENV
+          echo "play-size=$(stat -c %s ./Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk)" >> $GITHUB_ENV
 
       # Release part
       - name: Release Bilix
