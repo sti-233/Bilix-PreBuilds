@@ -8,7 +8,7 @@ on:
     paths-ignore:
       - '**.md'
 jobs:
-  Build:
+  Build-Bilix:
     strategy:
       fail-fast: false
     env:
@@ -347,7 +347,7 @@ jobs:
           token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
           prerelease: true
           fail_on_unmatched_files: true
-          name: 'Bilix Nightly'
+          name: 'Bilix Nightly - BiliRoamingX ${{ env.ver }}'
           tag_name: 'Nightly'
           body_path: Changelog.txt
 
