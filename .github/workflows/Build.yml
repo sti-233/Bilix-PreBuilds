@@ -26,7 +26,7 @@ jobs:
       Bilix-torelease: true
       Bilix-play-torelease: true
       # Changelog need
-      push-Changelog: false
+      push-Changelog: true
       # release type
       Bilix-prerelease: true
       Bilix-play-prerelease: true
@@ -216,16 +216,13 @@ jobs:
         run: |
           sudo apt-get install aapt
           aapt dump xmltree ./Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk AndroidManifest.xml > AndroidManifest_output_cn.txt
-          cn-sn-value=$(grep "BUILD_SN" ./AndroidManifest_output_cn.txt -A 1 | grep "android:value" | cut -d'=' -f2 | cut -d')' -f2 | awk '{printf "%d\n", strtonum($1)}')
-          echo "cn-sn=$cn-sn-value" >> $GITHUB_ENV
+          echo "cn-sn=$(grep "BUILD_SN" ./AndroidManifest_output_cn.txt -A 1 | grep "android:value" | cut -d'=' -f2 | cut -d')' -f2 | awk '{printf "%d\n", strtonum($1)}')" >> $GITHUB_ENV
 
       - name: Get sn from Bilix-play
         if: ${{ env.Build-Bilix-play == 'true' && env.correctVer == 'true'  }}
         run: |
-          sudo apt-get install aapt
           aapt dump xmltree ./Bilix-play-${{ env.Bilix-play-ver }}-${{ env.ver }}@Aniruf_x.apk AndroidManifest.xml > AndroidManifest_output_play.txt
-          play-sn-value=$(grep "BUILD_SN" ./AndroidManifest_output_play.txt -A 1 | grep "android:value" | cut -d'=' -f2 | cut -d')' -f2 | awk '{printf "%d\n", strtonum($1)}')
-          echo "play-sn=$play-sn-value" >> $GITHUB_ENV
+          echo "play-sn=$(grep "BUILD_SN" ./AndroidManifest_output_play.txt -A 1 | grep "android:value" | cut -d'=' -f2 | cut -d')' -f2 | awk '{printf "%d\n", strtonum($1)}')" >> $GITHUB_ENV
 
       # Get $md5
       - name: Get md5 from Bilix
