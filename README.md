@@ -32,6 +32,7 @@ Bilix patches from [BiliroamingX-fork](https://github.com/sti-233/BiliRoamingX)<
 ```
 - 解除获取更新日志的限制
 - 优化获取commit id方法
+- 自定义原包更新链接/渠道
 ```
 ## 使用/参考的项目
 - [BiliRoamingX/BiliRoamingX-PreBuilds](https://github.com/BiliRoamingX/BiliRoamingX-PreBuilds)<br/>
