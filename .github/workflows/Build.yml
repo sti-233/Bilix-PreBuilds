@@ -16,9 +16,9 @@ jobs:
       Build-Bilix: true
       Build-Bilix-play: true
       # Check ver
-      Bilix-ver: 8.7.0
+      Bilix-ver: 8.8.0
       Bilix-play-ver: 3.19.2
-      Bilix-vercode: 8070300
+      Bilix-vercode: 8080200
       Bilix-play-vercode: 7750600
       # push type
       Nightly: true
