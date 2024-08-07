@@ -21,7 +21,7 @@ jobs:
       Bilix-vercode: 8080200
       Bilix-play-vercode: 7750600
       # push type
-      Nightly: true
+      Nightly: false
       # torelease
       Bilix-torelease: true
       Bilix-play-torelease: true
