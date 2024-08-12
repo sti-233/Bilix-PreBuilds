@@ -2,11 +2,6 @@ name: Build Bilix
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths-ignore:
-      - '**.md'
 jobs:
   Build-Bilix:
     strategy:
