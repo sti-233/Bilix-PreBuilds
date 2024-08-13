@@ -156,7 +156,9 @@ jobs:
         if: ${{ env.need-Build != 'false' || env.need-Build == '' }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        run: ./gradlew --no-daemon -Dorg.gradle.jvmargs=-Xmx2g -Pversion=${{ env.BiliRoamingX-ver }} dist
+        run:|
+          cd ./BiliRoamingX
+          ./gradlew --no-daemon -Dorg.gradle.jvmargs=-Xmx2g -Pversion=${{ env.BiliRoamingX-ver }} dist
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
