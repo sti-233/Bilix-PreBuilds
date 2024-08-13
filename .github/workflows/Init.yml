@@ -156,7 +156,7 @@ jobs:
         if: ${{ env.need-Build != 'false' || env.need-Build == '' }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        run:|
+        run: |
           cd ./BiliRoamingX
           ./gradlew --no-daemon -Dorg.gradle.jvmargs=-Xmx2g -Pversion=${{ env.BiliRoamingX-ver }} dist
 
