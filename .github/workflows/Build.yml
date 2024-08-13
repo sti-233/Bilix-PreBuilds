@@ -13,7 +13,7 @@ jobs:
       # Check ver
       Bilix-ver: 8.8.0
       Bilix-play-ver: 3.19.2
-      Bilix-vercode: 8070300
+      Bilix-vercode: 8090200
       Bilix-play-vercode: 7750600
       # push type
       Nightly: true
@@ -21,7 +21,7 @@ jobs:
       Bilix-torelease: true
       Bilix-play-torelease: true
       # Changelog need
-      push-Changelog: false
+      push-Changelog: true
       # release type
       Bilix-prerelease: true
       Bilix-play-prerelease: true
@@ -60,23 +60,12 @@ jobs:
         run: echo "old-commit-id=$(head -n 1 old-commit-id.txt)" >> $GITHUB_ENV
 
       # Get BiliRoamingX ci Changelog
-      # Can't use now
       - name: Get Changelog from commits
         if: ${{ env.push-Changelog == 'true' }}
         run: |
-          wget https://github.com/sti-233/BiliRoamingX/compare/${{ env.old-commit-id }}...main
-          mv ${{ env.old-commit-id }}...main commit-resource.txt
-          results=$(grep -rHn '<a class="Link--primary text-bold js-navigation-open markdown-title" href="/sti-233/BiliRoamingX/commit/' commit-resource.txt)
-          echo "$results" | while IFS=: read -r filename lineno content; do
-            end_line=$((lineno + 30))
-            lines=$(sed -n "${lineno},${end_line}p" "$filename")
-            if echo "$lines" | grep -q "@zjns"; then
-              getlog=$(echo "$content" | sed -n 's/.*<a class="Link--primary text-bold js-navigation-open markdown-title" href="\/sti-233\/BiliRoamingX\/commit\/[^"]*">\([^<]*\)<\/a>.*/\1/p')
-              if [ -n "$getlog" ]; then
-                echo -e " - $getlog " >> Changelog.txt
-              fi
-            fi
-          done
+          git clone --recurse-submodules https://github.com/BiliRoamingX/BiliRoamingX.git
+          cd BiliRoamingX
+          git log --oneline 6f6bf8986ed05083cec14d6db1fcefbbf66abaff...HEAD | sed 's/^[0-9a-f]\{8\} /- /' > Changelog.txt
 
       # return nothing to Changelog
       - name: val empty to Changelog
