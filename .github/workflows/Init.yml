@@ -116,7 +116,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-       - name: Retrieve version
+      - name: Retrieve version
         run: |
           if [ "${{ env.get-version }}" -gt "${{ env.compare-bigver }}" ]; then
             echo "BiliRoamingX-ver=${{ env.get-version }}" >> $GITHUB_ENV
