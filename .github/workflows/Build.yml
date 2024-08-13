@@ -63,6 +63,7 @@ jobs:
       - name: Get Changelog from commits
         if: ${{ env.push-Changelog == 'true' }}
         run: |
+          mkdir -p ./changelog/
           cd ./changelog/
           git clone --recurse-submodules https://github.com/BiliRoamingX/BiliRoamingX.git
           cd BiliRoamingX
