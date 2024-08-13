@@ -1,15 +1,13 @@
 name: Init Bilix Build
 
 on:
-  schedule:
-    - cron: '0 0 * * *'
   workflow_dispatch:
     inputs:
       Forced-Build:
         description: 'Forced Build'
-          type: boolean
-          default: true
-          required: true
+        type: boolean
+        default: true
+        required: true
   workflow_call:
     inputs:
       Forced-Build:
