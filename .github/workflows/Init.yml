@@ -45,6 +45,7 @@ jobs:
           cd ./BiliRoamingX
           git log --oneline ${{ env.latest-commits-id }}...HEAD | sed 's/^[0-9a-f]\{8\} //g' > ./Changelog.txt
           git log -1 --format="%H" > latest_commit.txt
+          ls -al /github/workspace
           cp /github/workspace/Build.prop ./Build.prop
           sed -i 's/^.*head\.commit\.id.*$/head.commit.id=$(cat latest_commit.txt)/' ./Build.prop
       # return nothing to Changelog
