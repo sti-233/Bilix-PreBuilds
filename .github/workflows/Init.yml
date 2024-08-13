@@ -45,6 +45,10 @@ jobs:
           cd ./BiliRoamingX
           git log --oneline ${{ env.latest-commits-id }}...HEAD | sed 's/^[0-9a-f]\{8\} //g' > ./Changelog.txt
           git log -1 --format="%H" > latest_commit.txt
+          version=`awk -F "=" '$1 == "version" {print $2}' gradle.properties`
+          commit_count=`git rev-list HEAD --count`
+          echo "get-version=$version" >> $GITHUB_ENV
+          echo "get-commit_count=$commit_count" >> $GITHUB_ENV
           echo "$GITHUB_WORKSPACE"
           ls -al $GITHUB_WORKSPACE
           cp $GITHUB_WORKSPACE/Build.prop ./Build.prop
@@ -112,33 +116,31 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Retrieve version
+       - name: Retrieve version
         run: |
-          version=`awk -F "=" '$1 == "version" {print $2}' gradle.properties`
-          commit_count=`git rev-list HEAD --count`
-          if [ "${version}" -gt "${{ env.compare-bigver }}" ]; then
-            echo "BiliRoamingX-ver=${version}" >> $GITHUB_ENV
+          if [ "${{ env.get-version }}" -gt "${{ env.compare-bigver }}" ]; then
+            echo "BiliRoamingX-ver=${{ env.get-version }}" >> $GITHUB_ENV
             echo "Build-Release=true" >> $GITHUB_ENV
             echo "Build-Nightly=true" >> $GITHUB_ENV
-            sed -i 's/^.*big\.ver.*$/big.ver=${version}/' ./Build.prop
-            getvercode=$(echo ${version} | cut -d '.' -f 1-3)
+            sed -i 's/^.*big\.ver.*$/big.ver=${{ env.get-version }}/' ./Build.prop
+            getvercode=$(echo ${{ env.get-version }} | cut -d '.' -f 1-3)
             vercode=$(echo "$getvercode" | awk -F. '{printf "%d0%d00%d\n", $1, $2, $3}')
             sed -i 's/^.*ver\.code.*$/ver.code=${vercode}/' ./Build.prop
             echo "vercode=$vercode" >> $GITHUB_ENV
           else
-            if [ $((${commit_count} - 10)) -ge "${{ env.compare-ver }}" ]; then
+            if [ $((${{ env.get-commit_count }} - 10)) -ge "${{ env.compare-ver }}" ]; then
               echo "Build-Release=true" >> $GITHUB_ENV
-              echo "BiliRoamingX-ver=${version}.r${commit_count}" >> $GITHUB_ENV
+              echo "BiliRoamingX-ver=${{ env.get-version }}.r${{ env.get-commit_count }}" >> $GITHUB_ENV
               echo "Build-Nightly=true" >> $GITHUB_ENV
-              sed -i 's/^.*small\.ver.*$/small.ver=${commit_count}/' ./Build.prop
-              sed -i 's/^.*big\.ver.*$/big.ver=${version}/' ./Build.prop
-              sed -i 's/^.*compare\.ver.*$/compare.ver=${commit_count}/' ./Build.prop
+              sed -i 's/^.*small\.ver.*$/small.ver=${{ env.get-commit_count }}/' ./Build.prop
+              sed -i 's/^.*big\.ver.*$/big.ver=${{ env.get-version }}/' ./Build.prop
+              sed -i 's/^.*compare\.ver.*$/compare.ver=${{ env.get-commit_count }}/' ./Build.prop
             else
-              if [ "${commit_count}" -gt "${{ env.compare-smallver }}" ]; then
-                echo "BiliRoamingX-ver=${version}.r${commit_count}" >> $GITHUB_ENV
+              if [ "${{ env.get-commit_count }}" -gt "${{ env.compare-smallver }}" ]; then
+                echo "BiliRoamingX-ver=${{ env.get-version }}.r${{ env.get-commit_count }}" >> $GITHUB_ENV
                 echo "Build-Nightly=true" >> $GITHUB_ENV
-                sed -i 's/^.*small\.ver.*$/small.ver=${commit_count}/' ./Build.prop
-                sed -i 's/^.*big\.ver.*$/big.ver=${version}/' ./Build.prop
+                sed -i 's/^.*small\.ver.*$/small.ver=${{ env.get-commit_count }}/' ./Build.prop
+                sed -i 's/^.*big\.ver.*$/big.ver=${{ env.get-version }}/' ./Build.prop
               else
                 if [ "${{ github.event.inputs.Forced-Build }}" == "true" ]; then
                   echo "need-Build=true" >> $GITHUB_ENV
