@@ -1,0 +1,35 @@
+#### Build for sti-233/Bilix-PreBuilds
+
+### 兼容项
+## 还原版本号
+# 多提交n次
+ahead.commits.number=1
+
+### Build info
+## 获取更新日志
+# use offical repo commit id
+# start commit id
+latest.commit.id=4e4d610cdf714d2966000007
+# Changelog need
+push.changelog=true
+
+## 原包版本号
+Bilix.ver=8.8.0
+Bilix.play.ver=3.19.2
+Bilix.vercode=8080200
+Bilix.play.vercode=7750600
+
+## BiliRoamingX ver
+# Latest
+big.ver=1.22.5
+small.ver=1950
+ver.code=1022005
+# Compare
+compare.ver=1947
+
+## Url
+url.custom=false
+url.bilibili.cn=
+url.bilibili.play=
+
+#### End
