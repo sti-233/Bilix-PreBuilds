@@ -1,15 +1,7 @@
 name: Init Bilix Build
 
 on:
-  push:
   workflow_dispatch:
-    inputs:
-      Forced-Build:
-        description: 'Forced Build'
-        type: boolean
-        default: true
-        required: true
-  workflow_call:
     inputs:
       Forced-Build:
         description: 'Forced Build'
