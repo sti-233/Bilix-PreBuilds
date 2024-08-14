@@ -63,14 +63,14 @@ jobs:
       - name: Get Changelog from commits
         if: ${{ env.push-Changelog == 'true' }}
         run: |
-          mkdir -p ./changelog/
+          mkdir -p ./changelog
           cd ./changelog/
           git clone --recurse-submodules https://github.com/BiliRoamingX/BiliRoamingX.git
           cd BiliRoamingX
           git log --oneline 6f6bf8986ed05083cec14d6db1fcefbbf66abaff...HEAD | sed 's/^[0-9a-f]\{8\} /- /' > Changelog.txt
           cd ./
-          ls -al ./changelog/
-          ls -al ./changelog/BiliRoamingX/
+          ls -al ./changelog
+          ls -al ./changelog/BiliRoamingX
           cp ./changelog/BiliRoamingX/Changelog.txt ./Changelog.txt
 
       # return nothing to Changelog
