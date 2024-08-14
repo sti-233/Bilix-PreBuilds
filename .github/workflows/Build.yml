@@ -336,7 +336,7 @@ jobs:
           fail_on_unmatched_files: true
           name: 'Bilix Nightly - BiliRoamingX ${{ env.ver }}'
           tag_name: 'Nightly'
-          body_path: Changelog.txt
+          body_path: ./Changelog.txt
 
       # output Bilix informations
       - name: Build Bilix Success
@@ -375,7 +375,7 @@ jobs:
           echo " > Bump bili-cn ver to ${{ env.Bilix-vercode }}" >> $GITHUB_STEP_SUMMARY
           echo " > Bump bili-play ver to ${{ env.Bilix-play-vercode }}" >> $GITHUB_STEP_SUMMARY
           echo " " >> $GITHUB_STEP_SUMMARY
-          echo "$(cat Changelog.txt)" >> $GITHUB_STEP_SUMMARY
+          echo "$(cat ./Changelog.txt)" >> $GITHUB_STEP_SUMMARY
         continue-on-error: true
 
       # Success
