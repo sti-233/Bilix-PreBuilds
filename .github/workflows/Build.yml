@@ -68,10 +68,9 @@ jobs:
           git clone --recurse-submodules https://github.com/BiliRoamingX/BiliRoamingX.git
           cd BiliRoamingX
           git log --oneline 6f6bf8986ed05083cec14d6db1fcefbbf66abaff...HEAD | sed 's/^[0-9a-f]\{8\} /- /' > Changelog.txt
-          cd ./
-          ls -al ./changelog
-          ls -al ./changelog/BiliRoamingX
-          cp ./changelog/BiliRoamingX/Changelog.txt ./Changelog.txt
+          cd /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/
+          ls -al /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/changelog/BiliRoamingX
+          cp /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/changelog/BiliRoamingX/Changelog.txt /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/Changelog.txt
 
       # return nothing to Changelog
       - name: val empty to Changelog
@@ -263,7 +262,7 @@ jobs:
           fail_on_unmatched_files: true
           name: 'Bilix ${{ env.Bilix-ver }}(${{ env.Bilix-vercode }}) with BiliroamingX ${{ env.ver }}'
           tag_name: 'android-v${{ env.Bilix-ver }}-b${{ env.cn-sn }}-p${{ env.ver }}'
-          body_path: ./Changelog.txt
+          body_path: /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/Changelog.txt
 
       - name: Release Bilix-play
         if: ${{ env.Bilix-play-torelease == 'true' && env.PlayCorrectVer == 'true' && env.Build-Bilix-play == 'true' && env.Nightly == 'false' }}
@@ -291,7 +290,7 @@ jobs:
           fail_on_unmatched_files: true
           name: 'Bilix play ${{ env.Bilix-play-ver }}(${{ env.Bilix-play-vercode }}) with BiliroamingX ${{ env.ver }}'
           tag_name: 'android_i-v${{ env.Bilix-play-ver }}-b${{ env.play-sn }}-p${{ env.ver }}'
-          body_path: ./Changelog.txt
+          body_path: /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/Changelog.txt
 
       # Del Release Nightly ver
       - name: Delete old Nightly Bilix
@@ -339,7 +338,7 @@ jobs:
           fail_on_unmatched_files: true
           name: 'Bilix Nightly - BiliRoamingX ${{ env.ver }}'
           tag_name: 'Nightly'
-          body_path: ./Changelog.txt
+          body_path: /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/Changelog.txt
 
       # output Bilix informations
       - name: Build Bilix Success
@@ -351,7 +350,7 @@ jobs:
           echo " > 合并主分支" >> $GITHUB_STEP_SUMMARY
           echo " > Bump bili ver to ${{ env.Bilix-play-vercode }}" >> $GITHUB_STEP_SUMMARY
           echo " " >> $GITHUB_STEP_SUMMARY
-          echo "$(cat ./Changelog.txt)" >> $GITHUB_STEP_SUMMARY
+          echo "$(cat /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/Changelog.txt)" >> $GITHUB_STEP_SUMMARY
         continue-on-error: true
 
       - name: Build Bilix-play Success
@@ -363,7 +362,7 @@ jobs:
           echo " > 合并主分支" >> $GITHUB_STEP_SUMMARY
           echo " > Bump bili ver to ${{ env.Bilix-play-vercode }}" >> $GITHUB_STEP_SUMMARY
           echo " " >> $GITHUB_STEP_SUMMARY
-          echo "$(cat ./Changelog.txt)" >> $GITHUB_STEP_SUMMARY
+          echo "$(cat /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/Changelog.txt)" >> $GITHUB_STEP_SUMMARY
         continue-on-error: true
 
       # output Nightly ver info
@@ -378,7 +377,7 @@ jobs:
           echo " > Bump bili-cn ver to ${{ env.Bilix-vercode }}" >> $GITHUB_STEP_SUMMARY
           echo " > Bump bili-play ver to ${{ env.Bilix-play-vercode }}" >> $GITHUB_STEP_SUMMARY
           echo " " >> $GITHUB_STEP_SUMMARY
-          echo "$(cat ./Changelog.txt)" >> $GITHUB_STEP_SUMMARY
+          echo "$(cat /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/Changelog.txt)" >> $GITHUB_STEP_SUMMARY
         continue-on-error: true
 
       # Success
