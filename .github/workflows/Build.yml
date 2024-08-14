@@ -260,7 +260,7 @@ jobs:
           fail_on_unmatched_files: true
           name: 'Bilix ${{ env.Bilix-ver }}(${{ env.Bilix-vercode }}) with BiliroamingX ${{ env.ver }}'
           tag_name: 'android-v${{ env.Bilix-ver }}-b${{ env.cn-sn }}-p${{ env.ver }}'
-          body_path: Changelog.txt
+          body_path: ./Changelog.txt
 
       - name: Release Bilix-play
         if: ${{ env.Bilix-play-torelease == 'true' && env.PlayCorrectVer == 'true' && env.Build-Bilix-play == 'true' && env.Nightly == 'false' }}
@@ -288,7 +288,7 @@ jobs:
           fail_on_unmatched_files: true
           name: 'Bilix play ${{ env.Bilix-play-ver }}(${{ env.Bilix-play-vercode }}) with BiliroamingX ${{ env.ver }}'
           tag_name: 'android_i-v${{ env.Bilix-play-ver }}-b${{ env.play-sn }}-p${{ env.ver }}'
-          body_path: Changelog.txt
+          body_path: ./Changelog.txt
 
       # Del Release Nightly ver
       - name: Delete old Nightly Bilix
@@ -336,7 +336,7 @@ jobs:
           fail_on_unmatched_files: true
           name: 'Bilix Nightly - BiliRoamingX ${{ env.ver }}'
           tag_name: 'Nightly'
-          body_path: Changelog.txt
+          body_path: ./Changelog.txt
 
       # output Bilix informations
       - name: Build Bilix Success
@@ -348,7 +348,7 @@ jobs:
           echo " > 合并主分支" >> $GITHUB_STEP_SUMMARY
           echo " > Bump bili ver to ${{ env.Bilix-play-vercode }}" >> $GITHUB_STEP_SUMMARY
           echo " " >> $GITHUB_STEP_SUMMARY
-          echo "$(cat Changelog.txt)" >> $GITHUB_STEP_SUMMARY
+          echo "$(cat ./Changelog.txt)" >> $GITHUB_STEP_SUMMARY
         continue-on-error: true
 
       - name: Build Bilix-play Success
@@ -360,7 +360,7 @@ jobs:
           echo " > 合并主分支" >> $GITHUB_STEP_SUMMARY
           echo " > Bump bili ver to ${{ env.Bilix-play-vercode }}" >> $GITHUB_STEP_SUMMARY
           echo " " >> $GITHUB_STEP_SUMMARY
-          echo "$(cat Changelog.txt)" >> $GITHUB_STEP_SUMMARY
+          echo "$(cat ./Changelog.txt)" >> $GITHUB_STEP_SUMMARY
         continue-on-error: true
 
       # output Nightly ver info
@@ -375,7 +375,7 @@ jobs:
           echo " > Bump bili-cn ver to ${{ env.Bilix-vercode }}" >> $GITHUB_STEP_SUMMARY
           echo " > Bump bili-play ver to ${{ env.Bilix-play-vercode }}" >> $GITHUB_STEP_SUMMARY
           echo " " >> $GITHUB_STEP_SUMMARY
-          echo "$(cat Changelog.txt)" >> $GITHUB_STEP_SUMMARY
+          echo "$(cat ./Changelog.txt)" >> $GITHUB_STEP_SUMMARY
         continue-on-error: true
 
       # Success
