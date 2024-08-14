@@ -11,7 +11,7 @@ jobs:
       Build-Bilix: true
       Build-Bilix-play: true
       # Check ver
-      Bilix-ver: 8.8.0
+      Bilix-ver: 8.9.0
       Bilix-play-ver: 3.19.2
       Bilix-vercode: 8090200
       Bilix-play-vercode: 7750600
