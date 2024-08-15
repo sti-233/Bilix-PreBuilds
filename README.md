@@ -12,7 +12,6 @@
 Bilix patches from [BiliroamingX-fork](https://github.com/sti-233/BiliRoamingX)<br/>
 本仓库现可通过 Github Action 进行构建并预发布<br/>
 <br/>
-! 注: 原包获取因渠道原因 可能无法及时更新最新包<br/>
 ```
 - 自动获取bilibili-cn/play原包
 - 自动获取BiliroamingX-fork的ci构建
@@ -26,7 +25,9 @@ Bilix patches from [BiliroamingX-fork](https://github.com/sti-233/BiliRoamingX)<
 - 自动获取自动更新所需的发布时间时间戳
 - (有限制的)自动填充更新日志
 ```
-! 本仓库以上功能多依赖[BiliroamingX-fork](https://github.com/sti-233/BiliRoamingX)项目ci构建
+> ![Notes]
+> 原包获取因渠道原因 可能无法及时更新最新包<br/>
+> 本仓库以上功能多依赖[BiliroamingX-fork](https://github.com/sti-233/BiliRoamingX)项目ci构建
 
 ## 待实现的功能
 ```
