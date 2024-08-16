@@ -9,8 +9,8 @@ ahead.commits.number=1
 ## 获取更新日志
 # use offical repo commit id
 # start commit id
-commit.id.latest=4e4d610cdf714d2966000007
-commit.id.nightly.start=4e4d610cdf714d2966000007
+commit.id.latest=6f6bf8986ed05083cec14d6db1fcefbbf66abaff
+commit.id.nightly.start=6f6bf8986ed05083cec14d6db1fcefbbf66abaff
 # Changelog need
 push.changelog=true
 
