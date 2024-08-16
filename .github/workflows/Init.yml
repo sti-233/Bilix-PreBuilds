@@ -39,7 +39,7 @@ jobs:
           cd ./BiliRoamingX
           git log --oneline ${{ env.latest-commits-id }}...HEAD | sed 's/^[0-9a-f]\{8\} //g' > /home/runner/work/Bilix-PreBuilds/Changelog.txt
           git log --oneline ${{ env.Nightly-commit-id }}...HEAD | sed 's/^[0-9a-f]\{8\} //g' > /home/runner/work/Bilix-PreBuilds/Changelog_Nightly.txt
-          git log -1 --format="%H" > /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/latest_commit.txt
+          git log -1 --format="%H" > ./latest_commit.txt
           version=`awk -F "=" '$1 == "version" {print $2}' gradle.properties`
           commit_count=`git rev-list HEAD --count`
           echo "get-version=$version" >> $GITHUB_ENV
@@ -47,7 +47,8 @@ jobs:
           echo "$GITHUB_WORKSPACE"
           ls -al $GITHUB_WORKSPACE
           cp $GITHUB_WORKSPACE/Build.prop ./Build.prop
-          sed -i 's/^.*commit\.id\.latest.*$/commit.id.latest=$(cat ./Bilix-PreBuilds/latest_commit.txt)/' ./Bilix-PreBuilds/Build.prop
+          cd ./
+          sed -i 's/^.*commit\.id\.latest.*$/commit.id.latest=$(cat latest_commit.txt)/' Build.prop
       # return nothing to Changelog
       - name: Check if Changelog Empty
         if: ${{ env.push-changelog == 'true' }}
