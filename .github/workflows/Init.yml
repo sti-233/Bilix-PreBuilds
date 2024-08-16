@@ -47,7 +47,7 @@ jobs:
           echo "$GITHUB_WORKSPACE"
           ls -al $GITHUB_WORKSPACE
           cp $GITHUB_WORKSPACE/Build.prop ./Build.prop
-          sed -i 's/^.*commit\.id\.latest.*$/commit.id.latest=$(cat latest_commit.txt)/' ./Build.prop
+          sed -i 's/^.*commit\.id\.latest.*$/commit.id.latest=$(cat latest_commit.txt)/' /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/Build.prop
       # return nothing to Changelog
       - name: val empty to Changelog
         if: ${{ env.push-changelog == 'false' }}
@@ -187,11 +187,11 @@ jobs:
         uses: actions/upload-artifact@v4
         if: success() && ( env.need-Build != 'false' || env.need-Build == '' )
         with:
-          name: Build_resource.zip
+          name: Build_resource
           path: |
             /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/Build.prop
-            ./Changelog.txt
-            ./Changelog_Nightly.txt
+            /home/runner/work/Bilix-PreBuilds/BiliRoamingX/Changelog.txt
+            /home/runner/work/Bilix-PreBuilds/BiliRoamingX/Changelog_Nightly.txt
 
       ## Init Build work
       # Build Nightly
