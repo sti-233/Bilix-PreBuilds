@@ -49,6 +49,15 @@ jobs:
           cp $GITHUB_WORKSPACE/Build.prop ./Build.prop
           sed -i 's/^.*commit\.id\.latest.*$/commit.id.latest=$(cat /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/latest_commit.txt)/' /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/Build.prop
       # return nothing to Changelog
+      - name: Check if Changelog Empty
+        if: ${{ env.push-changelog == 'true' }}
+        run: |
+          if [ ! -s /home/runner/work/Bilix-PreBuilds/Changelog.txt ]; then
+          echo -e " - no change " >> /home/runner/work/Bilix-PreBuilds/Changelog.txt
+          fi
+          if [ ! -s /home/runner/work/Bilix-PreBuilds/Changelog_Nightly.txt ]; then
+          echo -e " - no change " >> /home/runner/work/Bilix-PreBuilds/Changelog_Nightly.txt
+          fi
       - name: val empty to Changelog
         if: ${{ env.push-changelog == 'false' }}
         run: |
