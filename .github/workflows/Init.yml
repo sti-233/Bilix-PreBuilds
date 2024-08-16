@@ -39,7 +39,7 @@ jobs:
           cd ./BiliRoamingX
           git log --oneline ${{ env.latest-commits-id }}...HEAD | sed 's/^[0-9a-f]\{8\} //g' > /home/runner/work/Bilix-PreBuilds/Changelog.txt
           git log --oneline ${{ env.Nightly-commit-id }}...HEAD | sed 's/^[0-9a-f]\{8\} //g' > /home/runner/work/Bilix-PreBuilds/Changelog_Nightly.txt
-          git log -1 --format="%H" > latest_commit.txt
+          git log -1 --format="%H" > /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/latest_commit.txt
           version=`awk -F "=" '$1 == "version" {print $2}' gradle.properties`
           commit_count=`git rev-list HEAD --count`
           echo "get-version=$version" >> $GITHUB_ENV
@@ -47,7 +47,7 @@ jobs:
           echo "$GITHUB_WORKSPACE"
           ls -al $GITHUB_WORKSPACE
           cp $GITHUB_WORKSPACE/Build.prop ./Build.prop
-          sed -i 's/^.*commit\.id\.latest.*$/commit.id.latest=$(cat latest_commit.txt)/' /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/Build.prop
+          sed -i 's/^.*commit\.id\.latest.*$/commit.id.latest=$(cat /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/latest_commit.txt)/' /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/Build.prop
       # return nothing to Changelog
       - name: val empty to Changelog
         if: ${{ env.push-changelog == 'false' }}
@@ -180,7 +180,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: success() && ( env.need-Build != 'false' || env.need-Build == '' )
         with:
-          name: BiliRoamingX-${{ env.BiliRoamingX-ver }}.zip
+          name: BiliRoamingX-${{ env.BiliRoamingX-ver }}
           path: /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/BiliRoamingX/build/*
 
       - name: Upload Build Resource
