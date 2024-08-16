@@ -9,27 +9,36 @@ ahead.commits.number=1
 ## 获取更新日志
 # use offical repo commit id
 # start commit id
-latest.commit.id=4e4d610cdf714d2966000007
+commit.id.latest=4e4d610cdf714d2966000007
+commit.id.nightly.start=4e4d610cdf714d2966000007
 # Changelog need
 push.changelog=true
 
-## 原包版本号
-Bilix.ver=8.8.0
-Bilix.play.ver=3.19.2
-Bilix.vercode=8080200
-Bilix.play.vercode=7750600
+## 原包
+# Build need
+Bilix.build.cn=true
+Bilix.build.play=true
+# Latest version
+Bilix.ver.cn=8.9.0
+Bilix.ver.play=3.19.2
+Bilix.vercode.cn=8090300
+Bilix.vercode.play=7750600
 
 ## BiliRoamingX ver
 # Latest
-big.ver=1.22.5
-small.ver=1950
-ver.code=1022005
+BiliRoamingX.ver=1.22.5.r1950
+BiliRoamingX.ver.big=1.22.5
+BiliRoamingX.ver.small=1950
+BiliRoamingX.ver.code=1022005
 # Compare
-compare.ver=1947
+BiliRoamingX.ver.compare=1947
 
 ## Url
-url.custom=false
-url.bilibili.cn=
-url.bilibili.play=
+url.custom.cn=false
+url.custom.play=false
+url.custom.revanced.cli=falsw
+url.custom.bilibili.cn=https://dl.hdslb.com/mobile/pack/android64/15704958/iBiliPlayer-apinkRelease-8.9.0-b15704958.apk
+url.custom.bilibili.play=
+url.custom.revanced.cli=
 
 #### End
