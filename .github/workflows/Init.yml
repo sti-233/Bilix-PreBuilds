@@ -47,7 +47,7 @@ jobs:
           echo "$GITHUB_WORKSPACE"
           ls -al $GITHUB_WORKSPACE
           cp $GITHUB_WORKSPACE/Build.prop ./Build.prop
-          sed -i 's/^.*commit\.id\.latest.*$/commit.id.latest=$(cat /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/latest_commit.txt)/' /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/Build.prop
+          sed -i 's/^.*commit\.id\.latest.*$/commit.id.latest=$(cat ./Bilix-PreBuilds/latest_commit.txt)/' ./Bilix-PreBuilds/Build.prop
       # return nothing to Changelog
       - name: Check if Changelog Empty
         if: ${{ env.push-changelog == 'true' }}
