@@ -207,10 +207,10 @@ jobs:
       # Build Nightly
       - name: Init Build Nightly
         if: ${{ env.need-Build != 'false' || env.need-Build == '' && env.Build-Nightly == 'true'  }}
-        uses: ./.github/Nightly-Build.yml
+        uses: /home/runner/work/Bilix-PreBuilds/.github/Nightly-Build.yml
         with:
           with-release: ${{ env.with-release }}
       # Build Release
       - name: Init Build Release
         if: ${{ env.need-Build != 'false' || env.need-Build == '' && env.Build-Release == 'true'  }}
-        uses: ./.github/Release-Build.yml
+        uses: /home/runner/work/Bilix-PreBuilds/.github/Release-Build.yml
