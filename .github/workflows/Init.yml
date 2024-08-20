@@ -18,6 +18,14 @@ jobs:
       # Check repo
       - name: Checkout code
         uses: actions/checkout@v4
+
+
+      - name: Init Build Nightly
+        if: ${{ env.need-Build != 'false' || env.need-Build == '' && env.Build-Nightly == 'true'  }}
+        uses: ./Nightly-Build
+
+
+
       # Save env
       - name: Initialize variables
         run: |
