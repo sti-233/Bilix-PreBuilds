@@ -21,7 +21,7 @@ jobs:
 
 
       - name: Init Build Nightly
-        uses: $GITHUB_WORKSPACE/Nightly-Build
+        uses: ./Nightly-Build/action.yml
 
 
 
