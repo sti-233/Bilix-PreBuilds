@@ -151,12 +151,12 @@ jobs:
           tag_name: 'Nightly'
           body: |
             ![Nightly.jpg](https://github.com/sti-233/Bilix-PreBuilds/blob/main/Nightly.jpg)
+            Cn版本信息：${{ env.Bilix-ver }} ${{ env.Bilix-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.cn-sn }} ${{ env.cn-size }} ${{ env.cn-md5 }} ${{ env.TIME }}
+            Play版本信息：${{ env.Bilix-play-ver }} ${{ env.Bilix-play-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.play-sn }} ${{ env.play-size }} ${{ env.play-md5 }} ${{ env.TIME }}
+            
             > 合并主分支
             > Bump bili-cn ver to ${{ env.Bilix-vercode }}
             > Bump bili-play ver to ${{ env.Bilix-play-vercode }}
-            
-            Cn版本信息：${{ env.Bilix-ver }} ${{ env.Bilix-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.cn-sn }} ${{ env.cn-size }} ${{ env.cn-md5 }} ${{ env.TIME }}
-            Play版本信息：${{ env.Bilix-play-ver }} ${{ env.Bilix-play-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.play-sn }} ${{ env.play-size }} ${{ env.play-md5 }} ${{ env.TIME }}
           files: |
             ./Bilix-cn-Nightly@Aniruf_x.apk
             ./Bilix-play-Nightly@Aniruf_x.apk
@@ -198,6 +198,7 @@ jobs:
           git add Build.prop
           git commit -m "Push prop"
           git push
+        continue-on-error: true
 
       # Success
       - name: End
