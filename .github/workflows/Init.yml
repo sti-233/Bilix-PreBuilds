@@ -43,10 +43,10 @@ jobs:
           commit_count=`git rev-list HEAD --count`
           echo "get-version=$version" >> $GITHUB_ENV
           echo "get-commit_count=$commit_count" >> $GITHUB_ENV
+          echo "latest-commit-id=$(cat /home/runner/work/Bilix-PreBuilds/latest_commit.txt)" >> $GITHUB_ENV
           echo "$GITHUB_WORKSPACE"
           ls -al $GITHUB_WORKSPACE
           cp $GITHUB_WORKSPACE/Build.prop ./Build.prop
-          sed -i 's/^.*commit\.id\.latest.*$/commit.id.latest=$(cat /home/runner/work/Bilix-PreBuilds/latest_commit.txt)/' /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/Build.prop
       # return nothing to Changelog
       - name: Check if Changelog Empty
         if: ${{ env.push-changelog == 'true' }}
@@ -74,6 +74,7 @@ jobs:
       # Merge fork branch sti-233/BiliRoamingX
       - name: Recompose resource
         run: |
+          sed -i 's/^.*commit\.id\.latest.*$/commit.id.latest=${{ env.latest-commit-id }}/' ./Build.prop
           sed -i '/    <string name="biliroaming_settings_title">哔哩漫游X<\/string>/c\    <string name="biliroaming_settings_title">BiliRoamingX<\/string>' ./BiliRoamingX/patches/src/main/resources/bilibili/host/values/strings.xml
           sed -i '/    <string name="biliroaming_toast_prefix">哔哩漫游X：<\/string>/c\    <string name="biliroaming_toast_prefix">BiliRoamingX：<\/string>' ./BiliRoamingX/patches/src/main/resources/bilibili/host/values/strings.xml
           sed -i '/    <string name="biliroaming_custom_update_summary">允许APP检查作者官方项目提供的预构建漫游X集成包更新<\/string>/c\    <string name="biliroaming_custom_update_summary">允许APP检查本Fork项目(sti-233)提供的预构建 Bilix 更新<\/string>' ./BiliRoamingX/patches/src/main/resources/bilibili/host/values/strings.xml
