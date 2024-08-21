@@ -1,6 +1,7 @@
 name: Build Bilix-Nightly
 
 on:
+  push:
   repository_dispatch:
     types: [Nightly-Build]
 
