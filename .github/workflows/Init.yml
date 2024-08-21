@@ -207,6 +207,8 @@ jobs:
 
       - name: Upload Build Resource
         if: success() && ( env.need-Build != 'false' || env.need-Build == '' )
+        env:
+          GITHUB_TOKEN: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
         run: |
           cd ./
           mkdir -p build
