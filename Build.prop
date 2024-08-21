@@ -9,8 +9,8 @@ ahead.commits.number=1
 ## 获取更新日志
 # use offical repo commit id
 # start commit id
-commit.id.latest=6f6bf8986ed05083cec14d6db1fcefbbf66abaff
-commit.id.nightly.start=6f6bf8986ed05083cec14d6db1fcefbbf66abaff
+commit.id.latest=4e4d610cdf714d2966000007
+commit.id.nightly.start=4e4d610cdf714d2966000007
 # Changelog need
 push.changelog=true
 
@@ -37,8 +37,11 @@ BiliRoamingX.ver.compare=1947
 url.custom.cn=false
 url.custom.play=false
 url.custom.revanced.cli=false
-url.custom.bilibili.cn=https://dl.hdslb.com/mobile/pack/android64/15704958/iBiliPlayer-apinkRelease-8.9.0-b15704958.apk
+url.custom.bilibili.cn=https://dl.hdslb.com/mobile/pack/android64/15793300/iBiliPlayer-apinkRelease-8.10.0-b15793300.apk
 url.custom.bilibili.play=
 url.custom.revanced.cli=
+
+## Temp
+temp.with.release=false
 
 #### End
