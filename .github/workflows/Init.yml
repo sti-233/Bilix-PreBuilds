@@ -188,6 +188,13 @@ jobs:
           cd ./BiliRoamingX
           ./gradlew --no-daemon -Dorg.gradle.jvmargs=-Xmx2g -Pversion=${{ env.BiliRoamingX-ver }} dist
 
+      - name: Upload CI Resource
+        uses: actions/upload-artifact@v4
+        if: success() && ( env.need-Build != 'false' || env.need-Build == '' )
+        with:
+          name: BiliRoamingX-${{ env.BiliRoamingX-ver }}
+          path: /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/BiliRoamingX/build/*
+
       - name: Upload Build Resource
         uses: actions/upload-artifact@v4
         if: success() && ( env.need-Build != 'false' || env.need-Build == '' )
@@ -197,7 +204,27 @@ jobs:
             /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/Build.prop
             /home/runner/work/Bilix-PreBuilds/Changelog.txt
             /home/runner/work/Bilix-PreBuilds/Changelog_Nightly.txt
-            /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/BiliRoamingX/build/*
+
+      - name: Upload Build Resource
+        uses: actions/upload-artifact@v4
+        if: success() && ( env.need-Build != 'false' || env.need-Build == '' )
+        run: |
+          cd ./
+          mkdir -p build
+          cp /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/BiliRoamingX/build/BiliRoamingX-integrations-${{ env.BiliRoamingX-ver }}.apk ./build/integrations.apk
+          cp /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/BiliRoamingX/build/BiliRoamingX-patches-${{ env.BiliRoamingX-ver }}.jar ./build/patches.jar
+          cp /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/Build.prop ./build/Build.prop
+          cp /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/Changelog.txt ./build/Changelog.txt
+          cp /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/Changelog_Nightly.txt ./build/Changelog_Nightly.txt
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add build/Build.prop
+          git add build/patches.jar
+          git add build/integrations.apk
+          git add build/Changelog.txt
+          git add build/Changelog_Nightly.txt
+          git commit -m "Push resource"
+          git push
 
       ## Init Build work
       # Build Nightly
