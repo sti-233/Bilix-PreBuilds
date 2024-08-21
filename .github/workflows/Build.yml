@@ -11,9 +11,9 @@ jobs:
       Build-Bilix: true
       Build-Bilix-play: true
       # Check ver
-      Bilix-ver: 8.9.0
+      Bilix-ver: 8.10.0
       Bilix-play-ver: 3.19.2
-      Bilix-vercode: 8090300
+      Bilix-vercode: 8100300
       Bilix-play-vercode: 7750600
       # push type
       Nightly: false
@@ -81,7 +81,7 @@ jobs:
       # Get original bilibili
       - name: Get original bilibili
         run: |
-          aria2c --out "cn.apk" https://dl.hdslb.com/mobile/pack/android64/15712930/iBiliPlayer-apinkRelease-8.9.0-b15712930.apk
+          aria2c --out "cn.apk" https://dl.hdslb.com/mobile/pack/android64/15793300/iBiliPlayer-apinkRelease-8.10.0-b15793300.apk
           aria2c --out "play.apk" https://d.apkpure.com/b/APK/com.bilibili.app.in?version=latest
 
       # Check $version & $versionCode
