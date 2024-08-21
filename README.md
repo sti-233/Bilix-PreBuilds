@@ -28,7 +28,7 @@ Bilix patches from [BiliroamingX-fork](https://github.com/sti-233/BiliRoamingX)
 - 自动获取自动更新所需的md5
 - 自动获取自动更新所需的字节大小
 - 自动获取自动更新所需的发布时间时间戳
-- (有限制的)自动填充更新日志
+- 自动填充更新日志 (commit title)
 ```
 
 >[!Important]
@@ -37,8 +37,7 @@ Bilix patches from [BiliroamingX-fork](https://github.com/sti-233/BiliRoamingX)
 
 ## 待实现的功能
 ```
-- 解除获取更新日志的限制
-- 优化获取commit id方法
+- 固定签名
 - 自定义原包更新链接/渠道
 ```
 
