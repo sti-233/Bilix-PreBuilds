@@ -5,7 +5,8 @@ on:
     types: [Nightly-Build]
 
 jobs:
-  Build-Bilix:
+  Build-Bilix-Nightly:
+    name: Build Bilix-Nightly
     strategy:
       fail-fast: false
 
@@ -18,38 +19,28 @@ jobs:
           TIME=$EPOCHSECONDS
           echo "TIME=$TIME" >> $GITHUB_ENV
 
-      # Get build resource
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: Build_resource
-          path: artifacts
+      # Check repo
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       # Save env
       - name: Initialize variables
         run: |
           # Check custom
-          echo "url-custom-cn=`awk -F "=" '$1 == "url.custom.cn" {print $2}' /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/artifacts/Bilix-Prebuilds/Build.prop`" >> $GITHUB_ENV
-          echo "url-custom-play=`awk -F "=" '$1 == "url.custom.play" {print $2}' /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/artifacts/Bilix-Prebuilds/Build.prop`" >> $GITHUB_ENV
-          echo "url-custom-revanced-cli=`awk -F "=" '$1 == "url.custom.revanced.cli" {print $2}' /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/artifacts/Bilix-Prebuilds/Build.prop`" >> $GITHUB_ENV
+          echo "url-custom-cn=`awk -F "=" '$1 == "url.custom.cn" {print $2}' ./build/Build.prop`" >> $GITHUB_ENV
+          echo "url-custom-play=`awk -F "=" '$1 == "url.custom.play" {print $2}' ./build/Build.prop`" >> $GITHUB_ENV
+          echo "url-custom-revanced-cli=`awk -F "=" '$1 == "url.custom.revanced.cli" {print $2}' ./build/Build.prop`" >> $GITHUB_ENV
           # Get custom url
-          echo "cn-url=`awk -F "=" '$1 == "url.custom.bilibili.cn" {print $2}' /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/artifacts/Bilix-Prebuilds/Build.prop`" >> $GITHUB_ENV
-          echo "play-url=`awk -F "=" '$1 == "url.custom.bilibili.play" {print $2}' /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/artifacts/Bilix-Prebuilds/Build.prop`" >> $GITHUB_ENV
-          echo "cli-url=`awk -F "=" '$1 == "url.custom.revanced.cli" {print $2}' /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/artifacts/Bilix-Prebuilds/Build.prop`" >> $GITHUB_ENV
+          echo "cn-url=`awk -F "=" '$1 == "url.custom.bilibili.cn" {print $2}' ./build/Build.prop`" >> $GITHUB_ENV
+          echo "play-url=`awk -F "=" '$1 == "url.custom.bilibili.play" {print $2}' ./build/Build.prop`" >> $GITHUB_ENV
+          echo "cli-url=`awk -F "=" '$1 == "url.custom.revanced.cli" {print $2}' ./build/Build.prop`" >> $GITHUB_ENV
           # Get version info
-          echo "ver=`awk -F "=" '$1 == "BiliRoamingX.ver.full" {print $2}' /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/artifacts/Bilix-Prebuilds/Build.prop`" >> $GITHUB_ENV
-          echo "bigver=`awk -F "=" '$1 == "BiliRoamingX.ver.code" {print $2}' /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/artifacts/Bilix-Prebuilds/Build.prop`" >> $GITHUB_ENV
+          echo "ver=`awk -F "=" '$1 == "BiliRoamingX.ver.full" {print $2}' ./build/Build.prop`" >> $GITHUB_ENV
+          echo "bigver=`awk -F "=" '$1 == "BiliRoamingX.ver.code" {print $2}' ./build/Build.prop`" >> $GITHUB_ENV
           # Changelog need
-          echo "url-custom-cn=`awk -F "=" '$1 == "push.changelog" {print $2}' /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/artifacts/Bilix-Prebuilds/Build.prop`" >> $GITHUB_ENV
+          echo "url-custom-cn=`awk -F "=" '$1 == "push.changelog" {print $2}' ./build/Build.prop`" >> $GITHUB_ENV
           # Build need
-          echo "with-release=`awk -F "=" '$1 == "temp.with.release" {print $2}' /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/artifacts/Bilix-Prebuilds/Build.prop`" >> $GITHUB_ENV
-
-      - name: Unpack resource
-        run: |
-          cp -r /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/artifacts/Changelog_Nightly.txt ./Changelog_Nightly.txt
-          cp -r /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/artifacts/Bilix-PreBuilds/BiliRoamingX/build/BiliRoamingX-integrations-${{ env.ver }}.apk ./integrations.apk
-          cp -r /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/artifacts/Bilix-PreBuilds/BiliRoamingX/build/BiliRoamingX-integrations-${{ env.ver }}.apk ./patches.jar
-          cd ./
+          echo "with-release=`awk -F "=" '$1 == "temp.with.release" {print $2}' ./build/Build.prop`" >> $GITHUB_ENV
 
       # Get revanced-cli
       - name: Get Revanced-cli
@@ -99,6 +90,8 @@ jobs:
       # build part
       - name: Build Bilix
         run: |
+          cp ./build/patches.jar ./patches.jar
+          cp ./build/integrations.apk ./integrations.apk
           java -jar revanced-cli.jar patch --merge integrations.apk --patch-bundle patches.jar --signing-levels 1,2,3 cn.apk
           java -jar revanced-cli.jar patch --merge integrations.apk --patch-bundle patches.jar --signing-levels 1,2,3 play.apk
 
