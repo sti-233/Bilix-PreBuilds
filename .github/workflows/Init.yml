@@ -1,6 +1,8 @@
 name: Init Bilix Build
 
 on:
+  schedule:
+    - cron: '0 0 * * *'
   workflow_dispatch:
     inputs:
       Forced-Build:
@@ -79,9 +81,9 @@ jobs:
           sed -i '/    <string name="biliroaming_toast_prefix">哔哩漫游X：<\/string>/c\    <string name="biliroaming_toast_prefix">BiliRoamingX：<\/string>' ./BiliRoamingX/patches/src/main/resources/bilibili/host/values/strings.xml
           sed -i '/    <string name="biliroaming_custom_update_summary">允许APP检查作者官方项目提供的预构建漫游X集成包更新<\/string>/c\    <string name="biliroaming_custom_update_summary">允许APP检查本Fork项目(sti-233)提供的预构建 Bilix 更新<\/string>' ./BiliRoamingX/patches/src/main/resources/bilibili/host/values/strings.xml
           sed -i '/    <string name="biliroaming_usage_hint_message">欢迎使用基于ReVanced方案的修改版哔哩哔哩。以下几点说明请仔细阅读：\\n\\n1. 本修改方案完全开源免费，谨防被骗。\\n2. 本修改版不使用Xposed框架，追求极致性能。\\n3. 请勿在B站任何地方暗示\/提及\/宣传本修改版。\\n4. 设置入口：我的 -> 设置 -> 哔哩漫游X。<\/string>/c\    <string name="biliroaming_usage_hint_message">欢迎使用基于ReVanced方案的修改版哔哩哔哩。以下几点说明请仔细阅读：\\n\\n1. 本修改方案完全开源免费，谨防被骗。\\n2. 本修改版不使用Xposed框架，追求极致性能。\\n3. 请勿在B站任何地方暗示\/提及\/宣传本修改版，否则将会被拉入黑名单，模块所有功能将被停用。\\n4. 设置入口：我的 -> 设置 -> BiliRoamingX。<\/string>' ./BiliRoamingX/patches/src/main/resources/bilibili/host/values/strings.xml
-          sed -i 's#    <string name="biliroaming_project_url">https://github.com/BiliRoamingX/BiliRoamingX</string>#    <string name="biliroaming_project_url">https://github.com/sti-233/BiliRoamingX</string>#' ./BiliRoamingX/patches/src/main/resources/bilibili/host/values/strings_raw.xml
+          sed -i 's#    <string name="biliroaming_project_url">https://github.com/BiliRoamingX/BiliRoamingX</string>#    <string name="biliroaming_project_url">https://github.com/sti-233/Bilix-PreBuilds</string>#' ./BiliRoamingX/patches/src/main/resources/bilibili/host/values/strings_raw.xml
           sed -i 's#    <string name="biliroaming_tg_url">https://t.me/bb_show</string>#    <string name="biliroaming_tg_url">https://t.me/Aniruf_x</string>#' ./BiliRoamingX/patches/src/main/resources/bilibili/host/values/strings_raw.xml
-          sed -i 's#    <string name="biliroaming_feedback_url">https://github.com/BiliRoamingX/BiliRoamingX/issues/new/choose</string>#    <string name="biliroaming_feedback_url">https://github.com/sti-233/BiliRoamingX/issues/new/choose</string>#' ./BiliRoamingX/patches/src/main/resources/bilibili/host/values/strings_raw.xml
+          sed -i 's#    <string name="biliroaming_feedback_url">https://github.com/BiliRoamingX/BiliRoamingX/issues/new/choose</string>#    <string name="biliroaming_feedback_url">https://github.com/sti-233/Bilix-PreBuilds/issues/new</string>#' ./BiliRoamingX/patches/src/main/resources/bilibili/host/values/strings_raw.xml
           sed -i 's#    private const val UPGRADE_CHECK_API = "https://api.github.com/repos/BiliRoamingX/BiliRoamingX-PreBuilds/releases"#    private const val UPGRADE_CHECK_API = "https://api.github.com/repos/sti-233/Bilix-PreBuilds/releases"#' ./BiliRoamingX/integrations/app/src/main/java/app/revanced/bilibili/patches/okhttp/hooks/Upgrade.kt
           sed -i '/    var fromSelf = false/c\    var fromSelf = true' ./BiliRoamingX/integrations/app/src/main/java/app/revanced/bilibili/patches/okhttp/hooks/Upgrade.kt
           sed -i '/    var fromSelf = true/a\    var isOsArchArm64 = true' ./BiliRoamingX/integrations/app/src/main/java/app/revanced/bilibili/patches/okhttp/hooks/Upgrade.kt
@@ -224,6 +226,7 @@ jobs:
           git add build/Changelog_Nightly.txt
           git commit -m "Push resource"
           git push
+        continue-on-error: true
 
       ## Init Build work
       # Build Nightly
@@ -235,3 +238,16 @@ jobs:
           -H "Authorization: token ${{ secrets.CUSTOM_GITHUB_TOKEN }}" \
           https://api.github.com/repos/${{ github.repository }}/dispatches \
           -d '{"event_type":"Nightly-Build"}'
+
+      - name: Init Build Release
+        if: ${{ env.need-Build != 'false' || env.need-Build == '' && env.Build-Release == 'true'  }}
+        run: |
+          curl -X POST \
+          -H "Accept: application/vnd.github.v3+json" \
+          -H "Authorization: token ${{ secrets.CUSTOM_GITHUB_TOKEN }}" \
+          https://api.github.com/repos/${{ github.repository }}/dispatches \
+          -d '{"event_type":"Release-Build"}'
+
+      # Success
+      - name: End
+        run: echo "Init end."
