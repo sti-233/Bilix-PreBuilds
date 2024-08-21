@@ -225,7 +225,7 @@ jobs:
           git add build/Changelog.txt
           git add build/Changelog_Nightly.txt
           git commit -m "Push resource"
-          git push
+          git push origin main
 
       ## Init Build work
       # Build Nightly
