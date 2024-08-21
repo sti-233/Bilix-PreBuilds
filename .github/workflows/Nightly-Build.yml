@@ -1,0 +1,209 @@
+name: Build Bilix-Nightly
+
+on:
+  repository_dispatch:
+    types: [Nightly-Build]
+
+jobs:
+  Build-Bilix:
+    strategy:
+      fail-fast: false
+
+    runs-on: ubuntu-latest
+    steps:
+
+      # Get $publishTime
+      - name: Get Current Time
+        run: |
+          TIME=$EPOCHSECONDS
+          echo "TIME=$TIME" >> $GITHUB_ENV
+
+      # Get build resource
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      # Save env
+      - name: Initialize variables
+        run: |
+          # Check custom
+          echo "url-custom-cn=`awk -F "=" '$1 == "url.custom.cn" {print $2}' /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/artifacts/Bilix-Prebuilds/Build.prop`" >> $GITHUB_ENV
+          echo "url-custom-play=`awk -F "=" '$1 == "url.custom.play" {print $2}' /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/artifacts/Bilix-Prebuilds/Build.prop`" >> $GITHUB_ENV
+          echo "url-custom-revanced-cli=`awk -F "=" '$1 == "url.custom.revanced.cli" {print $2}' /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/artifacts/Bilix-Prebuilds/Build.prop`" >> $GITHUB_ENV
+          # Get custom url
+          echo "cn-url=`awk -F "=" '$1 == "url.custom.bilibili.cn" {print $2}' /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/artifacts/Bilix-Prebuilds/Build.prop`" >> $GITHUB_ENV
+          echo "play-url=`awk -F "=" '$1 == "url.custom.bilibili.play" {print $2}' /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/artifacts/Bilix-Prebuilds/Build.prop`" >> $GITHUB_ENV
+          echo "cli-url=`awk -F "=" '$1 == "url.custom.revanced.cli" {print $2}' /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/artifacts/Bilix-Prebuilds/Build.prop`" >> $GITHUB_ENV
+          # Get version info
+          echo "ver=`awk -F "=" '$1 == "BiliRoamingX.ver.full" {print $2}' /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/artifacts/Bilix-Prebuilds/Build.prop`" >> $GITHUB_ENV
+          echo "bigver=`awk -F "=" '$1 == "BiliRoamingX.ver.code" {print $2}' /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/artifacts/Bilix-Prebuilds/Build.prop`" >> $GITHUB_ENV
+          # Changelog need
+          echo "url-custom-cn=`awk -F "=" '$1 == "push.changelog" {print $2}' /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/artifacts/Bilix-Prebuilds/Build.prop`" >> $GITHUB_ENV
+          # Build need
+          echo "with-release=`awk -F "=" '$1 == "temp.with.release" {print $2}' /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/artifacts/Bilix-Prebuilds/Build.prop`" >> $GITHUB_ENV
+
+      - name: Pack CI
+        run: |
+          cp -r /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/artifacts/Changelog_Nightly.txt ./Changelog_Nightly.txt
+          cp -r /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/artifacts/BiliRoamingX-${{ env.ver }}.zip/* ./
+          cd ./
+          unzip ./BiliRoamingX-CI-Build.zip
+          mv BiliRoamingX-integrations-${{ env.ver }}.apk integrations.apk
+          mv BiliRoamingX-patches-${{ env.ver }}.jar patches.jar
+
+      # Get revanced-cli
+      - name: Get Revanced-cli
+        run: |
+          cd ./
+          echo Downloading modified revanced-cli
+          wget https://github.com/zjns/revanced-cli/releases/download/v4.6.0.1/revanced-cli.jar
+
+      # Get original bilibili
+      - name: Get original bilibili
+        run: |
+          if [ "${{ env.url-custom-cn }}" = "false" ]; then
+            aria2c --out "cn.apk" https://m.wandoujia.com/apps/281291/download/
+          fi
+          if [ "${{ env.url-custom-cn }}" = "true" ]; then
+            aria2c --out "cn.apk" ${{ env.cn-url }}
+          fi
+          if [ "${{ env.url-custom-play }}" = "false" ]; then
+            aria2c --out "play.apk" https://d.apkpure.com/b/APK/com.bilibili.app.in?version=latest
+          fi
+          if [ "${{ env.url-custom-play }}" = "true" ]; then
+            aria2c --out "play.apk" ${{ env.play-url }}
+          fi
+
+      # Check $version & $versionCode
+      - name: "Get Cn Info"
+        id: "apk-info-cn"
+        uses: "8Mi-Tech/get-apk-info-action@master"
+        with:
+          apkPath: "cn.apk"
+      - name: "Get Play Info"
+        id: "apk-info-play"
+        uses: "8Mi-Tech/get-apk-info-action@master"
+        with:
+          apkPath: "play.apk"
+        #版本号：${{steps.apk-info.outputs.versionNum}}
+        #版本代码：${{steps.apk-info.outputs.versionCode}}
+
+      # Get cn $patchVersion $patchVersionCode
+      - name: Get Bilibili info
+        run: |
+          echo "Bilix-ver=${{steps.apk-info-cn.outputs.versionNum}}" >> $GITHUB_ENV
+          echo "Bilix-vercode=${{steps.apk-info-cn.outputs.versionCode}}" >> $GITHUB_ENV
+          echo "Bilix-play-ver=${{steps.apk-info-play.outputs.versionNum}}" >> $GITHUB_ENV
+          echo "Bilix-play-vercode=${{steps.apk-info-play.outputs.versionCode}}" >> $GITHUB_ENV
+
+      # build part
+      - name: Build Bilix
+        run: |
+          java -jar revanced-cli.jar patch --merge integrations.apk --patch-bundle patches.jar --signing-levels 1,2,3 cn.apk
+          java -jar revanced-cli.jar patch --merge integrations.apk --patch-bundle patches.jar --signing-levels 1,2,3 play.apk
+
+      # named Bilix
+      - name: Rename Bilix
+        run: |
+          mv cn-patched.apk Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk
+          mv play-patched.apk Bilix-play-${{ env.Bilix-play-ver }}-${{ env.ver }}@Aniruf_x.apk
+
+      # Empty part for signing apk
+      #- name: Rename Bilix-play
+
+
+      # Get $sn
+      - name: Get sn from Bilix
+        run: |
+          sudo apt-get install aapt
+          aapt dump xmltree ./Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk AndroidManifest.xml > AndroidManifest_output_cn.txt
+          echo "cn-sn=$(grep "BUILD_SN" ./AndroidManifest_output_cn.txt -A 1 | grep "android:value" | cut -d'=' -f2 | cut -d')' -f2 | awk '{printf "%d\n", strtonum($1)}')" >> $GITHUB_ENV
+
+      - name: Get sn from Bilix-play
+        run: |
+          aapt dump xmltree ./Bilix-play-${{ env.Bilix-play-ver }}-${{ env.ver }}@Aniruf_x.apk AndroidManifest.xml > AndroidManifest_output_play.txt
+          echo "play-sn=$(grep "BUILD_SN" ./AndroidManifest_output_play.txt -A 1 | grep "android:value" | cut -d'=' -f2 | cut -d')' -f2 | awk '{printf "%d\n", strtonum($1)}')" >> $GITHUB_ENV
+
+      # Get $md5
+      - name: Get md5 from Bilix
+        run: |
+          echo "cn-md5=$(md5sum ./Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk | cut -d ' ' -f 1)" >> $GITHUB_ENV
+
+      - name: Get md5 from Bilix-play
+        if: ${{ env.Build-Bilix-play == 'true' }}
+        run: |
+          echo "play-md5=$(md5sum ./Bilix-play-${{ env.Bilix-play-ver }}-${{ env.ver }}@Aniruf_x.apk | cut -d ' ' -f 1)" >> $GITHUB_ENV
+
+      # Get $size
+      - name: Get size from Bilix
+        run: |
+          echo "cn-size=$(stat -c %s ./Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk)" >> $GITHUB_ENV
+
+      - name: Get size from Bilix-play
+        run: |
+          echo "play-size=$(stat -c %s ./Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk)" >> $GITHUB_ENV
+
+      # Release part
+      # Del Release Nightly ver
+      - name: Delete old Nightly Bilix
+        env:
+          GITHUB_TOKEN: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+        run: |
+          gh release view "Nightly" && gh release delete "Nightly" -y --cleanup-tag
+        continue-on-error: true
+      
+     # named Bilix-Nightly
+      - name: Rename Bilix-Nightly
+        run: |
+          mv Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk Bilix-cn-Nightly@Aniruf_x.apk
+          mv Bilix-play-${{ env.Bilix-play-ver }}-${{ env.ver }}@Aniruf_x.apk Bilix-play-Nightly@Aniruf_x.apk
+
+      # Release Nightly
+      - name: Release Bilix-Nightly
+        uses: softprops/action-gh-release@v2
+        with:
+          token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+          prerelease: true
+          fail_on_unmatched_files: false
+          name: 'Bilix Nightly - BiliRoamingX ${{ env.ver }}'
+          tag_name: 'Nightly'
+          body: |
+             ![Nightly.jpg](https://github.com/sti-233/Bilix-PreBuilds/blob/main/Nightly.jpg)
+             > 合并主分支
+             > Bump bili-cn ver to ${{ env.Bilix-vercode }}
+             > Bump bili-play ver to ${{ env.Bilix-play-vercode }}
+          files: |
+            ./Bilix-cn-Nightly@Aniruf_x.apk
+            ./Bilix-play-Nightly@Aniruf_x.apk
+        continue-on-error: true
+
+      - name: Release Bilix-Nightly Changelog
+        uses: softprops/action-gh-release@v2
+        with:
+          append_body: true
+          token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+          prerelease: true
+          fail_on_unmatched_files: true
+          name: 'Bilix Nightly - BiliRoamingX ${{ env.ver }}'
+          tag_name: 'Nightly'
+          body_path: Changelog_Nightly.txt
+
+      # output Bilix informations
+      # output Nightly ver info
+      - name: Build Bilix-Nightly Success
+        run: |
+          echo "### Build Bilix-Nightly Success" >> $GITHUB_STEP_SUMMARY
+          echo "Cn版本信息：${{ env.Bilix-ver }} ${{ env.Bilix-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.cn-sn }} ${{ env.cn-size }} ${{ env.cn-md5 }} ${{ env.TIME }}" >> $GITHUB_STEP_SUMMARY
+          echo "play版本信息：${{ env.Bilix-play-ver }} ${{ env.Bilix-play-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.play-sn }} ${{ env.play-size }} ${{ env.play-md5 }} ${{ env.TIME }}" >> $GITHUB_STEP_SUMMARY
+          echo " " >> $GITHUB_STEP_SUMMARY
+          echo " > 合并主分支" >> $GITHUB_STEP_SUMMARY
+          echo " > Bump bili-cn ver to ${{ env.Bilix-vercode }}" >> $GITHUB_STEP_SUMMARY
+          echo " > Bump bili-play ver to ${{ env.Bilix-play-vercode }}" >> $GITHUB_STEP_SUMMARY
+          echo " " >> $GITHUB_STEP_SUMMARY
+          echo "$(cat Changelog_Nightly.txt)" >> $GITHUB_STEP_SUMMARY
+        continue-on-error: true
+
+      # Success
+      - name: End
+        run: echo "Build end."

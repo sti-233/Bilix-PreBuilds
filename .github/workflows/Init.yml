@@ -17,13 +17,6 @@ jobs:
       # Check repo
       - name: Checkout code
         uses: actions/checkout@v4
-
-
-      - name: Init Build Nightly
-        uses: ./Nightly-Build
-
-
-
       # Save env
       - name: Initialize variables
         run: |
@@ -45,16 +38,15 @@ jobs:
           cd ./BiliRoamingX
           git log --oneline ${{ env.latest-commits-id }}...HEAD | sed 's/^[0-9a-f]\{8\} /- /' >  /home/runner/work/Bilix-PreBuilds/Changelog.txt
           git log --oneline ${{ env.Nightly-commit-id }}..HEAD | sed 's/^[0-9a-f]\{8\} /- /' > /home/runner/work/Bilix-PreBuilds/Changelog_Nightly.txt
-          git log -1 --format="%H" > ./latest_commit.txt
+          git log -1 --format="%H" > /home/runner/work/Bilix-PreBuilds/latest_commit.txt
           version=`awk -F "=" '$1 == "version" {print $2}' gradle.properties`
           commit_count=`git rev-list HEAD --count`
           echo "get-version=$version" >> $GITHUB_ENV
           echo "get-commit_count=$commit_count" >> $GITHUB_ENV
+          echo "latest-commit-id=$(cat /home/runner/work/Bilix-PreBuilds/latest_commit.txt)" >> $GITHUB_ENV
           echo "$GITHUB_WORKSPACE"
           ls -al $GITHUB_WORKSPACE
           cp $GITHUB_WORKSPACE/Build.prop ./Build.prop
-          cd ./
-          sed -i 's/^.*commit\.id\.latest.*$/commit.id.latest=$(cat latest_commit.txt)/' Build.prop
       # return nothing to Changelog
       - name: Check if Changelog Empty
         if: ${{ env.push-changelog == 'true' }}
@@ -68,7 +60,8 @@ jobs:
       - name: val empty to Changelog
         if: ${{ env.push-changelog == 'false' }}
         run: |
-          echo -e " - no changlog now " >> Changelog.txt
+          echo -e " - no changelog now " >> /home/runner/work/Bilix-PreBuilds/Changelog.txt
+          echo -e " - no changelog now " >> /home/runner/work/Bilix-PreBuilds/Changelog_Nightly.txt
       # Get resource
       - name: Get fork resource
         run: |
@@ -81,6 +74,7 @@ jobs:
       # Merge fork branch sti-233/BiliRoamingX
       - name: Recompose resource
         run: |
+          sed -i 's/^.*commit\.id\.latest.*$/commit.id.latest=${{ env.latest-commit-id }}/' ./Build.prop
           sed -i '/    <string name="biliroaming_settings_title">哔哩漫游X<\/string>/c\    <string name="biliroaming_settings_title">BiliRoamingX<\/string>' ./BiliRoamingX/patches/src/main/resources/bilibili/host/values/strings.xml
           sed -i '/    <string name="biliroaming_toast_prefix">哔哩漫游X：<\/string>/c\    <string name="biliroaming_toast_prefix">BiliRoamingX：<\/string>' ./BiliRoamingX/patches/src/main/resources/bilibili/host/values/strings.xml
           sed -i '/    <string name="biliroaming_custom_update_summary">允许APP检查作者官方项目提供的预构建漫游X集成包更新<\/string>/c\    <string name="biliroaming_custom_update_summary">允许APP检查本Fork项目(sti-233)提供的预构建 Bilix 更新<\/string>' ./BiliRoamingX/patches/src/main/resources/bilibili/host/values/strings.xml
@@ -139,12 +133,12 @@ jobs:
             echo "BiliRoamingX-ver=${{ env.get-version }}" >> $GITHUB_ENV
             echo "Build-Release=true" >> $GITHUB_ENV
             echo "Build-Nightly=true" >> $GITHUB_ENV
-            echo "with-release=true" >> $GITHUB_ENV
             # 存变量
             sed -i 's/^.*BiliRoamingX\.ver\.full.*$/BiliRoamingX.ver.full=${{ env.get-version }}/' ./Build.prop
             sed -i 's/^.*BiliRoamingX\.ver\.big.*$/BiliRoamingX.ver.big=${{ env.get-version }}/' ./Build.prop
             sed -i 's/^.*commit\.id\.nightly\.start.*$/commit.id.nightly.start=$(cat latest_commit.txt)/' ./Build.prop
             sed -i 's/^.*BiliRoamingX\.ver\.code.*$/BiliRoamingX.ver.code=${vercode}/' ./Build.prop
+            sed -i 's/^.*temp\.with\.release.*$/temp.with.release=true/' ./Build.prop
             echo "vercode=$vercode" >> $GITHUB_ENV
           else
             # 否 判断小版本是否大于保留版本10次
@@ -152,7 +146,6 @@ jobs:
               # 是 进行 Release&Nightly
               echo "Build-Release=true" >> $GITHUB_ENV
               echo "Build-Nightly=true" >> $GITHUB_ENV
-              echo "with-release=true" >> $GITHUB_ENV
               echo "BiliRoamingX-ver=${{ env.get-version }}.r${{ env.get-commit_count }}" >> $GITHUB_ENV
               # 存变量
               sed -i 's/^.*BiliRoamingX\.ver\.full.*$/BiliRoamingX.ver.full=${{ env.get-version }}.r${{ env.get-commit_count }}/' ./Build.prop
@@ -160,6 +153,7 @@ jobs:
               sed -i 's/^.*BiliRoamingX\.ver\.small.*$/BiliRoamingX.ver.small=${{ env.get-commit_count }}/' ./Build.prop
               sed -i 's/^.*BiliRoamingX\.ver\.big.*$/BiliRoamingX.ver.big=${{ env.get-version }}/' ./Build.prop
               sed -i 's/^.*BiliRoamingX\.ver\.compare.*$/BiliRoamingX.ver.compare=${{ env.get-commit_count }}/' ./Build.prop
+              sed -i 's/^.*temp\.with\.release.*$/temp.with.release=true/' ./Build.prop
             else
               # 否 判断小版本是否大于记录版本
               if [ "${{ env.get-commit_count }}" -gt "${{ env.compare-smallver }}" ]; then
@@ -170,12 +164,14 @@ jobs:
                 sed -i 's/^.*BiliRoamingX\.ver\.full.*$/BiliRoamingX.ver.full=${{ env.get-version }}.r${{ env.get-commit_count }}/' ./Build.prop
                 sed -i 's/^.*BiliRoamingX\.ver\.small.*$/BiliRoamingX.ver.small=${{ env.get-commit_count }}/' ./Build.prop
                 sed -i 's/^.*BiliRoamingX\.ver\.big.*$/BiliRoamingX.ver.big=${{ env.get-version }}/' ./Build.prop
+                sed -i 's/^.*temp\.with\.release.*$/temp.with.release=false/' ./Build.prop
               else
                 # 否 判断是否为强制构建
                 if [ "${{ github.event.inputs.Forced-Build }}" == "true" ]; then
                   # 是 进行 Nightly
                   echo "need-Build=true" >> $GITHUB_ENV
                   echo "Build-Nightly=true" >> $GITHUB_ENV
+                  sed -i 's/^.*temp\.with\.release.*$/temp.with.release=false/' ./Build.prop
                 else
                   # 否 不构建
                   echo "need-Build=false" >> $GITHUB_ENV
@@ -213,10 +209,9 @@ jobs:
       # Build Nightly
       - name: Init Build Nightly
         if: ${{ env.need-Build != 'false' || env.need-Build == '' && env.Build-Nightly == 'true'  }}
-        uses: ./.github/Nightly-Build.yml
-        with:
-          with-release: ${{ env.with-release }}
-      # Build Release
-      - name: Init Build Release
-        if: ${{ env.need-Build != 'false' || env.need-Build == '' && env.Build-Release == 'true'  }}
-        uses: ./.github/Release-Build.yml
+        run: |
+          curl -X POST \
+          -H "Accept: application/vnd.github.v3+json" \
+          -H "Authorization: token ${{ secrets.CUSTOM_GITHUB_TOKEN }}" \
+          https://api.github.com/repos/${{ github.repository }}/dispatches \
+          -d '{"event_type":"Nightly-Build"}'
