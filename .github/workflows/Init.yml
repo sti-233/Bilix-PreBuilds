@@ -207,8 +207,6 @@ jobs:
 
       - name: Upload Build Resource
         if: success() && ( env.need-Build != 'false' || env.need-Build == '' )
-        env:
-          GITHUB_TOKEN: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
         run: |
           cd ./
           mkdir -p build
@@ -225,7 +223,7 @@ jobs:
           git add build/Changelog.txt
           git add build/Changelog_Nightly.txt
           git commit -m "Push resource"
-          git push origin main
+          git push
 
       ## Init Build work
       # Build Nightly
