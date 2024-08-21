@@ -6,7 +6,7 @@ on:
       Forced-Build:
         description: 'Forced Build'
         type: boolean
-        default: true
+        default: false
         required: true
 
 jobs:
