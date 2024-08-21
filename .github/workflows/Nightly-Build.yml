@@ -38,7 +38,7 @@ jobs:
           echo "ver=`awk -F "=" '$1 == "BiliRoamingX.ver.full" {print $2}' ./build/Build.prop`" >> $GITHUB_ENV
           echo "bigver=`awk -F "=" '$1 == "BiliRoamingX.ver.code" {print $2}' ./build/Build.prop`" >> $GITHUB_ENV
           # Changelog need
-          echo "url-custom-cn=`awk -F "=" '$1 == "push.changelog" {print $2}' ./build/Build.prop`" >> $GITHUB_ENV
+          echo "push-changelog=`awk -F "=" '$1 == "push.changelog" {print $2}' ./build/Build.prop`" >> $GITHUB_ENV
           # Build need
           echo "with-release=`awk -F "=" '$1 == "temp.with.release" {print $2}' ./build/Build.prop`" >> $GITHUB_ENV
 
@@ -111,9 +111,6 @@ jobs:
           sudo apt-get install aapt
           aapt dump xmltree ./Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk AndroidManifest.xml > AndroidManifest_output_cn.txt
           echo "cn-sn=$(grep "BUILD_SN" ./AndroidManifest_output_cn.txt -A 1 | grep "android:value" | cut -d'=' -f2 | cut -d')' -f2 | awk '{printf "%d\n", strtonum($1)}')" >> $GITHUB_ENV
-
-      - name: Get sn from Bilix-play
-        run: |
           aapt dump xmltree ./Bilix-play-${{ env.Bilix-play-ver }}-${{ env.ver }}@Aniruf_x.apk AndroidManifest.xml > AndroidManifest_output_play.txt
           echo "play-sn=$(grep "BUILD_SN" ./AndroidManifest_output_play.txt -A 1 | grep "android:value" | cut -d'=' -f2 | cut -d')' -f2 | awk '{printf "%d\n", strtonum($1)}')" >> $GITHUB_ENV
 
@@ -121,19 +118,12 @@ jobs:
       - name: Get md5 from Bilix
         run: |
           echo "cn-md5=$(md5sum ./Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk | cut -d ' ' -f 1)" >> $GITHUB_ENV
-
-      - name: Get md5 from Bilix-play
-        if: ${{ env.Build-Bilix-play == 'true' }}
-        run: |
           echo "play-md5=$(md5sum ./Bilix-play-${{ env.Bilix-play-ver }}-${{ env.ver }}@Aniruf_x.apk | cut -d ' ' -f 1)" >> $GITHUB_ENV
 
       # Get $size
       - name: Get size from Bilix
         run: |
           echo "cn-size=$(stat -c %s ./Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk)" >> $GITHUB_ENV
-
-      - name: Get size from Bilix-play
-        run: |
           echo "play-size=$(stat -c %s ./Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk)" >> $GITHUB_ENV
 
       # Release part
@@ -156,15 +146,17 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
-          prerelease: true
           fail_on_unmatched_files: false
           name: 'Bilix Nightly - BiliRoamingX ${{ env.ver }}'
           tag_name: 'Nightly'
           body: |
-             ![Nightly.jpg](https://github.com/sti-233/Bilix-PreBuilds/blob/main/Nightly.jpg)
-             > 合并主分支
-             > Bump bili-cn ver to ${{ env.Bilix-vercode }}
-             > Bump bili-play ver to ${{ env.Bilix-play-vercode }}
+            ![Nightly.jpg](https://github.com/sti-233/Bilix-PreBuilds/blob/main/Nightly.jpg)
+            > 合并主分支
+            > Bump bili-cn ver to ${{ env.Bilix-vercode }}
+            > Bump bili-play ver to ${{ env.Bilix-play-vercode }}
+            
+            Cn版本信息：${{ env.Bilix-ver }} ${{ env.Bilix-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.cn-sn }} ${{ env.cn-size }} ${{ env.cn-md5 }} ${{ env.TIME }}
+            Play版本信息：${{ env.Bilix-play-ver }} ${{ env.Bilix-play-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.play-sn }} ${{ env.play-size }} ${{ env.play-md5 }} ${{ env.TIME }}
           files: |
             ./Bilix-cn-Nightly@Aniruf_x.apk
             ./Bilix-play-Nightly@Aniruf_x.apk
@@ -175,11 +167,10 @@ jobs:
         with:
           append_body: true
           token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
-          prerelease: true
           fail_on_unmatched_files: true
           name: 'Bilix Nightly - BiliRoamingX ${{ env.ver }}'
           tag_name: 'Nightly'
-          body_path: Changelog_Nightly.txt
+          body_path: ./build/Changelog_Nightly.txt
 
       # output Bilix informations
       # output Nightly ver info
@@ -187,14 +178,26 @@ jobs:
         run: |
           echo "### Build Bilix-Nightly Success" >> $GITHUB_STEP_SUMMARY
           echo "Cn版本信息：${{ env.Bilix-ver }} ${{ env.Bilix-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.cn-sn }} ${{ env.cn-size }} ${{ env.cn-md5 }} ${{ env.TIME }}" >> $GITHUB_STEP_SUMMARY
-          echo "play版本信息：${{ env.Bilix-play-ver }} ${{ env.Bilix-play-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.play-sn }} ${{ env.play-size }} ${{ env.play-md5 }} ${{ env.TIME }}" >> $GITHUB_STEP_SUMMARY
+          echo "Play版本信息：${{ env.Bilix-play-ver }} ${{ env.Bilix-play-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.play-sn }} ${{ env.play-size }} ${{ env.play-md5 }} ${{ env.TIME }}" >> $GITHUB_STEP_SUMMARY
           echo " " >> $GITHUB_STEP_SUMMARY
           echo " > 合并主分支" >> $GITHUB_STEP_SUMMARY
           echo " > Bump bili-cn ver to ${{ env.Bilix-vercode }}" >> $GITHUB_STEP_SUMMARY
           echo " > Bump bili-play ver to ${{ env.Bilix-play-vercode }}" >> $GITHUB_STEP_SUMMARY
           echo " " >> $GITHUB_STEP_SUMMARY
-          echo "$(cat Changelog_Nightly.txt)" >> $GITHUB_STEP_SUMMARY
+          echo "$(cat ./build/Changelog_Nightly.txt)" >> $GITHUB_STEP_SUMMARY
         continue-on-error: true
+
+      - name: Upload Build Resource
+        if: ${{ env.with-release == 'false' }}
+        run: |
+          cd ./
+          rm ./Build.prop
+          cp ./build/Build.prop ./Build.prop
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add Build.prop
+          git commit -m "Push prop"
+          git push
 
       # Success
       - name: End
