@@ -213,8 +213,8 @@ jobs:
           cp /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/BiliRoamingX/build/BiliRoamingX-integrations-${{ env.BiliRoamingX-ver }}.apk ./build/integrations.apk
           cp /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/BiliRoamingX/build/BiliRoamingX-patches-${{ env.BiliRoamingX-ver }}.jar ./build/patches.jar
           cp /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/Build.prop ./build/Build.prop
-          cp /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/Changelog.txt ./build/Changelog.txt
-          cp /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/Changelog_Nightly.txt ./build/Changelog_Nightly.txt
+          cp /home/runner/work/Bilix-PreBuilds/Changelog.txt ./build/Changelog.txt
+          cp /home/runner/work/Bilix-PreBuilds/Changelog_Nightly.txt ./build/Changelog_Nightly.txt
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           git add build/Build.prop
