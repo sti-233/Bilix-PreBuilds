@@ -19,19 +19,19 @@ push.changelog=true
 Bilix.build.cn=true
 Bilix.build.play=true
 # Latest version
-Bilix.ver.cn=8.9.0
+Bilix.ver.cn=8.10.0
 Bilix.ver.play=3.19.2
-Bilix.vercode.cn=8090300
+Bilix.vercode.cn=8100300
 Bilix.vercode.play=7750600
 
 ## BiliRoamingX ver
 # Latest
-BiliRoamingX.ver.full=1.22.5.r1950
+BiliRoamingX.ver.full=1.22.5.r1959
 BiliRoamingX.ver.big=1.22.5
-BiliRoamingX.ver.small=1950
+BiliRoamingX.ver.small=1959
 BiliRoamingX.ver.code=1022005
 # Compare
-BiliRoamingX.ver.compare=1947
+BiliRoamingX.ver.compare=1959
 
 ## Url
 url.custom.cn=false
