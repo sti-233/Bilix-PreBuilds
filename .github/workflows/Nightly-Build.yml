@@ -22,6 +22,7 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
+          name: Build_resource
           path: artifacts
 
       # Save env
@@ -43,14 +44,12 @@ jobs:
           # Build need
           echo "with-release=`awk -F "=" '$1 == "temp.with.release" {print $2}' /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/artifacts/Bilix-Prebuilds/Build.prop`" >> $GITHUB_ENV
 
-      - name: Pack CI
+      - name: Unpack resource
         run: |
           cp -r /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/artifacts/Changelog_Nightly.txt ./Changelog_Nightly.txt
-          cp -r /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/artifacts/BiliRoamingX-${{ env.ver }}.zip/* ./
+          cp -r /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/artifacts/Bilix-PreBuilds/BiliRoamingX/build/BiliRoamingX-integrations-${{ env.ver }}.apk ./integrations.apk
+          cp -r /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/artifacts/Bilix-PreBuilds/BiliRoamingX/build/BiliRoamingX-integrations-${{ env.ver }}.apk ./patches.jar
           cd ./
-          unzip ./BiliRoamingX-CI-Build.zip
-          mv BiliRoamingX-integrations-${{ env.ver }}.apk integrations.apk
-          mv BiliRoamingX-patches-${{ env.ver }}.jar patches.jar
 
       # Get revanced-cli
       - name: Get Revanced-cli
