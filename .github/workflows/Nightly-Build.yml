@@ -1,7 +1,7 @@
 name: Build Bilix-Nightly
 
 on:
-repository_dispatch:
+  repository_dispatch:
     types: [Nightly-Build]
 
 jobs:
