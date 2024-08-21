@@ -15,6 +15,10 @@ Bilix patches from [BiliroamingX-fork](https://github.com/sti-233/BiliRoamingX)
 >[!Warning]
 >此项目与 [HFrost0/bilix](https://github.com/HFrost0/bilix) 无关！
 
+>[!Tip]
+>本项目重构完毕<br/>
+>现可脱离[BiliroamingX-fork](https://github.com/sti-233/BiliRoamingX)项目ci构建
+
 >[!Note]
 >本仓库使用 Github Action 进行构建并预发布
 
@@ -35,10 +39,6 @@ Bilix patches from [BiliroamingX-fork](https://github.com/sti-233/BiliRoamingX)
 
 >[!Important]
 >原包获取因渠道原因 可能无法及时更新最新包
-
->[!Tip]
->本项目重构完毕<br/>
->现可脱离[BiliroamingX-fork](https://github.com/sti-233/BiliRoamingX)项目ci构建
 
 ## 待实现的功能
 ```
