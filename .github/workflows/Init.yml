@@ -206,7 +206,6 @@ jobs:
             /home/runner/work/Bilix-PreBuilds/Changelog_Nightly.txt
 
       - name: Upload Build Resource
-        uses: actions/upload-artifact@v4
         if: success() && ( env.need-Build != 'false' || env.need-Build == '' )
         run: |
           cd ./
