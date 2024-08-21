@@ -161,6 +161,7 @@ jobs:
               if [ "${{ env.get-commit_count }}" -gt "${{ env.compare-smallver }}" ]; then
                 # 是 进行 Nightly
                 echo "BiliRoamingX-ver=${{ env.get-version }}.r${{ env.get-commit_count }}" >> $GITHUB_ENV
+                echo "Build-Release=false" >> $GITHUB_ENV
                 echo "Build-Nightly=true" >> $GITHUB_ENV
                 # 存变量
                 sed -i 's/^.*BiliRoamingX\.ver\.full.*$/BiliRoamingX.ver.full=${{ env.get-version }}.r${{ env.get-commit_count }}/' ./Build.prop
@@ -172,11 +173,14 @@ jobs:
                 if [ "${{ github.event.inputs.Forced-Build }}" == "true" ]; then
                   # 是 进行 Nightly
                   echo "need-Build=true" >> $GITHUB_ENV
+                  echo "Build-Release=false" >> $GITHUB_ENV
                   echo "Build-Nightly=true" >> $GITHUB_ENV
                   sed -i 's/^.*temp\.with\.release.*$/temp.with.release=false/' ./Build.prop
                 else
                   # 否 不构建
                   echo "need-Build=false" >> $GITHUB_ENV
+                  echo "Build-Release=false" >> $GITHUB_ENV
+                  echo "Build-Nightly=false" >> $GITHUB_ENV
                 fi
               fi
             fi
