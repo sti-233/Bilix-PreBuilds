@@ -9,9 +9,13 @@
 </div>
 
 Bilix patches from [BiliroamingX-fork](https://github.com/sti-233/BiliRoamingX)
+### Old
 [![CI](https://github.com/sti-233/Bilix-PreBuilds/actions/workflows/Build.yml/badge.svg)](https://github.com/sti-233/Bilix-PreBuilds/actions)
 
-[![CI](https://github.com/sti-233/Bilix-PreBuilds/actions/workflows/Init.yml/badge.svg)](https://github.com/sti-233/Bilix-PreBuilds/actions)[![CI](https://github.com/sti-233/Bilix-PreBuilds/actions/workflows/Nightly-Build.yml/badge.svg)](https://github.com/sti-233/Bilix-PreBuilds/actions)[![CI](https://github.com/sti-233/Bilix-PreBuilds/actions/workflows/Release-Build.yml/badge.svg)](https://github.com/sti-233/Bilix-PreBuilds/actions)
+### Refactor
+[![CI](https://github.com/sti-233/Bilix-PreBuilds/actions/workflows/Init.yml/badge.svg)](https://github.com/sti-233/Bilix-PreBuilds/actions)
+
+[![CI](https://github.com/sti-233/Bilix-PreBuilds/actions/workflows/Nightly-Build.yml/badge.svg)](https://github.com/sti-233/Bilix-PreBuilds/actions)[![CI](https://github.com/sti-233/Bilix-PreBuilds/actions/workflows/Release-Build.yml/badge.svg)](https://github.com/sti-233/Bilix-PreBuilds/actions)
 
 >[!Warning]
 >此项目与 [HFrost0/bilix](https://github.com/HFrost0/bilix) 无关！
@@ -38,8 +42,7 @@ Bilix patches from [BiliroamingX-fork](https://github.com/sti-233/BiliRoamingX)
 >原包获取因渠道原因 可能无法及时更新最新包
 
 >[!Tip]
->本项目重构完毕
-
+>本项目重构完毕<br/>
 >现可脱离[BiliroamingX-fork](https://github.com/sti-233/BiliRoamingX)项目ci构建
 
 ## 待实现的功能
