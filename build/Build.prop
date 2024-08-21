@@ -34,7 +34,7 @@ BiliRoamingX.ver.code=1022005
 BiliRoamingX.ver.compare=1959
 
 ## Url
-url.custom.cn=false
+url.custom.cn=true
 url.custom.play=false
 url.custom.revanced.cli=false
 url.custom.bilibili.cn=https://dl.hdslb.com/mobile/pack/android64/15793300/iBiliPlayer-apinkRelease-8.10.0-b15793300.apk
