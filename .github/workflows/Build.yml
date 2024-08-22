@@ -9,7 +9,7 @@ jobs:
     env:
       # build need
       Build-Bilix: true
-      Build-Bilix-play: true
+      Build-Bilix-play: false
       # Check ver
       Bilix-ver: 8.10.0
       Bilix-play-ver: 3.19.2
@@ -18,8 +18,8 @@ jobs:
       # push type
       Nightly: false
       # torelease
-      Bilix-torelease: true
-      Bilix-play-torelease: true
+      Bilix-torelease: false
+      Bilix-play-torelease: false
       # Changelog need
       push-Changelog: true
       # release type
