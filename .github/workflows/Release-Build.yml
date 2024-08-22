@@ -46,6 +46,7 @@ jobs:
 
       # Get revanced-cli
       - name: Get Revanced-cli
+        if: ${{ env.with-release == 'true' }}
         run: |
           cd ./
           echo Downloading modified revanced-cli
@@ -55,7 +56,7 @@ jobs:
 
       # Get original bilibili
       - name: Get original bilibili-cn
-        if: ${{ env.Build-Bilix == 'true' }}
+        if: ${{ env.Build-Bilix == 'true' && env.with-release == 'true' }}
         run: |
           if [ "${{ env.url-custom-cn }}" = "false" ]; then
             aria2c --out "cn.apk" https://m.wandoujia.com/apps/281291/download/
@@ -64,7 +65,7 @@ jobs:
             aria2c --out "cn.apk" ${{ env.cn-url }}
           fi
       - name: Get original bilibili-play
-        if: ${{ env.Build-Bilix-play == 'true' }}
+        if: ${{ env.Build-Bilix-play == 'true' && env.with-release == 'true' }}
         run: |
           if [ "${{ env.url-custom-play }}" = "false" ]; then
             aria2c --out "play.apk" https://d.apkpure.com/b/APK/com.bilibili.app.in?version=latest
@@ -75,13 +76,13 @@ jobs:
 
       # Check $version & $versionCode
       - name: "Get Cn Info"
-        if: ${{ env.Build-Bilix == 'true' }}
+        if: ${{ env.Build-Bilix == 'true' && env.with-release == 'true' }}
         id: "apk-info-cn"
         uses: "8Mi-Tech/get-apk-info-action@master"
         with:
           apkPath: "cn.apk"
       - name: "Get Play Info"
-        if: ${{ env.Build-Bilix-play == 'true' }}
+        if: ${{ env.Build-Bilix-play == 'true' && env.with-release == 'true' }}
         id: "apk-info-play"
         uses: "8Mi-Tech/get-apk-info-action@master"
         with:
@@ -91,33 +92,33 @@ jobs:
 
       # Get cn $patchVersion $patchVersionCode
       - name: Get Bilibili-cn info
-        if: ${{ env.Build-Bilix == 'true' }}
+        if: ${{ env.Build-Bilix == 'true' && env.with-release == 'true' }}
         run: |
           echo "Bilix-ver=${{steps.apk-info-cn.outputs.versionNum}}" >> $GITHUB_ENV
           echo "Bilix-vercode=${{steps.apk-info-cn.outputs.versionCode}}" >> $GITHUB_ENV
       - name: Get Bilibili-play info
-        if: ${{ env.Build-Bilix-play == 'true' }}
+        if: ${{ env.Build-Bilix-play == 'true' && env.with-release == 'true' }}
         run: |
           echo "Bilix-play-ver=${{steps.apk-info-play.outputs.versionNum}}" >> $GITHUB_ENV
           echo "Bilix-play-vercode=${{steps.apk-info-play.outputs.versionCode}}" >> $GITHUB_ENV
 
       # build part
       - name: Build Bilix
-        if: ${{ env.Build-Bilix == 'true' }}
+        if: ${{ env.Build-Bilix == 'true' && env.with-release == 'true' }}
         run: |
           java -jar revanced-cli.jar patch --merge integrations.apk --patch-bundle patches.jar --signing-levels 1,2,3 cn.apk
       - name: Build Bilix-play
-        if: ${{ env.Build-Bilix-play == 'true' }}
+        if: ${{ env.Build-Bilix-play == 'true' && env.with-release == 'true' }}
         run: |
           java -jar revanced-cli.jar patch --merge integrations.apk --patch-bundle patches.jar --signing-levels 1,2,3 play.apk
 
       # named Bilix
       - name: Rename Bilix
-        if: ${{ env.Build-Bilix == 'true' }}
+        if: ${{ env.Build-Bilix == 'true' && env.with-release == 'true' }}
         run: |
           mv cn-patched.apk Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk
       - name: Rename Bilix-play
-        if: ${{ env.Build-Bilix-play == 'true' }}
+        if: ${{ env.Build-Bilix-play == 'true' && env.with-release == 'true' }}
         run: |
           mv play-patched.apk Bilix-play-${{ env.Bilix-play-ver }}-${{ env.ver }}@Aniruf_x.apk
 
@@ -127,43 +128,43 @@ jobs:
 
       # Get $sn
       - name: Get sn from Bilix
-        if: ${{ env.Build-Bilix == 'true' }}
+        if: ${{ env.Build-Bilix == 'true' && env.with-release == 'true' }}
         run: |
           sudo apt-get install aapt
           aapt dump xmltree ./Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk AndroidManifest.xml > AndroidManifest_output_cn.txt
           echo "cn-sn=$(grep "BUILD_SN" ./AndroidManifest_output_cn.txt -A 1 | grep "android:value" | cut -d'=' -f2 | cut -d')' -f2 | awk '{printf "%d\n", strtonum($1)}')" >> $GITHUB_ENV
 
       - name: Get sn from Bilix-play
-        if: ${{ env.Build-Bilix-play == 'true' }}
+        if: ${{ env.Build-Bilix-play == 'true' && env.with-release == 'true' }}
         run: |
           aapt dump xmltree ./Bilix-play-${{ env.Bilix-play-ver }}-${{ env.ver }}@Aniruf_x.apk AndroidManifest.xml > AndroidManifest_output_play.txt
           echo "play-sn=$(grep "BUILD_SN" ./AndroidManifest_output_play.txt -A 1 | grep "android:value" | cut -d'=' -f2 | cut -d')' -f2 | awk '{printf "%d\n", strtonum($1)}')" >> $GITHUB_ENV
 
       # Get $md5
       - name: Get md5 from Bilix
-        if: ${{ env.Build-Bilix == 'true' }}
+        if: ${{ env.Build-Bilix == 'true' && env.with-release == 'true' }}
         run: |
           echo "cn-md5=$(md5sum ./Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk | cut -d ' ' -f 1)" >> $GITHUB_ENV
 
       - name: Get md5 from Bilix-play
-        if: ${{ env.Build-Bilix-play == 'true' }}
+        if: ${{ env.Build-Bilix-play == 'true' && env.with-release == 'true' }}
         run: |
           echo "play-md5=$(md5sum ./Bilix-play-${{ env.Bilix-play-ver }}-${{ env.ver }}@Aniruf_x.apk | cut -d ' ' -f 1)" >> $GITHUB_ENV
 
       # Get $size
       - name: Get size from Bilix
-        if: ${{ env.Build-Bilix == 'true' }}
+        if: ${{ env.Build-Bilix == 'true' && env.with-release == 'true' }}
         run: |
           echo "cn-size=$(stat -c %s ./Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk)" >> $GITHUB_ENV
 
       - name: Get size from Bilix-play
-        if: ${{ env.Build-Bilix-play == 'true' }}
+        if: ${{ env.Build-Bilix-play == 'true' && env.with-release == 'true' }}
         run: |
           echo "play-size=$(stat -c %s ./Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk)" >> $GITHUB_ENV
 
       # Release part
       - name: Release Bilix
-        if: ${{ env.Build-Bilix == 'true' }}
+        if: ${{ env.Build-Bilix == 'true' && env.with-release == 'true' }}
         uses: softprops/action-gh-release@v2
         with:
           token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
@@ -178,7 +179,7 @@ jobs:
         continue-on-error: true
 
       - name: Release Bilix Changelog
-        if: ${{ env.Build-Bilix == 'true' }}
+        if: ${{ env.Build-Bilix == 'true' && env.with-release == 'true' }}
         uses: softprops/action-gh-release@v2
         with:
           append_body: true
@@ -189,7 +190,7 @@ jobs:
           body_path: ./build/Changelog_Nightly.txt
 
       - name: Release Bilix-play
-        if: ${{ env.Build-Bilix-play == 'true' }}
+        if: ${{ env.Build-Bilix-play == 'true' && env.with-release == 'true' }}
         uses: softprops/action-gh-release@v2
         with:
           token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
@@ -204,7 +205,7 @@ jobs:
         continue-on-error: true
 
       - name: Release Bilix-play Changelog
-        if: ${{ env.Build-Bilix-play == 'true' }}
+        if: ${{ env.Build-Bilix-play == 'true' && env.with-release == 'true' }}
         uses: softprops/action-gh-release@v2
         with:
           append_body: true
@@ -216,7 +217,7 @@ jobs:
 
       # output Bilix informations
       - name: Build Bilix Success
-        if: ${{ env.Build-Bilix == 'true' }}
+        if: ${{ env.Build-Bilix == 'true' && env.with-release == 'true' }}
         run: |
           echo "### Build Bilix Success" >> $GITHUB_STEP_SUMMARY
           echo "版本信息：${{ env.Bilix-ver }} ${{ env.Bilix-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.cn-sn }} ${{ env.cn-size }} ${{ env.cn-md5 }} ${{ env.TIME }}" >> $GITHUB_STEP_SUMMARY
@@ -228,7 +229,7 @@ jobs:
         continue-on-error: true
 
       - name: Build Bilix-play Success
-        if: ${{ env.Build-Bilix-play == 'true' }}
+        if: ${{ env.Build-Bilix-play == 'true' && env.with-release == 'true' }}
         run: |
           echo "### Build Bilix-play Success" >> $GITHUB_STEP_SUMMARY
           echo "版本信息：${{ env.Bilix-play-ver }} ${{ env.Bilix-play-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.play-sn }} ${{ env.play-size }} ${{ env.play-md5 }} ${{ env.TIME }}" >> $GITHUB_STEP_SUMMARY
