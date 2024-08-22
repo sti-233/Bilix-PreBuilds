@@ -172,6 +172,7 @@ jobs:
                 # 否 判断是否为强制构建
                 if [ "${{ github.event.inputs.Forced-Build }}" == "true" ]; then
                   # 是 进行 Nightly
+                  echo "BiliRoamingX-ver=${{ env.get-version }}.r${{ env.get-commit_count }}" >> $GITHUB_ENV
                   echo "need-Build=true" >> $GITHUB_ENV
                   echo "Build-Release=false" >> $GITHUB_ENV
                   echo "Build-Nightly=true" >> $GITHUB_ENV
