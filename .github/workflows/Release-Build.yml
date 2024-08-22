@@ -38,8 +38,9 @@ jobs:
           echo "ver=`awk -F "=" '$1 == "BiliRoamingX.ver.full" {print $2}' ./build/Build.prop`" >> $GITHUB_ENV
           echo "bigver=`awk -F "=" '$1 == "BiliRoamingX.ver.code" {print $2}' ./build/Build.prop`" >> $GITHUB_ENV
           # Build need
-          echo "Build-Bilix=`awk -F "=" '$1 == "Bilix.build.cn" {print $2}' /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/artifacts/Bilix-Prebuilds/Build.prop`" >> $GITHUB_ENV
-          echo "Build-Bilix-play=`awk -F "=" '$1 == "Bilix.build.play" {print $2}' /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/artifacts/Bilix-Prebuilds/Build.prop`" >> $GITHUB_ENV
+          echo "Build-Bilix=`awk -F "=" '$1 == "Bilix.build.cn" {print $2}' ./build/Build.prop`" >> $GITHUB_ENV
+          echo "Build-Bilix-play=`awk -F "=" '$1 == "Bilix.build.play" {print $2}' ./build/Build.prop`" >> $GITHUB_ENV
+          echo "with-release=`awk -F "=" '$1 == "temp.with.release" {print $2}' ./build/Build.prop`" >> $GITHUB_ENV
           # Changelog need
           echo "push-changelog=`awk -F "=" '$1 == "push.changelog" {print $2}' ./build/Build.prop`" >> $GITHUB_ENV
 
@@ -239,6 +240,7 @@ jobs:
         continue-on-error: true
 
       - name: Upload Build Resource
+        if: ${{ env.with-release == 'true' }}
         run: |
           cd ./
           rm ./Build.prop
