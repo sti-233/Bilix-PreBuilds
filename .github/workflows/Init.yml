@@ -123,14 +123,19 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Retrieve version
+      - name: Save version info
         run: |
           getvercode=$(echo ${{ env.get-version }} | cut -d '.' -f 1-3)
           vercode=$(echo "$getvercode" | awk -F. '{printf "%d0%d00%d\n", $1, $2, $3}')
           comparevercode=$(echo ${{ env.compare-bigver }} | cut -d '.' -f 1-3)
           comparevercode=$(echo "$comparevercode" | awk -F. '{printf "%d0%d00%d\n", $1, $2, $3}')
+          echo "vercode=$vercode" >> $GITHUB_ENV
+          echo "comparevercode=$comparevercode" >> $GITHUB_ENV
+
+      - name: Retrieve version
+        run: |
           # 判断大版本是否大于记录版本
-          if [ "${vercode}" -gt "${comparevercode}" ]; then
+          if [ "${{ env.vercode }}" -gt "${{ env.comparevercode }}" ]; then
             # 是 进行 Release&Nightly
             echo "BiliRoamingX-ver=${{ env.get-version }}" >> $GITHUB_ENV
             echo "Build-Release=true" >> $GITHUB_ENV
@@ -138,10 +143,9 @@ jobs:
             # 存变量
             sed -i 's/^.*BiliRoamingX\.ver\.full.*$/BiliRoamingX.ver.full=${{ env.get-version }}/' ./Build.prop
             sed -i 's/^.*BiliRoamingX\.ver\.big.*$/BiliRoamingX.ver.big=${{ env.get-version }}/' ./Build.prop
-            sed -i 's/^.*commit\.id\.nightly\.start.*$/commit.id.nightly.start=$(cat latest_commit.txt)/' ./Build.prop
-            sed -i 's/^.*BiliRoamingX\.ver\.code.*$/BiliRoamingX.ver.code=${vercode}/' ./Build.prop
+            sed -i 's/^.*commit\.id\.nightly\.start.*$/commit.id.nightly.start=${{ env.latest-commit-id }}/' ./Build.prop
+            sed -i 's/^.*BiliRoamingX\.ver\.code.*$/BiliRoamingX.ver.code=${{ env.vercode }}/' ./Build.prop
             sed -i 's/^.*temp\.with\.release.*$/temp.with.release=true/' ./Build.prop
-            echo "vercode=$vercode" >> $GITHUB_ENV
           else
             # 否 判断小版本是否大于保留版本10次
             if [ $((${{ env.get-commit_count }} - 10)) -ge "${{ env.compare-ver }}" ]; then
@@ -151,7 +155,7 @@ jobs:
               echo "BiliRoamingX-ver=${{ env.get-version }}.r${{ env.get-commit_count }}" >> $GITHUB_ENV
               # 存变量
               sed -i 's/^.*BiliRoamingX\.ver\.full.*$/BiliRoamingX.ver.full=${{ env.get-version }}.r${{ env.get-commit_count }}/' ./Build.prop
-              sed -i 's/^.*commit\.id\.nightly\.start.*$/commit.id.nightly.start=$(cat latest_commit.txt)/' ./Build.prop
+              sed -i 's/^.*commit\.id\.nightly\.start.*$/commit.id.nightly.start=${{ env.latest-commit-id }}/' ./Build.prop
               sed -i 's/^.*BiliRoamingX\.ver\.small.*$/BiliRoamingX.ver.small=${{ env.get-commit_count }}/' ./Build.prop
               sed -i 's/^.*BiliRoamingX\.ver\.big.*$/BiliRoamingX.ver.big=${{ env.get-version }}/' ./Build.prop
               sed -i 's/^.*BiliRoamingX\.ver\.compare.*$/BiliRoamingX.ver.compare=${{ env.get-commit_count }}/' ./Build.prop
