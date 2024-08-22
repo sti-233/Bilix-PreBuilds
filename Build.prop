@@ -26,9 +26,9 @@ Bilix.vercode.play=7750600
 
 ## BiliRoamingX ver
 # Latest
-BiliRoamingX.ver.full=1.23.0
+BiliRoamingX.ver.full=1.23.0.r1962
 BiliRoamingX.ver.big=1.23.0
-BiliRoamingX.ver.small=1961
+BiliRoamingX.ver.small=1962
 BiliRoamingX.ver.code=1023000
 # Compare
 BiliRoamingX.ver.compare=1959
@@ -42,6 +42,6 @@ url.custom.bilibili.play=
 url.custom.revanced.cli=
 
 ## Temp
-temp.with.release=true
+temp.with.release=false
 
 #### End
