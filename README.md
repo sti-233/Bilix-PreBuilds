@@ -61,3 +61,7 @@ Wait for your issuse
 > - [8Mi-Tech/get-apk-info-action](https://github.com/8Mi-Tech/get-apk-info-action)
 > - [softprops/action-gh-release](https://github.com/softprops/action-gh-release)
 
+## Licence
+
+[![GitHub](https://img.shields.io/github/license/sti-233/Bilix-PreBuilds?style=for-the-badge)](https://github.com/sti-233/Bilix-PreBuilds/blob/main/LICENSE)
+
