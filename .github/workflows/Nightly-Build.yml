@@ -101,8 +101,14 @@ jobs:
           mv cn-patched.apk Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk
           mv play-patched.apk Bilix-play-${{ env.Bilix-play-ver }}-${{ env.ver }}@Aniruf_x.apk
 
-      # Empty part for signing apk
-      #- name: Rename Bilix-play
+      # Signing Bilix
+      - name: Resign Bilix
+        run: |
+          cd ./
+          echo Downloading uber-apk-signer
+          wget https://github.com/patrickfav/uber-apk-signer/releases/download/v1.3.0/uber-apk-signer-1.3.0.jar
+          java -jar uber-apk-signer-1.3.0.jar -a Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk --overwrite --allowResign --ks BiliRoamingX.p12 --ksAlias ${{ secrets.signalias }} --ksKeyPass ${{ secrets.signkey }} --ksPass ${{ secrets.signkey }}
+          java -jar uber-apk-signer-1.3.0.jar -a Bilix-play-${{ env.Bilix-play-ver }}-${{ env.ver }}@Aniruf_x.apk --overwrite --allowResign --ks BiliRoamingX.p12 --ksAlias ${{ secrets.signalias }} --ksKeyPass ${{ secrets.signkey }} --ksPass ${{ secrets.signkey }}
 
 
       # Get $sn
