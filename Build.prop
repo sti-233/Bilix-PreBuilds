@@ -37,7 +37,7 @@ BiliRoamingX.ver.compare=1964
 url.custom.cn=false
 url.custom.play=false
 url.custom.revanced.cli=false
-url.custom.bilibili.cn=https://dl.hdslb.com/mobile/pack/android64/15793300/iBiliPlayer-apinkRelease-8.10.0-b15793300.apk
+url.custom.bilibili.cn=
 url.custom.bilibili.play=
 url.custom.revanced.cli=
 
