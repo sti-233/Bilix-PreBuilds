@@ -155,7 +155,6 @@ jobs:
         with:
           token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
           fail_on_unmatched_files: false
-          make_latest: false
           name: 'Bilix Nightly - BiliRoamingX ${{ env.ver }}'
           tag_name: 'Nightly'
           body: |
@@ -175,7 +174,6 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           append_body: true
-          make_latest: false
           token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
           fail_on_unmatched_files: true
           name: 'Bilix Nightly - BiliRoamingX ${{ env.ver }}'
