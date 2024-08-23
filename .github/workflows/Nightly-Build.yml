@@ -54,7 +54,7 @@ jobs:
         if: ${{ env.url-custom-cn == 'false' }}
         run: |
           wget https://t.me/s/bilibili_apk_beta
-          echo "cn-url=$(grep '<div class="tgme_widget_message_text js-message_text" dir="auto">原版64位   <a href="?q=%23android64">' bilibili_apk_beta | tee original-message.txt | grep -oP '\(\K[0-9]+' | sort -n | tail -1 | xargs -I {} grep {} original-message.txt | sed -n 's/.*rel="noopener">\(.*\)<\/a>.*/\1/p')"
+          echo "cn-url=$(grep '<div class="tgme_widget_message_text js-message_text" dir="auto">原版64位   <a href="?q=%23android64">' bilibili_apk_beta | tee original-message.txt | grep -oP '\(\K[0-9]+' | sort -n | tail -1 | xargs -I {} grep {} original-message.txt | sed -n 's/.*rel="noopener">\(.*\)<\/a>.*/\1/p')" >> $GITHUB_ENV
 
       # Get original bilibili
       - name: Get original bilibili
