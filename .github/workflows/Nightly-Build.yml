@@ -59,12 +59,7 @@ jobs:
       # Get original bilibili
       - name: Get original bilibili
         run: |
-          if [ "${{ env.url-custom-cn }}" = "false" ]; then
-            aria2c --out "cn.apk" ${{ env.cn-url }}
-          fi
-          if [ "${{ env.url-custom-cn }}" = "true" ]; then
-            aria2c --out "cn.apk" ${{ env.cn-url }}
-          fi
+          aria2c --out "cn.apk" ${{ env.cn-url }}
           if [ "${{ env.url-custom-play }}" = "false" ]; then
             aria2c --out "play.apk" https://d.apkpure.com/b/APK/com.bilibili.app.in?version=latest
           fi
