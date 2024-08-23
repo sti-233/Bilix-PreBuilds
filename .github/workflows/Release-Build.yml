@@ -59,7 +59,9 @@ jobs:
         if: ${{ env.Build-Bilix == 'true' && env.with-release == 'true' }}
         run: |
           if [ "${{ env.url-custom-cn }}" = "false" ]; then
-            aria2c --out "cn.apk" https://m.wandoujia.com/apps/281291/download/
+            wget https://t.me/s/bilibili_apk_beta
+            cn-link=$(grep '<div class="tgme_widget_message_text js-message_text" dir="auto">原版64位   <a href="?q=%23android64">' bilibili_apk_beta | tee original-message.txt | grep -oP '\(\K[0-9]+' | sort -n | tail -1 | xargs -I {} grep {} original-message.txt | sed -n 's/.*rel="noopener">\(.*\)<\/a>.*/\1/p')
+            aria2c --out "cn.apk" $cn-link
           fi
           if [ "${{ env.url-custom-cn }}" = "true" ]; then
             aria2c --out "cn.apk" ${{ env.cn-url }}
