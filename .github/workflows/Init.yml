@@ -145,6 +145,7 @@ jobs:
             sed -i 's/^.*BiliRoamingX\.ver\.big.*$/BiliRoamingX.ver.big=${{ env.get-version }}/' ./Build.prop
             sed -i 's/^.*commit\.id\.nightly\.start.*$/commit.id.nightly.start=${{ env.latest-commit-id }}/' ./Build.prop
             sed -i 's/^.*BiliRoamingX\.ver\.code.*$/BiliRoamingX.ver.code=${{ env.vercode }}/' ./Build.prop
+            sed -i 's/^.*BiliRoamingX\.ver\.compare.*$/BiliRoamingX.ver.compare=${{ env.get-commit_count }}/' ./Build.prop
             sed -i 's/^.*temp\.with\.release.*$/temp.with.release=true/' ./Build.prop
           else
             # 否 判断小版本是否大于保留版本10次
@@ -246,7 +247,7 @@ jobs:
           -H "Accept: application/vnd.github.v3+json" \
           -H "Authorization: token ${{ secrets.CUSTOM_GITHUB_TOKEN }}" \
           https://api.github.com/repos/${{ github.repository }}/dispatches \
-          -d '{"event_type":"Nightly-Build"}'
+          -d '{"event_type":"Nightly"}'
 
       - name: Init Build Release
         if: ${{ env.need-Build != 'false' || env.need-Build == '' && env.Build-Release == 'true'  }}
@@ -255,7 +256,7 @@ jobs:
           -H "Accept: application/vnd.github.v3+json" \
           -H "Authorization: token ${{ secrets.CUSTOM_GITHUB_TOKEN }}" \
           https://api.github.com/repos/${{ github.repository }}/dispatches \
-          -d '{"event_type":"Release-Build"}'
+          -d '{"event_type":"Release"}'
 
       # Success
       - name: End
