@@ -1,1 +1,3 @@
+- build(deps): bump ksp from 2.0.10-1.0.24 to 2.0.20-1.0.24 (#418)
+- build(deps): bump kotlin from 2.0.10 to 2.0.20 (#417)
 - fix: not enforce native article page
