@@ -49,13 +49,18 @@ jobs:
           echo Downloading modified revanced-cli
           wget https://github.com/zjns/revanced-cli/releases/download/v4.6.0.1/revanced-cli.jar
 
+       # Get original bilibili url
+      - name: Get original bilibili url
+        if: ${{ env.url-custom-cn == 'false' }}
+        run: |
+          wget https://t.me/s/bilibili_apk_beta
+          echo "cn-url=$(grep '<div class="tgme_widget_message_text js-message_text" dir="auto">原版64位   <a href="?q=%23android64">' bilibili_apk_beta | tee original-message.txt | grep -oP '\(\K[0-9]+' | sort -n | tail -1 | xargs -I {} grep {} original-message.txt | sed -n 's/.*rel="noopener">\(.*\)<\/a>.*/\1/p')"
+
       # Get original bilibili
       - name: Get original bilibili
         run: |
           if [ "${{ env.url-custom-cn }}" = "false" ]; then
-            wget https://t.me/s/bilibili_apk_beta
-            cn-link=$(grep '<div class="tgme_widget_message_text js-message_text" dir="auto">原版64位   <a href="?q=%23android64">' bilibili_apk_beta | tee original-message.txt | grep -oP '\(\K[0-9]+' | sort -n | tail -1 | xargs -I {} grep {} original-message.txt | sed -n 's/.*rel="noopener">\(.*\)<\/a>.*/\1/p')
-            aria2c --out "cn.apk" $cn-link
+            aria2c --out "cn.apk" ${{ env.cn-url }}
           fi
           if [ "${{ env.url-custom-cn }}" = "true" ]; then
             aria2c --out "cn.apk" ${{ env.cn-url }}
