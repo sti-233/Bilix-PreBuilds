@@ -2,7 +2,7 @@ name: Build Bilix-Release
 
 on:
   repository_dispatch:
-    types: [Release-Build]
+    types: [Release]
 
 jobs:
   Build-Bilix-Release:
