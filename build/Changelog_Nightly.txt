@@ -1,2 +1,1 @@
-- build: bump to 1.23.1 [skip ci]
-- fix: abnormal CPU usage
+- fix: not enforce native article page
