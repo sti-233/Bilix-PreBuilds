@@ -69,7 +69,9 @@ jobs:
         run: |
           cd ./
           git clone https://github.com/sti-233/Bilix-PreBuilds.git
+          cp ./Bilix-PreBuilds/Merge-Resource/biliroaming_setting_custom_update_source.xml ./BiliRoamingX/patches/src/main/resources/bilibili/xml/biliroaming_setting_custom_update_source.xml
           rm ./Bilix-PreBuilds/Merge-Resource/Build.prop
+          rm ./Bilix-PreBuilds/Merge-Resource/biliroaming_setting_custom_update_source.xml
           cp ./Bilix-PreBuilds/Merge-Resource/* ./BiliRoamingX
 
       # Recompose resource
@@ -103,6 +105,39 @@ jobs:
           sed -i '/                        "title" to "新版漫游X集成包",/c\                        "title" to "新版 Bilix",' ./BiliRoamingX/integrations/app/src/main/java/app/revanced/bilibili/patches/okhttp/hooks/Upgrade.kt
           sed -i '/                return mapOf("code" to -1, "message" to "未发现新版漫游X集成包！").toJSONObject()/c\                return mapOf("code" to -1, "message" to "未发现新版 Bilix ！").toJSONObject()' ./BiliRoamingX/integrations/app/src/main/java/app/revanced/bilibili/patches/okhttp/hooks/Upgrade.kt
           sed -i '/                .also { fromSelf = false }/c\                .also { fromSelf = true }' ./BiliRoamingX/integrations/app/src/main/java/app/revanced/bilibili/patches/okhttp/hooks/Upgrade.kt
+          sed -i '/<resources>/a\ \ \ \ <string-array name="biliroaming_update_source_entries">\
+        <item>Bilix-Release</item>\
+        <item>Bilix-Nightly</item>\
+        <item>BiliRoamingX/BiliRoamingX-Prebuilds</item>\
+    </string-array>\
+    <string-array name="biliroaming_update_source_values">\
+        <item>@string/biliroaming_release_host</item>\
+        <item>@string/biliroaming_nightly_host</item>\
+        <item>@string/biliroaming_original_host</item>\
+    </string-array>\
+    <string-array name="biliroaming_update_source_summaries">\
+        <item>由 sti-233 (本fork) 提供的更新源 较慢</item>\
+        <item>由 sti-233 (本fork) 提供的更新源 快</item>\
+        <item>由  zjns (bb_show) 提供的更新源 很慢 (签名不同 !)</item>\
+    </string-array>' ./BiliRoamingX/patches/src/main/resources/bilibili/host/values/arrays.xml
+          sed -i '/<resources>/a\ \ \ \ <string name="biliroaming_custom_update_source_title">自定义更新源</string>">\
+    <string name="biliroaming_custom_update_source_summary">不同源间可能签名不同,请谨慎选择 !</string>' ./BiliRoamingX/patches/src/main/resources/bilibili/host/values/strings.xml
+          sed -i '/android:title="@string\/biliroaming_custom_update_title" \/>/a\ \ \ \     <tv.danmaku.bili.widget.preference.BLRadioGroupEntrancePreference\
+            android:dependency="custom_update"\
+            android:fragment="app.revanced.bilibili.settings.fragments.UpdateSettingFragment"\
+            android:key="custom_update_source"\
+            android:persistent="true"\
+            android:title="@string/biliroaming_custom_update_source_title"\
+            android:summary="@string/biliroaming_custom_update_source_summary"\
+            app:migration_settings_type="none"\
+            app:radioDefaultValue="@string/biliroaming_release_host"\
+            app:radioEntries="@array/biliroaming_update_source_entries"\
+            app:radioEntryValues="@array/biliroaming_update_source_values" />' ./BiliRoamingX/patches/src/main/resources/bilibili/xml/biliroaming_setting_misc.xml
+          sed -i '/<resources>/a\ \ \ \ <string name="biliroaming_release_host">https://api.github.com/repos/sti-233/Bilix-PreBuilds/releases</string>">\
+    <string name="biliroaming_nightly_host">https://api.github.com/repos/sti-233/Bilix-PreBuilds/releases/tag/Nightly</string>\
+    <string name="biliroaming_original_host">https://api.github.com/repos/BiliRoamingX/BiliRoamingX-PreBuilds/releases</string>' ./BiliRoamingX/patches/src/main/resources/bilibili/host/values/strings_raw.xml
+          sed -i '/    private val xmls = arrayOf(/a\ \ \ \     "biliroaming_setting_custom_update_source.xml",' ./BiliRoamingX/patches/src/main/kotlin/app/revanced/patches/bilibili/misc/settings/patch/SettingsResourcePatch.kt
+          echo -e "\n@SettingFragment(\"biliroaming_setting_custom_update_source\")\nclass UpdateSettingFragment : BiliRoamingBaseSettingFragment()" >> ./BiliRoamingX/integrations/app/src/main/java/app/revanced/bilibili/settings/fragments/fragments.kt
           echo "Recompose Succeed"
 
       ## Build BiliRoamingX CI
