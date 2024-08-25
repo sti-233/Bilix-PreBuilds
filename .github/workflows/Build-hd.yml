@@ -157,7 +157,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
         run: |
-          gh release view "Nightly-android_hd" && gh release delete "Nightly-android_hd" -y --cleanup-tag
+          gh release view "android_hd-Nightly" && gh release delete "android_hd-Nightly" -y --cleanup-tag
         continue-on-error: true
       
      # named Bilix-hd-Nightly
@@ -174,7 +174,7 @@ jobs:
           token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
           fail_on_unmatched_files: false
           name: 'Bilix-hd Nightly - BiliRoamingX ${{ env.ver }}'
-          tag_name: 'Nightly-android_hd'
+          tag_name: 'android_hd-Nightly'
           body: |
             版本信息：${{ env.Bilix-hd-ver }} ${{ env.Bilix-hd-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.hd-sn }} ${{ env.hd-size }} ${{ env.hd-md5 }} ${{ env.TIME }}
             
@@ -193,7 +193,7 @@ jobs:
           token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
           fail_on_unmatched_files: true
           name: 'Bilix-hd Nightly - BiliRoamingX ${{ env.ver }}'
-          tag_name: 'Nightly-android_hd'
+          tag_name: 'android_hd-Nightly'
           body_path: ./build/Changelog_Nightly.txt
 
       # output Bilix-hd informations
