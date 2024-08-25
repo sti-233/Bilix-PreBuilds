@@ -27,9 +27,9 @@ Bilix.vercode.play=7750600
 
 ## BiliRoamingX ver
 # Latest
-BiliRoamingX.ver.full=1.23.2
+BiliRoamingX.ver.full=1.23.2.r1973
 BiliRoamingX.ver.big=1.23.2
-BiliRoamingX.ver.small=1972
+BiliRoamingX.ver.small=1973
 BiliRoamingX.ver.code=1023002
 # Compare
 BiliRoamingX.ver.compare=1972
@@ -45,6 +45,6 @@ url.custom.bilibili.hd=https://dl.hdslb.com/mobile/pack/android_hd/15062066/iBil
 url.custom.revanced.cli.url=
 
 ## Temp
-temp.with.release=true
+temp.with.release=false
 
 #### End
