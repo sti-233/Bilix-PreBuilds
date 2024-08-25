@@ -44,7 +44,7 @@ jobs:
 
       # Get revanced-cli
       - name: Get Revanced-cli
-        if: ${{ env.with-release == 'true' }}
+        if: ${{ env.Build-Bilix-play == 'true' }}
         run: |
           cd ./
           echo Downloading modified revanced-cli
