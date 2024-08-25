@@ -1,0 +1,237 @@
+name: Build Bilix-cn
+
+on:
+  repository_dispatch:
+    types: [Build-cn]
+
+jobs:
+  Build-Bilix-cn:
+    name: Build Bilix-cn
+    strategy:
+      fail-fast: false
+
+    runs-on: ubuntu-latest
+    steps:
+
+      # Get $publishTime
+      - name: Get Current Time
+        run: |
+          TIME=$EPOCHSECONDS
+          echo "TIME=$TIME" >> $GITHUB_ENV
+
+      # Check repo
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Save env
+      - name: Initialize variables
+        run: |
+          # Check custom
+          echo "url-custom-cn=`awk -F "=" '$1 == "url.custom.cn" {print $2}' ./build/Build.prop`" >> $GITHUB_ENV
+          echo "url-custom-revanced-cli=`awk -F "=" '$1 == "url.custom.revanced.cli" {print $2}' ./build/Build.prop`" >> $GITHUB_ENV
+          # Get custom url
+          echo "cn-url=`awk -F "=" '$1 == "url.custom.bilibili.cn" {print $2}' ./build/Build.prop`" >> $GITHUB_ENV
+          echo "cli-url=`awk -F "=" '$1 == "url.custom.revanced.cli.url" {print $2}' ./build/Build.prop`" >> $GITHUB_ENV
+          # Get version info
+          echo "ver=`awk -F "=" '$1 == "BiliRoamingX.ver.full" {print $2}' ./build/Build.prop`" >> $GITHUB_ENV
+          echo "bigver=`awk -F "=" '$1 == "BiliRoamingX.ver.code" {print $2}' ./build/Build.prop`" >> $GITHUB_ENV
+          # Build need
+          echo "Build-Bilix=`awk -F "=" '$1 == "Bilix.build.cn" {print $2}' ./build/Build.prop`" >> $GITHUB_ENV
+          echo "with-release=`awk -F "=" '$1 == "temp.with.release" {print $2}' ./build/Build.prop`" >> $GITHUB_ENV
+          # Changelog need
+          echo "push-changelog=`awk -F "=" '$1 == "push.changelog" {print $2}' ./build/Build.prop`" >> $GITHUB_ENV
+
+      # Get revanced-cli
+      - name: Get Revanced-cli
+        if: ${{ env.with-release == 'true' }}
+        run: |
+          cd ./
+          echo Downloading modified revanced-cli
+          wget https://github.com/zjns/revanced-cli/releases/download/v4.6.0.1/revanced-cli.jar
+          cp ./build/patches.jar ./patches.jar
+          cp ./build/integrations.apk ./integrations.apk
+
+      # Get original bilibili url
+      - name: Get original bilibili url
+        if: ${{ env.url-custom-cn == 'false' && env.Build-Bilix == 'true'  }}
+        run: |
+          wget https://t.me/s/bilibili_apk_beta
+          echo "cn-url=$(grep '<div class="tgme_widget_message_text js-message_text" dir="auto">原版64位   <a href="?q=%23android64">' bilibili_apk_beta | tee original-message.txt | grep -oP '\(\K[0-9]+' | sort -n | tail -1 | xargs -I {} grep {} original-message.txt | sed -n 's/.*rel="noopener">\(.*\)<\/a>.*/\1/p')"
+
+      # Get original bilibili
+      - name: Get original bilibili-cn
+        if: ${{ env.Build-Bilix == 'true' }}
+        run: |
+          aria2c --out "cn.apk" ${{ env.cn-url }}
+
+      # Check $version & $versionCode
+      - name: "Get Cn Info"
+        if: ${{ env.Build-Bilix == 'true' }}
+        id: "apk-info-cn"
+        uses: "8Mi-Tech/get-apk-info-action@master"
+        with:
+          apkPath: "cn.apk"
+        #版本号：${{steps.apk-info.outputs.versionNum}}
+        #版本代码：${{steps.apk-info.outputs.versionCode}}
+
+      # Get cn $patchVersion $patchVersionCode
+      - name: Get Bilibili-cn info
+        if: ${{ env.Build-Bilix == 'true' }}
+        run: |
+          echo "Bilix-ver=${{steps.apk-info-cn.outputs.versionNum}}" >> $GITHUB_ENV
+          echo "Bilix-vercode=${{steps.apk-info-cn.outputs.versionCode}}" >> $GITHUB_ENV
+
+      # build part
+      - name: Build Bilix
+        if: ${{ env.Build-Bilix == 'true' }}
+        run: |
+          java -jar revanced-cli.jar patch --merge integrations.apk --patch-bundle patches.jar --signing-levels 1,2,3 cn.apk
+
+      # named Bilix
+      - name: Rename Bilix
+        if: ${{ env.Build-Bilix == 'true' }}
+        run: |
+          mv cn-patched.apk Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk
+
+      # Signing Bilix
+      - name: Resign Bilix
+        if: ${{ env.Build-Bilix == 'true' }}
+        run: |
+          cd ./
+          echo Downloading uber-apk-signer
+          wget https://github.com/patrickfav/uber-apk-signer/releases/download/v1.3.0/uber-apk-signer-1.3.0.jar
+          java -jar uber-apk-signer-1.3.0.jar -a Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk --overwrite --allowResign --ks BiliRoamingX.p12 --ksAlias ${{ secrets.signalias }} --ksKeyPass ${{ secrets.signkey }} --ksPass ${{ secrets.signkey }}
+
+      # Get $sn
+      - name: Get sn from Bilix
+        if: ${{ env.Build-Bilix == 'true' }}
+        run: |
+          sudo apt-get install aapt
+          aapt dump xmltree ./Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk AndroidManifest.xml > AndroidManifest_output_cn.txt
+          echo "cn-sn=$(grep "BUILD_SN" ./AndroidManifest_output_cn.txt -A 1 | grep "android:value" | cut -d'=' -f2 | cut -d')' -f2 | awk '{printf "%d\n", strtonum($1)}')" >> $GITHUB_ENV
+
+      # Get $md5
+      - name: Get md5 from Bilix
+        if: ${{ env.Build-Bilix == 'true' }}
+        run: |
+          echo "cn-md5=$(md5sum ./Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk | cut -d ' ' -f 1)" >> $GITHUB_ENV
+
+      # Get $size
+      - name: Get size from Bilix
+        if: ${{ env.Build-Bilix == 'true' }}
+        run: |
+          echo "cn-size=$(stat -c %s ./Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk)" >> $GITHUB_ENV
+
+      # Release part
+      - name: Release Bilix
+        if: ${{ env.Build-Bilix == 'true' && env.with-release == 'true' }}
+        uses: softprops/action-gh-release@v2
+        with:
+          token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+          fail_on_unmatched_files: true
+          name: 'Bilix ${{ env.Bilix-ver }}(${{ env.Bilix-vercode }}) with BiliroamingX ${{ env.ver }}'
+          tag_name: 'android-v${{ env.Bilix-ver }}-b${{ env.cn-sn }}-p${{ env.ver }}'
+          body: |
+            版本信息：${{ env.Bilix-ver }} ${{ env.Bilix-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.cn-sn }} ${{ env.cn-size }} ${{ env.cn-md5 }} ${{ env.TIME }}
+             > 合并主分支
+             > Bump bili ver to ${{ env.Bilix-vercode }}
+          files: ./Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk
+        continue-on-error: true
+
+      - name: Release Bilix Changelog
+        if: ${{ env.Build-Bilix == 'true' && env.with-release == 'true' }}
+        uses: softprops/action-gh-release@v2
+        with:
+          append_body: true
+          token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+          fail_on_unmatched_files: true
+          name: 'Bilix ${{ env.Bilix-ver }}(${{ env.Bilix-vercode }}) with BiliroamingX ${{ env.ver }}'
+          tag_name: 'android-v${{ env.Bilix-ver }}-b${{ env.cn-sn }}-p${{ env.ver }}'
+          body_path: ./build/Changelog_Nightly.txt
+
+      # Del Release Nightly ver
+      - name: Delete old Nightly Bilix
+        if: ${{ env.Build-Bilix == 'true' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+        run: |
+          gh release view "Nightly-android" && gh release delete "Nightly-android" -y --cleanup-tag
+        continue-on-error: true
+      
+     # named Bilix-Nightly
+      - name: Rename Bilix-Nightly
+        if: ${{ env.Build-Bilix == 'true' }}
+        run: |
+          mv Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk Bilix-cn-Nightly@Aniruf_x.apk
+
+      # Release Nightly
+      - name: Release Bilix-Nightly
+        if: ${{ env.Build-Bilix == 'true' }}
+        uses: softprops/action-gh-release@v2
+        with:
+          token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+          fail_on_unmatched_files: false
+          name: 'Bilix Nightly - BiliRoamingX ${{ env.ver }}'
+          tag_name: 'Nightly-android'
+          body: |
+            版本信息：${{ env.Bilix-ver }} ${{ env.Bilix-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.cn-sn }} ${{ env.cn-size }} ${{ env.cn-md5 }} ${{ env.TIME }}
+            
+            ![Nightly.jpg](https://github.com/sti-233/Bilix-PreBuilds/blob/main/Nightly.jpg)
+            > 合并主分支
+            > Bump bili-cn ver to ${{ env.Bilix-vercode }}
+          files: |
+            ./Bilix-cn-Nightly@Aniruf_x.apk
+        continue-on-error: true
+
+      - name: Release Bilix-Nightly Changelog
+        if: ${{ env.Build-Bilix == 'true' }}
+        uses: softprops/action-gh-release@v2
+        with:
+          append_body: true
+          token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+          fail_on_unmatched_files: true
+          name: 'Bilix-cn Nightly - BiliRoamingX ${{ env.ver }}'
+          tag_name: 'Nightly-android'
+          body_path: ./build/Changelog_Nightly.txt
+
+      # output Bilix informations
+      - name: Build Bilix Success
+        if: ${{ env.Build-Bilix == 'true' }}
+        run: |
+          echo "### Build Bilix Success" >> $GITHUB_STEP_SUMMARY
+          echo "版本信息：${{ env.Bilix-ver }} ${{ env.Bilix-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.cn-sn }} ${{ env.cn-size }} ${{ env.cn-md5 }} ${{ env.TIME }}" >> $GITHUB_STEP_SUMMARY
+          echo " " >> $GITHUB_STEP_SUMMARY
+          echo " > 合并主分支" >> $GITHUB_STEP_SUMMARY
+          echo " > Bump bili ver to ${{ env.Bilix-vercode }}" >> $GITHUB_STEP_SUMMARY
+          echo " " >> $GITHUB_STEP_SUMMARY
+          echo "$(cat ./build/Changelog_Nightly.txt)" >> $GITHUB_STEP_SUMMARY
+        continue-on-error: true
+
+      # output Nightly ver info
+      - name: Build Bilix-Nightly Success
+        if: ${{ env.Build-Bilix == 'true' }}
+        run: |
+          echo "### Build Bilix-Nightly Success" >> $GITHUB_STEP_SUMMARY
+          echo "版本信息：${{ env.Bilix-ver }} ${{ env.Bilix-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.cn-sn }} ${{ env.cn-size }} ${{ env.cn-md5 }} ${{ env.TIME }}" >> $GITHUB_STEP_SUMMARY
+          echo " " >> $GITHUB_STEP_SUMMARY
+          echo " > 合并主分支" >> $GITHUB_STEP_SUMMARY
+          echo " > Bump bili-cn ver to ${{ env.Bilix-vercode }}" >> $GITHUB_STEP_SUMMARY
+          echo " " >> $GITHUB_STEP_SUMMARY
+          echo "$(cat ./build/Changelog_Nightly.txt)" >> $GITHUB_STEP_SUMMARY
+        continue-on-error: true
+
+      - name: Upload Build Resource
+        if: ${{ env.Build-Bilix == 'true' }}
+        run: |
+          cd ./
+          rm ./Build.prop
+          cp ./build/Build.prop ./Build.prop
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add Build.prop
+          git commit -m "Push prop"
+          git push
+
+      # Success
+      - name: End
+        run: echo "Build end."
