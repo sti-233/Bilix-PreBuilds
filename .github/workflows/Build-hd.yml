@@ -1,0 +1,239 @@
+name: Build Bilix-hd
+
+on:
+  repository_dispatch:
+    types: [Build-hd]
+
+jobs:
+  Build-Bilix-hd:
+    name: Build Bilix-hd
+    strategy:
+      fail-fast: false
+
+    runs-on: ubuntu-latest
+    steps:
+
+      # Get $publishTime
+      - name: Get Current Time
+        run: |
+          TIME=$EPOCHSECONDS
+          echo "TIME=$TIME" >> $GITHUB_ENV
+
+      # Check repo
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Save env
+      - name: Initialize variables
+        run: |
+          # Check custom
+          echo "url-custom-hd=`awk -F "=" '$1 == "url.custom.hd" {print $2}' ./build/Build.prop`" >> $GITHUB_ENV
+          echo "url-custom-revanced-cli=`awk -F "=" '$1 == "url.custom.revanced.cli" {print $2}' ./build/Build.prop`" >> $GITHUB_ENV
+          # Get custom url
+          echo "hd-url=`awk -F "=" '$1 == "url.custom.bilibili.hd" {print $2}' ./build/Build.prop`" >> $GITHUB_ENV
+          echo "cli-url=`awk -F "=" '$1 == "url.custom.revanced.cli.url" {print $2}' ./build/Build.prop`" >> $GITHUB_ENV
+          # Get version info
+          echo "ver=`awk -F "=" '$1 == "BiliRoamingX.ver.full" {print $2}' ./build/Build.prop`" >> $GITHUB_ENV
+          echo "bigver=`awk -F "=" '$1 == "BiliRoamingX.ver.code" {print $2}' ./build/Build.prop`" >> $GITHUB_ENV
+          # Build need
+          echo "Build-Bilix=`awk -F "=" '$1 == "Bilix.build.cn" {print $2}' ./build/Build.prop`" >> $GITHUB_ENV
+          echo "Build-Bilix-play=`awk -F "=" '$1 == "Bilix.build.play" {print $2}' ./build/Build.prop`" >> $GITHUB_ENV
+          echo "Build-Bilix-hd=`awk -F "=" '$1 == "Bilix.build.hd" {print $2}' ./build/Build.prop`" >> $GITHUB_ENV
+          echo "with-release=`awk -F "=" '$1 == "temp.with.release" {print $2}' ./build/Build.prop`" >> $GITHUB_ENV
+          # Changelog need
+          echo "push-changelog=`awk -F "=" '$1 == "push.changelog" {print $2}' ./build/Build.prop`" >> $GITHUB_ENV
+
+      # Get revanced-cli
+      - name: Get Revanced-cli
+        if: ${{ env.with-release == 'true' }}
+        run: |
+          cd ./
+          echo Downloading modified revanced-cli
+          wget https://github.com/zjns/revanced-cli/releases/download/v4.6.0.1/revanced-cli.jar
+          cp ./build/patches.jar ./patches.jar
+          cp ./build/integrations.apk ./integrations.apk
+
+      # Get original bilibili url
+      - name: Get original bilibili url
+        if: ${{ env.url-custom-hd == 'false' && env.Build-Bilix-hd == 'true'  }}
+        run: |
+          wget https://t.me/s/bilibili_apk_beta
+          echo "hd-url=$(grep '<div class="tgme_widget_message_text js-message_text" dir="auto">HD版64位   <a href="?q=%23androidhd">' bilibili_apk_beta | tee original-message.txt | grep -oP '\(\K[0-9]+' | sort -n | tail -1 | xargs -I {} grep {} original-message.txt | sed -n 's/.*rel="noopener">\(.*\)<\/a>.*/\1/p')"
+
+      # Get original bilibili
+      - name: Get original bilibili-hd
+        if: ${{ env.Build-Bilix-hd == 'true' }}
+        run: |
+          aria2c --out "hd.apk" ${{ env.hd-url }}
+
+      # Check $version & $versionCode
+      - name: "Get hd Info"
+        if: ${{ env.Build-Bilix-hd == 'true' }}
+        id: "apk-info-hd"
+        uses: "8Mi-Tech/get-apk-info-action@master"
+        with:
+          apkPath: "hd.apk"
+        #版本号：${{steps.apk-info.outputs.versionNum}}
+        #版本代码：${{steps.apk-info.outputs.versionCode}}
+
+      # Get hd $patchVersion $patchVersionCode
+      - name: Get Bilibili-hd info
+        if: ${{ env.Build-Bilix-hd == 'true' }}
+        run: |
+          echo "Bilix-hd-ver=${{steps.apk-info-hd.outputs.versionNum}}" >> $GITHUB_ENV
+          echo "Bilix-hd-vercode=${{steps.apk-info-hd.outputs.versionCode}}" >> $GITHUB_ENV
+
+      # build part
+      - name: Build Bilix-hd
+        if: ${{ env.Build-Bilix-hd == 'true' }}
+        run: |
+          java -jar revanced-cli.jar patch --merge integrations.apk --patch-bundle patches.jar --signing-levels 1,2,3 hd.apk
+
+      # named Bilix-hd
+      - name: Rename Bilix-hd
+        if: ${{ env.Build-Bilix-hd == 'true' }}
+        run: |
+          mv hd-patched.apk Bilix-hd-${{ env.Bilix-hd-ver }}-${{ env.ver }}@Aniruf_x.apk
+
+      # Signing Bilix-hd
+      - name: Resign Bilix-hd
+        if: ${{ env.Build-Bilix-hd == 'true' }}
+        run: |
+          cd ./
+          echo Downloading uber-apk-signer
+          wget https://github.com/patrickfav/uber-apk-signer/releases/download/v1.3.0/uber-apk-signer-1.3.0.jar
+          java -jar uber-apk-signer-1.3.0.jar -a Bilix-hd-${{ env.Bilix-hd-ver }}-${{ env.ver }}@Aniruf_x.apk --overwrite --allowResign --ks BiliRoamingX.p12 --ksAlias ${{ secrets.signalias }} --ksKeyPass ${{ secrets.signkey }} --ksPass ${{ secrets.signkey }}
+
+      # Get $sn
+      - name: Get sn from Bilix-hd
+        if: ${{ env.Build-Bilix-hd == 'true' }}
+        run: |
+          sudo apt-get install aapt
+          aapt dump xmltree ./Bilix-hd-${{ env.Bilix-hd-ver }}-${{ env.ver }}@Aniruf_x.apk AndroidManifest.xml > AndroidManifest_output_hd.txt
+          echo "hd-sn=$(grep "BUILD_SN" ./AndroidManifest_output_hd.txt -A 1 | grep "android:value" | cut -d'=' -f2 | cut -d')' -f2 | awk '{printf "%d\n", strtonum($1)}')" >> $GITHUB_ENV
+
+      # Get $md5
+      - name: Get md5 from Bilix-hd
+        if: ${{ env.Build-Bilix-hd == 'true' }}
+        run: |
+          echo "hd-md5=$(md5sum ./Bilix-hd-${{ env.Bilix-hd-ver }}-${{ env.ver }}@Aniruf_x.apk | cut -d ' ' -f 1)" >> $GITHUB_ENV
+
+      # Get $size
+      - name: Get size from Bilix-hd
+        if: ${{ env.Build-Bilix-hd == 'true' }}
+        run: |
+          echo "hd-size=$(stat -c %s ./Bilix-hd-${{ env.Bilix-hd-ver }}-${{ env.ver }}@Aniruf_x.apk)" >> $GITHUB_ENV
+
+      # Release part
+      - name: Release Bilix-hd
+        if: ${{ env.Build-Bilix-hd == 'true' && env.with-release == 'true' }}
+        uses: softprops/action-gh-release@v2
+        with:
+          token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+          fail_on_unmatched_files: true
+          name: 'Bilix-hd ${{ env.Bilix-hd-ver }}(${{ env.Bilix-hd-vercode }}) with BiliroamingX ${{ env.ver }}'
+          tag_name: 'android_hd-v${{ env.Bilix-hd-ver }}-b${{ env.hd-sn }}-p${{ env.ver }}'
+          body: |
+            版本信息：${{ env.Bilix-hd-ver }} ${{ env.Bilix-hd-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.hd-sn }} ${{ env.hd-size }} ${{ env.hd-md5 }} ${{ env.TIME }}
+             > 合并主分支
+             > Bump bili ver to ${{ env.Bilix-hd-vercode }}
+          files: ./Bilix-hd-${{ env.Bilix-hd-ver }}-${{ env.ver }}@Aniruf_x.apk
+        continue-on-error: true
+
+      - name: Release Bilix-hd Changelog
+        if: ${{ env.Build-Bilix-hd == 'true' && env.with-release == 'true' }}
+        uses: softprops/action-gh-release@v2
+        with:
+          append_body: true
+          token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+          fail_on_unmatched_files: true
+          name: 'Bilix-hd ${{ env.Bilix-hd-ver }}(${{ env.Bilix-hd-vercode }}) with BiliroamingX ${{ env.ver }}'
+          tag_name: 'android_hd-v${{ env.Bilix-hd-ver }}-b${{ env.hd-sn }}-p${{ env.ver }}'
+          body_path: ./build/Changelog_Nightly.txt
+
+      # Del Release Nightly ver
+      - name: Delete old Nightly Bilix-hd
+        if: ${{ env.Build-Bilix-hd == 'true' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+        run: |
+          gh release view "Nightly-android_hd" && gh release delete "Nightly-android_hd" -y --cleanup-tag
+        continue-on-error: true
+      
+     # named Bilix-hd-Nightly
+      - name: Rename Bilix-hd-Nightly
+        if: ${{ env.Build-Bilix-hd == 'true' }}
+        run: |
+          mv Bilix-hd-${{ env.Bilix-hd-ver }}-${{ env.ver }}@Aniruf_x.apk Bilix-hd-Nightly@Aniruf_x.apk
+
+      # Release Nightly
+      - name: Release Bilix-hd-Nightly
+        if: ${{ env.Build-Bilix-hd == 'true' }}
+        uses: softprops/action-gh-release@v2
+        with:
+          token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+          fail_on_unmatched_files: false
+          name: 'Bilix-hd Nightly - BiliRoamingX ${{ env.ver }}'
+          tag_name: 'Nightly-android_hd'
+          body: |
+            版本信息：${{ env.Bilix-hd-ver }} ${{ env.Bilix-hd-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.hd-sn }} ${{ env.hd-size }} ${{ env.hd-md5 }} ${{ env.TIME }}
+            
+            ![Nightly.jpg](https://github.com/sti-233/Bilix-PreBuilds/blob/main/Nightly.jpg)
+            > 合并主分支
+            > Bump bili-hd ver to ${{ env.Bilix-hd-vercode }}
+          files: |
+            ./Bilix-hd-Nightly@Aniruf_x.apk
+        continue-on-error: true
+
+      - name: Release Bilix-hd-Nightly Changelog
+        if: ${{ env.Build-Bilix-hd == 'true' }}
+        uses: softprops/action-gh-release@v2
+        with:
+          append_body: true
+          token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+          fail_on_unmatched_files: true
+          name: 'Bilix-hd Nightly - BiliRoamingX ${{ env.ver }}'
+          tag_name: 'Nightly-android_hd'
+          body_path: ./build/Changelog_Nightly.txt
+
+      # output Bilix-hd informations
+      - name: Build Bilix-hd Success
+        if: ${{ env.Build-Bilix-hd == 'true' }}
+        run: |
+          echo "### Build Bilix-hd Success" >> $GITHUB_STEP_SUMMARY
+          echo "版本信息：${{ env.Bilix-hd-ver }} ${{ env.Bilix-hd-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.hd-sn }} ${{ env.hd-size }} ${{ env.hd-md5 }} ${{ env.TIME }}" >> $GITHUB_STEP_SUMMARY
+          echo " " >> $GITHUB_STEP_SUMMARY
+          echo " > 合并主分支" >> $GITHUB_STEP_SUMMARY
+          echo " > Bump bili ver to ${{ env.Bilix-hd-vercode }}" >> $GITHUB_STEP_SUMMARY
+          echo " " >> $GITHUB_STEP_SUMMARY
+          echo "$(cat ./build/Changelog_Nightly.txt)" >> $GITHUB_STEP_SUMMARY
+        continue-on-error: true
+
+      # output Nightly ver info
+      - name: Build Bilix-hd-Nightly Success
+        if: ${{ env.Build-Bilix-hd == 'true' }}
+        run: |
+          echo "### Build Bilix-hd-Nightly Success" >> $GITHUB_STEP_SUMMARY
+          echo "版本信息：${{ env.Bilix-hd-ver }} ${{ env.Bilix-hd-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.hd-sn }} ${{ env.hd-size }} ${{ env.hd-md5 }} ${{ env.TIME }}" >> $GITHUB_STEP_SUMMARY
+          echo " " >> $GITHUB_STEP_SUMMARY
+          echo " > 合并主分支" >> $GITHUB_STEP_SUMMARY
+          echo " > Bump bili-hd ver to ${{ env.Bilix-hd-vercode }}" >> $GITHUB_STEP_SUMMARY
+          echo " " >> $GITHUB_STEP_SUMMARY
+          echo "$(cat ./build/Changelog_Nightly.txt)" >> $GITHUB_STEP_SUMMARY
+        continue-on-error: true
+
+      - name: Upload Build Resource
+        if: ${{ env.Build-Bilix == 'false' && env.Build-Bilix-hd == 'true' && env.Build-Bilix-play == 'false' }}
+        run: |
+          cd ./
+          rm ./Build.prop
+          cp ./build/Build.prop ./Build.prop
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add Build.prop
+          git commit -m "Push prop"
+          git push
+
+      # Success
+      - name: End
+        run: echo "Build end."
