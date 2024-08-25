@@ -154,7 +154,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
         run: |
-          gh release view "android_i-Nightly" && gh release delete "android_i-Nightly" -y --cleanup-tag
+          gh release view "Nightly-android_i-Nightly" && gh release delete "Nightly-android_i-Nightly" -y --cleanup-tag
         continue-on-error: true
       
      # named Bilix-play-Nightly
@@ -171,7 +171,7 @@ jobs:
           token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
           fail_on_unmatched_files: false
           name: 'Bilix-play Nightly - BiliRoamingX ${{ env.ver }}'
-          tag_name: 'android_i-Nightly'
+          tag_name: 'Nightly-android_i-Nightly'
           body: |
             版本信息：${{ env.Bilix-play-ver }} ${{ env.Bilix-play-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.play-sn }} ${{ env.play-size }} ${{ env.play-md5 }} ${{ env.TIME }}
             
@@ -179,7 +179,7 @@ jobs:
             > 合并主分支
             > Bump bili-play ver to ${{ env.Bilix-play-vercode }}
           files: |
-            ./Bilix-play-play-Nightly@Aniruf_x.apk
+            ./Bilix-play-Nightly@Aniruf_x.apk
         continue-on-error: true
 
       - name: Release Bilix-play-Nightly Changelog
@@ -190,7 +190,7 @@ jobs:
           token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
           fail_on_unmatched_files: true
           name: 'Bilix-play Nightly - BiliRoamingX ${{ env.ver }}'
-          tag_name: 'android_i-Nightly'
+          tag_name: 'Nightly-android_i-Nightly'
           body_path: ./build/Changelog_Nightly.txt
 
       # output Bilix-play informations
