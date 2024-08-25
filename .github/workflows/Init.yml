@@ -151,6 +151,7 @@ jobs:
             # 存变量
             sed -i 's/^.*BiliRoamingX\.ver\.full.*$/BiliRoamingX.ver.full=${{ env.get-version }}/' ./Build.prop
             sed -i 's/^.*BiliRoamingX\.ver\.big.*$/BiliRoamingX.ver.big=${{ env.get-version }}/' ./Build.prop
+            sed -i 's/^.*BiliRoamingX\.ver\.small.*$/BiliRoamingX.ver.small=${{ env.get-commit_count }}/' ./Build.prop
             sed -i 's/^.*commit\.id\.nightly\.start.*$/commit.id.nightly.start=${{ env.latest-commit-id }}/' ./Build.prop
             sed -i 's/^.*BiliRoamingX\.ver\.code.*$/BiliRoamingX.ver.code=${{ env.vercode }}/' ./Build.prop
             sed -i 's/^.*BiliRoamingX\.ver\.compare.*$/BiliRoamingX.ver.compare=${{ env.get-commit_count }}/' ./Build.prop
