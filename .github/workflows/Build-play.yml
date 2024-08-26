@@ -230,6 +230,7 @@ jobs:
           git add Build.prop
           git commit -m "Push prop"
           git push
+        continue-on-error: true
 
       # Success
       - name: End
