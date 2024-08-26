@@ -1,11 +1,11 @@
-	AndroidManifest_output_*.txt
-	*@Aniruf_x.apk.idsig
-	bilibili_apk_beta
-	*-patched-options.json
-	*-patched-temporary-files/
-	*-patched.keystore
-	*.apk
-	original-message.txt
-	patches.jar
-	revanced-cli.jar
-	uber-apk-signer-*.jar
+./	AndroidManifest_output_*.txt
+./*@Aniruf_x.apk.idsig
+./bilibili_apk_beta
+./*-patched-options.json
+./*-patched-temporary-files/
+./*-patched.keystore
+./*.apk
+./original-message.txt
+./patches.jar
+./revanced-cli.jar
+./uber-apk-signer-*.jar
