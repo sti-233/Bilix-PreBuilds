@@ -10,7 +10,7 @@
 
 Bilix patches from [BiliroamingX-fork](https://github.com/sti-233/BiliRoamingX)
 
-[![CI](https://github.com/sti-233/Bilix-PreBuilds/actions/workflows/Build.yml/badge.svg)](https://github.com/sti-233/Bilix-PreBuilds/actions/workflows/Build.yml)<br/>[![CI](https://github.com/sti-233/Bilix-PreBuilds/actions/workflows/Init.yml/badge.svg)](https://github.com/sti-233/Bilix-PreBuilds/actions/workflows/Init.yml)<br/>[![CI](https://github.com/sti-233/Bilix-PreBuilds/actions/workflows/Nightly-Build.yml/badge.svg)](https://github.com/sti-233/Bilix-PreBuilds/actions/workflows/Nightly-Build.yml)[![CI](https://github.com/sti-233/Bilix-PreBuilds/actions/workflows/Release-Build.yml/badge.svg)](https://github.com/sti-233/Bilix-PreBuilds/actions/workflows/Release-Build.yml)
+[![CI](https://github.com/sti-233/Bilix-PreBuilds/actions/workflows/Build.yml/badge.svg)](https://github.com/sti-233/Bilix-PreBuilds/actions/workflows/Build.yml)(Old)<br/>[![CI](https://github.com/sti-233/Bilix-PreBuilds/actions/workflows/Init.yml/badge.svg)](https://github.com/sti-233/Bilix-PreBuilds/actions/workflows/Init.yml)(New)<br/><br/>[![CI](https://github.com/sti-233/Bilix-PreBuilds/actions/workflows/Build-cn.yml/badge.svg)](https://github.com/sti-233/Bilix-PreBuilds/actions/workflows/Build-cn.yml)<br/>[![CI](https://github.com/sti-233/Bilix-PreBuilds/actions/workflows/Build-play.yml/badge.svg)](https://github.com/sti-233/Bilix-PreBuilds/actions/workflows/Build-play.yml)<br/>[![CI](https://github.com/sti-233/Bilix-PreBuilds/actions/workflows/Build-hd.yml/badge.svg)](https://github.com/sti-233/Bilix-PreBuilds/actions/workflows/Build-hd.yml)
 
 >[!Warning]
 >此项目与 [HFrost0/bilix](https://github.com/HFrost0/bilix) 无关！
