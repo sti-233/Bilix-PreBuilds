@@ -52,7 +52,7 @@ Wait for your issuse
 - [BiliRoamingX/BiliRoamingX](https://github.com/BiliRoamingX/BiliRoamingX)
 - [BiliRoamingX/BiliRoamingX-PreBuilds](https://github.com/BiliRoamingX/BiliRoamingX-PreBuilds)<br/>
   (原项目)
-- [sti-233/BiliRoamingX](https://github.com/sti-233/BiliRoamingX)
+- [sti-233/BiliRoamingX](https://github.com/sti-233/BiliRoamingX)<br/>
   (允许非官方构建更新 支持自定义更新源)
 - [vc-teahouse/inital-biliroaming-maker](https://github.com/vc-teahouse/inital-biliroaming-maker)<br/>
   (ci基本框架)
@@ -65,6 +65,7 @@ Wait for your issuse
 > - [softprops/action-gh-release](https://github.com/softprops/action-gh-release)
 
 ## Licence
+- 本项目引用了有关[BiliRoamingX/BiliRoamingX](https://github.com/BiliRoamingX/BiliRoamingX)的文件
 
 [![GitHub](https://img.shields.io/github/license/sti-233/Bilix-PreBuilds?style=for-the-badge)](https://github.com/sti-233/Bilix-PreBuilds/blob/main/LICENSE)
 
