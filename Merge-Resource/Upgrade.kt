@@ -36,8 +36,6 @@ object Upgrade : ApiHook() {
     val updateApi = Settings.UpdateApi()
     private val changelogRegex = Regex("""版本信息：(.*?)\n(.*)""", RegexOption.DOT_MATCHES_ALL)
     var fromSelf = true
-    var isPrebuilt = true
-    var isOsArchArm64 = true
 
     fun customUpdate(fromSelf: Boolean = true): Boolean {
         return (fromSelf) && isOsArchArm64 && isPrebuilt
