@@ -65,7 +65,7 @@ Wait for your issuse
 > - [softprops/action-gh-release](https://github.com/softprops/action-gh-release)
 
 ## Licence
-- 本项目使用了部分[BiliRoamingX](https://github.com/BiliRoamingX/BiliRoamingX)的文件
+- 本项目使用了[BiliRoamingX](https://github.com/BiliRoamingX/BiliRoamingX)
 
 [![GitHub](https://img.shields.io/github/license/sti-233/Bilix-PreBuilds?style=for-the-badge)](https://github.com/sti-233/Bilix-PreBuilds/blob/main/LICENSE)
 
