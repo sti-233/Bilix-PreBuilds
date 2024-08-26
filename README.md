@@ -52,7 +52,7 @@ Wait for your issuse
 - [BiliRoamingX/BiliRoamingX](https://github.com/BiliRoamingX/BiliRoamingX)
 - [BiliRoamingX/BiliRoamingX-PreBuilds](https://github.com/BiliRoamingX/BiliRoamingX-PreBuilds)<br/>
   (原项目)
-- [sti-233/BiliRoamingX](https://github.com/sti-233/BiliRoamingX)<br/>
+- [sti-233/BiliRoamingX](https://github.com/sti-233/BiliRoamingX)-fork<br/>
   (允许非官方构建更新 支持自定义更新源)
 - [vc-teahouse/inital-biliroaming-maker](https://github.com/vc-teahouse/inital-biliroaming-maker)<br/>
   (ci基本框架)
