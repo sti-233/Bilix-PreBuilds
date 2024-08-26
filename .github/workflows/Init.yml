@@ -70,8 +70,10 @@ jobs:
           cd ./
           git clone https://github.com/sti-233/Bilix-PreBuilds.git
           cp ./Bilix-PreBuilds/Merge-Resource/biliroaming_setting_custom_update_source.xml ./BiliRoamingX/patches/src/main/resources/bilibili/xml/biliroaming_setting_custom_update_source.xml
+          cp ./Bilix-PreBuilds/Merge-Resource/Upgrade.kt ./BiliRoamingX/integrations/app/src/main/java/app/revanced/bilibili/patches/okhttp/hooks/Upgrade.kt
           rm ./Bilix-PreBuilds/Merge-Resource/Build.prop
           rm ./Bilix-PreBuilds/Merge-Resource/biliroaming_setting_custom_update_source.xml
+          rm ./Bilix-PreBuilds/Merge-Resource/Upgrade.kt
           cp ./Bilix-PreBuilds/Merge-Resource/* ./BiliRoamingX
 
       # Recompose resource
@@ -111,6 +113,7 @@ jobs:
           awk '/<resources>/ { print; print "    <string name=\"biliroaming_release_host\">https://api.github.com/repos/sti-233/Bilix-PreBuilds/releases</string>\n    <string name=\"biliroaming_nightly_host\">https://api.github.com/repos/sti-233/Bilix-PreBuilds/releases/tag/Nightly</string>\n    <string name=\"biliroaming_original_host\">https://api.github.com/repos/BiliRoamingX/BiliRoamingX-PreBuilds/releases</string>"; next }1' ./BiliRoamingX/patches/src/main/resources/bilibili/host/values/strings_raw.xml > temp.xml && mv temp.xml ./BiliRoamingX/patches/src/main/resources/bilibili/host/values/strings_raw.xml
           awk '/    private val xmls = arrayOf\(/ { print; print "        \"biliroaming_setting_custom_update_source.xml\","; next }1' ./BiliRoamingX/patches/src/main/kotlin/app/revanced/patches/bilibili/misc/settings/patch/SettingsResourcePatch.kt > temp.kt && mv temp.kt ./BiliRoamingX/patches/src/main/kotlin/app/revanced/patches/bilibili/misc/settings/patch/SettingsResourcePatch.kt
           echo -e "\n@SettingFragment(\"biliroaming_setting_custom_update_source\")\nclass UpdateSettingFragment : BiliRoamingBaseSettingFragment()" >> ./BiliRoamingX/integrations/app/src/main/java/app/revanced/bilibili/settings/fragments/fragments.kt
+          awk '/@JvmField val CustomUpdate = BooleanSetting\(key = "custom_update", defValue = true\)/ { print; print "    @JvmField val UpdateApi = StringSetting(key = \"custom_update_source\", needReboot = true)"; next }1' ./BiliRoamingX/integrations/app/src/main/java/app/revanced/bilibili/settings/Settings.kt > temp.kt && mv temp.kt ./BiliRoamingX/integrations/app/src/main/java/app/revanced/bilibili/settings/Settings.kt
           echo "Recompose Succeed"
 
       ## Build BiliRoamingX CI
