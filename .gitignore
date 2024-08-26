@@ -1,4 +1,4 @@
-./	AndroidManifest_output_*.txt
+./AndroidManifest_output_*.txt
 ./*@Aniruf_x.apk.idsig
 ./bilibili_apk_beta
 ./*-patched-options.json
