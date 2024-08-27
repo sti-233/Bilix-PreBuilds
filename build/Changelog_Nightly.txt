@@ -1,3 +1,4 @@
+- fix: remember playback speed
 - fix: player setting create speed fingerprint
 - fix: remember playback speed
 - chore: restore replace story video behavior
