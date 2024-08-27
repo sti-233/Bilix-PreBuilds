@@ -1,3 +1,4 @@
+- fix: player setting create speed fingerprint
 - fix: remember playback speed
 - chore: restore replace story video behavior
 - feat: block plus one popups
