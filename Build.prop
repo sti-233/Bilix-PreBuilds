@@ -9,7 +9,7 @@ ahead.commits.number=1
 ## 获取更新日志
 # use offical repo commit id
 # start commit id
-commit.id.latest=9e4051897c6a8795560a800883d240e76a31991e
+commit.id.latest=ccdcc818dddcff964cace8aa61e59deb18c88e67
 commit.id.nightly.start=66dc0506fec98441cb1156f57989fc42c9649fb0
 # Changelog need
 push.changelog=true
@@ -27,9 +27,9 @@ Bilix.vercode.play=7750600
 
 ## BiliRoamingX ver
 # Latest
-BiliRoamingX.ver.full=1.23.2.r1974
+BiliRoamingX.ver.full=1.23.2.r1975
 BiliRoamingX.ver.big=1.23.2
-BiliRoamingX.ver.small=1974
+BiliRoamingX.ver.small=1975
 BiliRoamingX.ver.code=1023002
 # Compare
 BiliRoamingX.ver.compare=1972
