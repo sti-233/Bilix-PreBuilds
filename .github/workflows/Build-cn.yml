@@ -183,6 +183,16 @@ jobs:
             ./Bilix-cn-Nightly@Aniruf_x.apk
         continue-on-error: true
 
+      # Well, yuck...  but hopefully this does the trick:
+      - name: Fix Release
+        run: |
+          curl --request PATCH \
+          --header 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+          --header 'Content-type: application/json' \
+          --header 'User-Agent: Github-Action' \
+          --url https://api.github.com/repos/sti-233/Bilix-Prebuilds/releases/Nightly-android-Nightly \
+          --data '{ "draft": false }'
+
       - name: Release Bilix-Nightly Changelog
         if: ${{ env.Build-Bilix == 'true' }}
         uses: softprops/action-gh-release@v2
