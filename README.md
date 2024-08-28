@@ -60,6 +60,7 @@ Wait for your issuse
   (bilibili原包下载部分参考)
 - [patrickfav/uber-apk-signer](https://github.com/patrickfav/uber-apk-signer)<br/>
   (Bilix签名)
+- [ho-dev/HattrickOrganizer/commit/c5ec184](https://github.com/ho-dev/HattrickOrganizer/commit/c5ec1842b35c658b5c5d0fe3297bded8cafed491)
 > **Actions Used**
 > - [8Mi-Tech/get-apk-info-action](https://github.com/8Mi-Tech/get-apk-info-action)
 > - [softprops/action-gh-release](https://github.com/softprops/action-gh-release)
