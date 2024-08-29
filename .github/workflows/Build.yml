@@ -417,7 +417,7 @@ jobs:
               RoamingXver = os.environ["ver"]
               ver = os.environ["Bilix-ver"]
               ver_code = os.environ["Bilix-vercode"]
-              channel_id = os.environ["CHANNEL_ID"]
+              chat_id = int(os.environ["CHANNEL_ID"])
               changelog = os.environ["Nightly_Changelog"]
               msg_p1 = f"Bilix Dev"
               msg_p2 = f"BiliRoamingX {RoamingXver}"
@@ -448,7 +448,7 @@ jobs:
               dev = InputMediaDocument(media=os.environ["DEV_APK"], caption=caption)
               # 发送到指定的频道
               await bot.send_media_group(
-                chat_id=channel_id,
+                chat_id=chat_id,
                 media=[dev],
               )
           async def wait():
