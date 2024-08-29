@@ -421,12 +421,12 @@ jobs:
               changelog = os.environ["Nightly_Changelog"]
               msg_p1 = f"Bilix Dev"
               msg_p2 = f"BiliRoamingX {RoamingXver}"
-              msg_p3 = "```"
+              msg_p3 = "```  "
               msg_p4 = f"cn {ver} {ver_code}"
               msg_p5 = "```"
               msg_p6 = "New release to GitHub!"
               msg_p7 = "```"
-              msg_p8 = inspect.cleandoc("""
+              msg_p8 = inspect.cleandoc("""  
               > 合并 sti-233/BiliRoamingX
                *现在具有切换更新源的能力
               """)
