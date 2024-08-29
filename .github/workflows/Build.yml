@@ -421,15 +421,15 @@ jobs:
               changelog = os.environ["Nightly_Changelog"]
               msg_p1 = f"Bilix Dev"
               msg_p2 = f"BiliRoamingX {RoamingXver}"
-              msg_p3 = "`"
+              msg_p3 = "<blockquote>"
               msg_p4 = f"cn {ver} {ver_code}"
-              msg_p5 = "`"
-              msg_p6 = "New release to GitHub!```"
+              msg_p5 = "</blockquote>"
+              msg_p6 = "New release to GitHub!<blockquote>"
               msg_p7 = inspect.cleandoc("""
               > 合并 sti-233/BiliRoamingX
                *现在具有切换更新源的能力
               """)
-              msg_p8 = f"{changelog}```"
+              msg_p8 = f"{changelog}</blockquote>"
               msg_p9 = inspect.cleandoc("""
               by sti-233
               在Github查看详情
@@ -438,7 +438,7 @@ jobs:
               Patched by @Aniruf_x
               #Biliroaming_X
               """)
-              caption = "{}\n\n{}\n{}{}{}\n\n{}{}{}\n{}".format(msg_p1, msg_p2, msg_p3, msg_p4, msg_p5, msg_p6, msg_p7, msg_p8, msg_p9)
+              caption = "{}\n\n{}\n{}{}{}\n\n{}{}\n{}\n{}".format(msg_p1, msg_p2, msg_p3, msg_p4, msg_p5, msg_p6, msg_p7, msg_p8, msg_p9)
               dev = InputMediaDocument(media=os.environ["DEV_APK"], caption=caption)
               # 发送到指定的频道
               await bot.send_media_group(
