@@ -38,7 +38,7 @@ object Upgrade : ApiHook() {
     var fromSelf = true
 
     fun customUpdate(fromSelf: Boolean = true): Boolean {
-        return (fromSelf) && isOsArchArm64 && isPrebuilt
+        return true
     }
 
     override fun shouldHook(url: String, status: Int): Boolean {
@@ -100,7 +100,10 @@ object Upgrade : ApiHook() {
                 Logger.debug { "Upgrade info: versionSum: $versionSum, changelog: $changelog, url: $url" }
                 val info = BUpgradeInfo(versionSum, url, changelog)
                 Logger.debug { "Parsed BUpgradeInfo: $info" }
-                if (sn < info.sn || (sn == info.sn && patchVersionCode < info.patchVersionCode)) {
+                val patchVersionLong = convertVersion(patchVersion)
+                val infoPatchVersionLong = convertVersion(info.patchVersion)
+                Logger.debug { "BiliRoamingX version : now is $patchVersion->$patchVersionLong. Github is $info.patchVersion->$infoPatchVersionLong" }
+                if (sn < info.sn || (sn == info.sn && patchVersionLong < infoPatchVersionLong)) {
                     Logger.debug { "New version available: $info" }
                     val sameApp = sn == info.sn
                     val samePatch = patchVersion == info.patchVersion
@@ -180,9 +183,16 @@ object Upgrade : ApiHook() {
                     break
                 }
                 Logger.debug { "Upgrade, versionSum: $versionSum, changelog: $changelog, url: $url" }
-                val info = BUpgradeInfo(versionSum!!, url, changelog!!)
+                val info = BUpgradeInfo(
+                    versionSum!!,
+                    url!!,
+                    changelog!!
+                )
                 Logger.debug { "Parsed BUpgradeInfo: $info" }
-                if (sn < info.sn || (sn == info.sn && patchVersionCode < info.patchVersionCode)) {
+                val patchVersionLong = convertVersion(patchVersion)
+                val infoPatchVersionLong = convertVersion(info.patchVersion)
+                Logger.debug { "BiliRoamingX version : now is $patchVersion->$patchVersionLong. Github is $info.patchVersion->$infoPatchVersionLong" }
+                if (sn < info.sn || (sn == info.sn && patchVersionLong < infoPatchVersionLong)) {
                     Logger.debug { "New version available: $info" }
                     val sameApp = sn == info.sn
                     val samePatch = patchVersion == info.patchVersion
@@ -231,5 +241,25 @@ object Upgrade : ApiHook() {
                 Logger.debug { "Upgrade Api page : $page" }
             }
         }
+    }
+
+    // 1.22.5.r1864
+    // 102200501864
+    // 1.23.2->98005232704
+    // 1.23.2.r1975->98005234679
+    // 1.23.2.r1976->98005234680
+    // What the fuck?
+    fun convertVersion(version: String): String {
+        val parts = version.split(".")
+        if (parts.size < 3) return "".also {
+            Logger.debug { "What the fuck? Why the versions don't match？" }
+        }
+        val major = parts[0]
+        val minor = parts[1].padStart(3, '0')
+        val patch = parts[2].padStart(3, '0')
+        val release = parts[3].split("r").getOrNull(1)?.padStart(5, '0') ?: "00000"
+        val combinedVersion = "$major$minor$patch$release"
+        Logger.debug { "Get version: $combinedVersion" }
+        return combinedVersion
     }
 }
