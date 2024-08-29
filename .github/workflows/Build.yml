@@ -425,7 +425,7 @@ jobs:
               msg_p4 = "New release to GitHub!<pre>"
               msg_p5 = inspect.cleandoc("""
               > 合并 sti-233/BiliRoamingX
-               *现在具有切换更新源的能力
+               *现在具有切换更新源的能力\n
               """)
               msg_p6 = f"{changelog}</pre>"
               msg_p7 = inspect.cleandoc("""
