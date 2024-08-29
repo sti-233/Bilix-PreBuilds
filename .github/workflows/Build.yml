@@ -389,7 +389,7 @@ jobs:
         run : |
           mv ./Bilix-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk ./Bilix-Dev-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk
           echo "Nightly_Changelog<<EOF" >> $GITHUB_ENV
-          cat changelog >> $GITHUB_ENV
+          cat /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/Changelog.txt >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
           echo "DEV_APK=./Bilix-Dev-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk" >> $GITHUB_ENV
 
