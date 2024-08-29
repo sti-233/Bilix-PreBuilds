@@ -392,6 +392,7 @@ jobs:
           cat /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/Changelog.txt >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
           echo "DEV_APK=./Bilix-Dev-${{ env.Bilix-ver }}-${{ env.ver }}@Aniruf_x.apk" >> $GITHUB_ENV
+          pip install pyrogram tgcrypto
 
       - name: Send to Telegram
         shell: python
