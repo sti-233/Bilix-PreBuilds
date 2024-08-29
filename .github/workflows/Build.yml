@@ -72,7 +72,7 @@ jobs:
           cd ./changelog/
           git clone --recurse-submodules https://github.com/BiliRoamingX/BiliRoamingX.git
           cd BiliRoamingX
-          git log --oneline 6f6bf8986ed05083cec14d6db1fcefbbf66abaff...HEAD | sed 's/^[0-9a-f]\{8\} /- /' > Changelog.txt
+          git log --oneline 66dc0506fec98441cb1156f57989fc42c9649fb0...HEAD | sed 's/^[0-9a-f]\{8\} /- /' > Changelog.txt
           cd /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/
           ls -al /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/changelog/BiliRoamingX
           cp /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/changelog/BiliRoamingX/Changelog.txt /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/Changelog.txt
