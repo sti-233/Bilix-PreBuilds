@@ -1,3 +1,12 @@
+- chore: get column from api response
+- chore: optimize migration
+- chore: delay init modules
+- fix: iteration
+- fix: json patch
+- feat: improve block video popups
+- chore: log json hook error
+- fix: purify live popups
+- fix: override playback speed patch
 - build(deps): bump agp from 8.5.2 to 8.6.0 (#440)
 - build(deps): bump org.jetbrains.kotlinx:kotlinx-serialization-json (#437)
 - build(deps): bump com.google.protobuf:protobuf-javalite (#438)
