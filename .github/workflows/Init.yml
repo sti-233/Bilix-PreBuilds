@@ -10,6 +10,26 @@ on:
         type: boolean
         default: false
         required: true
+      Release-All:
+        description: 'Release All'
+        type: boolean
+        default: false
+        required: true
+      Release-cn:
+        description: 'Release cn'
+        type: boolean
+        default: false
+        required: true
+      Release-play:
+        description: 'Release play'
+        type: boolean
+        default: false
+        required: true
+      Release-hd:
+        description: 'Release hd'
+        type: boolean
+        default: false
+        required: true
 
 jobs:
   Build-Init:
@@ -66,6 +86,7 @@ jobs:
           echo -e " - no changelog now " >> /home/runner/work/Bilix-PreBuilds/Changelog_Nightly.txt
       # Get resource
       - name: Get fork resource
+        if: ${{ github.event.inputs.Forced-Build != 'true' }}
         run: |
           cd ./
           git clone https://github.com/sti-233/Bilix-PreBuilds.git
@@ -79,6 +100,7 @@ jobs:
       # Recompose resource
       # Merge fork branch sti-233/BiliRoamingX
       - name: Recompose resource
+        if: ${{ github.event.inputs.Forced-Build != 'true' }}
         run: |
           sed -i 's/^.*commit\.id\.latest.*$/commit.id.latest=${{ env.latest-commit-id }}/' ./Build.prop
           sed -i '/    <string name="biliroaming_settings_title">哔哩漫游X<\/string>/c\    <string name="biliroaming_settings_title">BiliRoamingX<\/string>' ./BiliRoamingX/patches/src/main/resources/bilibili/host/values/strings.xml
@@ -108,9 +130,9 @@ jobs:
           sed -i '/                return mapOf("code" to -1, "message" to "未发现新版漫游X集成包！").toJSONObject()/c\                return mapOf("code" to -1, "message" to "未发现新版 Bilix ！").toJSONObject()' ./BiliRoamingX/integrations/app/src/main/java/app/revanced/bilibili/patches/okhttp/hooks/Upgrade.kt
           sed -i '/                .also { fromSelf = false }/c\                .also { fromSelf = true }' ./BiliRoamingX/integrations/app/src/main/java/app/revanced/bilibili/patches/okhttp/hooks/Upgrade.kt
           awk '/<resources>/ { print; print "    <string-array name=\"biliroaming_update_source_entries\">\n        <item>Bilix-Release</item>\n        <item>Bilix-Nightly</item>\n        <item>BiliRoamingX/BiliRoamingX-Prebuilds</item>\n    </string-array>\n    <string-array name=\"biliroaming_update_source_values\">\n        <item>@string/biliroaming_release_host</item>\n        <item>@string/biliroaming_nightly_host</item>\n        <item>@string/biliroaming_original_host</item>\n    </string-array>\n    <string-array name=\"biliroaming_update_source_summaries\">\n        <item>由 sti-233 (本fork) 提供的更新源 较慢</item>\n        <item>由 sti-233 (本fork) 提供的更新源 快</item>\n        <item>由  zjns (bb_show) 提供的更新源 很慢 (签名不同 !)</item>\n    </string-array>"; next }1' ./BiliRoamingX/patches/src/main/resources/bilibili/host/values/arrays.xml > temp.xml && mv temp.xml ./BiliRoamingX/patches/src/main/resources/bilibili/host/values/arrays.xml
-          awk '/<resources>/ { print; print "    <string name=\"biliroaming_custom_update_source_title\">自定义更新源</string>\n    <string name=\"biliroaming_custom_update_source_summary\">不同源间可能签名不同,请谨慎选择 !</string>"; next }1' ./BiliRoamingX/patches/src/main/resources/bilibili/host/values/strings.xml > temp.xml && mv temp.xml ./BiliRoamingX/patches/src/main/resources/bilibili/host/values/strings.xml
+          awk '/<resources>/ { print; print "    <string name=\"biliroaming_custom_update_source_title\">自定义更新源(未完成)</string>\n    <string name=\"biliroaming_custom_update_source_summary\">不同源间可能签名不同,请谨慎选择 !</string>"; next }1' ./BiliRoamingX/patches/src/main/resources/bilibili/host/values/strings.xml > temp.xml && mv temp.xml ./BiliRoamingX/patches/src/main/resources/bilibili/host/values/strings.xml
           awk '/android:title="@string\/biliroaming_custom_update_title" \/>/ { print; print "        <tv.danmaku.bili.widget.preference.BLRadioGroupEntrancePreference\n            android:dependency=\"custom_update\"\n            android:fragment=\"app.revanced.bilibili.settings.fragments.UpdateSettingFragment\"\n            android:key=\"custom_update_source\"\n            android:persistent=\"true\"\n            android:title=\"@string/biliroaming_custom_update_source_title\"\n            app:migration_settings_type=\"none\"\n            app:radioDefaultValue=\"@string/biliroaming_release_host\"\n            app:radioEntries=\"@array/biliroaming_update_source_entries\"\n            app:radioEntryValues=\"@array/biliroaming_update_source_values\" />"; next }1' ./BiliRoamingX/patches/src/main/resources/bilibili/xml/biliroaming_setting_misc.xml > temp.xml && mv temp.xml ./BiliRoamingX/patches/src/main/resources/bilibili/xml/biliroaming_setting_misc.xml
-          awk '/<resources>/ { print; print "    <string name=\"biliroaming_release_host\">https://api.github.com/repos/sti-233/Bilix-PreBuilds/releases</string>\n    <string name=\"biliroaming_nightly_host\">https://api.github.com/repos/sti-233/Bilix-PreBuilds/releases/tag/Nightly</string>\n    <string name=\"biliroaming_original_host\">https://api.github.com/repos/BiliRoamingX/BiliRoamingX-PreBuilds/releases</string>"; next }1' ./BiliRoamingX/patches/src/main/resources/bilibili/host/values/strings_raw.xml > temp.xml && mv temp.xml ./BiliRoamingX/patches/src/main/resources/bilibili/host/values/strings_raw.xml
+          awk '/<resources>/ { print; print "    <string name=\"biliroaming_release_host\">https://api.github.com/repos/sti-233/Bilix-PreBuilds/releases</string>\n    <string name=\"biliroaming_nightly_host\">https://api.github.com/repos/sti-233/Bilix-PreBuilds/releases/</string>\n    <string name=\"biliroaming_original_host\">https://api.github.com/repos/BiliRoamingX/BiliRoamingX-PreBuilds/releases</string>"; next }1' ./BiliRoamingX/patches/src/main/resources/bilibili/host/values/strings_raw.xml > temp.xml && mv temp.xml ./BiliRoamingX/patches/src/main/resources/bilibili/host/values/strings_raw.xml
           awk '/    private val xmls = arrayOf\(/ { print; print "        \"biliroaming_setting_custom_update_source.xml\","; next }1' ./BiliRoamingX/patches/src/main/kotlin/app/revanced/patches/bilibili/misc/settings/patch/SettingsResourcePatch.kt > temp.kt && mv temp.kt ./BiliRoamingX/patches/src/main/kotlin/app/revanced/patches/bilibili/misc/settings/patch/SettingsResourcePatch.kt
           echo -e "\n@SettingFragment(\"biliroaming_setting_custom_update_source\")\nclass UpdateSettingFragment : BiliRoamingBaseSettingFragment()" >> ./BiliRoamingX/integrations/app/src/main/java/app/revanced/bilibili/settings/fragments/fragments.kt
           awk '/@JvmField val CustomUpdate = BooleanSetting\(key = "custom_update", defValue = true\)/ { print; print "    @JvmField val UpdateApi = StringSetting(key = \"custom_update_source\", needReboot = true)"; next }1' ./BiliRoamingX/integrations/app/src/main/java/app/revanced/bilibili/settings/Settings.kt > temp.kt && mv temp.kt ./BiliRoamingX/integrations/app/src/main/java/app/revanced/bilibili/settings/Settings.kt
@@ -119,12 +141,14 @@ jobs:
       ## Build BiliRoamingX CI
       # from fork
       - name: Set up JDK
+        if: ${{ github.event.inputs.Forced-Build != 'true' }}
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
 
       - name: Cache gradle
+        if: ${{ github.event.inputs.Forced-Build != 'true' }}
         uses: actions/cache@v4
         with:
           path: |
@@ -204,8 +228,23 @@ jobs:
             fi
           fi
 
+      - name: Retrieve Release Result
+        run: |
+          if [ "${{ github.event.inputs.Release-All }}" == "true" ]; then
+          sed -i 's/^.*temp\.with\.release.*$/temp.with.release=true/' ./Build.prop
+          fi
+          if [ "${{ github.event.inputs.Release-cn }}" == "true" ]; then
+          sed -i 's/^.*temp\.release\.cn.*$/temp.release.cn=true/' ./Build.prop
+          fi
+          if [ "${{ github.event.inputs.Release-play }}" == "true" ]; then
+          sed -i 's/^.*temp\.release\.play.*$/temp.release.play=true/' ./Build.prop
+          fi
+          if [ "${{ github.event.inputs.Release-hd }}" == "true" ]; then
+          sed -i 's/^.*temp\.release\.hd.*$/temp.release.hd=true/' ./Build.prop
+          fi
+
       - name: Build with gradle
-        if: ${{ env.need-Build != 'false' || env.need-Build == '' }}
+        if: ${{ (github.event.inputs.Forced-Build != 'true' || github.event.inputs.Forced-Build == '') && (env.need-Build != 'false' || env.need-Build == '') }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
@@ -214,14 +253,14 @@ jobs:
 
       - name: Upload CI Resource
         uses: actions/upload-artifact@v4
-        if: success() && ( env.need-Build != 'false' || env.need-Build == '' )
+        if: ${{ (github.event.inputs.Forced-Build != 'true' || github.event.inputs.Forced-Build == '') && (env.need-Build != 'false' || env.need-Build == '') && success() }}
         with:
           name: BiliRoamingX-${{ env.BiliRoamingX-ver }}
           path: /home/runner/work/Bilix-PreBuilds/Bilix-PreBuilds/BiliRoamingX/build/*
 
       - name: Upload Build Resource
         uses: actions/upload-artifact@v4
-        if: success() && ( env.need-Build != 'false' || env.need-Build == '' )
+        if: ${{ (github.event.inputs.Forced-Build != 'true' || github.event.inputs.Forced-Build == '') && (env.need-Build != 'false' || env.need-Build == '') && success() }}
         with:
           name: Build_resource
           path: |
@@ -230,7 +269,7 @@ jobs:
             /home/runner/work/Bilix-PreBuilds/Changelog_Nightly.txt
 
       - name: Upload Build Resource
-        if: success() && ( env.need-Build != 'false' || env.need-Build == '' )
+        if: ${{ (github.event.inputs.Forced-Build != 'true' || github.event.inputs.Forced-Build == '') && (env.need-Build != 'false' || env.need-Build == '') && success() }}
         run: |
           cd ./
           mkdir -p build
@@ -269,7 +308,7 @@ jobs:
           https://api.github.com/repos/${{ github.repository }}/dispatches \
           -d '{"event_type":"Build-play"}'
 
-      - name: Init Build hd
+      - name: Init Build cn
         if: ${{ env.need-Build != 'false' || env.need-Build == '' }}
         run: |
           curl -X POST \

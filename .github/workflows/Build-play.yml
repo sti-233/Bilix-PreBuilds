@@ -18,6 +18,8 @@ jobs:
         run: |
           TIME=$EPOCHSECONDS
           echo "TIME=$TIME" >> $GITHUB_ENV
+          Day=$(date +"%-m.%-d")
+          echo "Day=$Day" >> $GITHUB_ENV
 
       # Check repo
       - name: Checkout code
@@ -39,8 +41,13 @@ jobs:
           echo "Build-Bilix=`awk -F "=" '$1 == "Bilix.build.cn" {print $2}' ./build/Build.prop`" >> $GITHUB_ENV
           echo "Build-Bilix-play=`awk -F "=" '$1 == "Bilix.build.play" {print $2}' ./build/Build.prop`" >> $GITHUB_ENV
           echo "with-release=`awk -F "=" '$1 == "temp.with.release" {print $2}' ./build/Build.prop`" >> $GITHUB_ENV
+          echo "release=`awk -F "=" '$1 == "temp.release.play" {print $2}' ./build/Build.prop`" >> $GITHUB_ENV
           # Changelog need
           echo "push-changelog=`awk -F "=" '$1 == "push.changelog" {print $2}' ./build/Build.prop`" >> $GITHUB_ENV
+          echo "Nightly-Changelog<<EOF" >> $GITHUB_ENV
+          cat ./build/Changelog_Nightly.txt >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+          echo "commit-count=`git rev-list HEAD --count`" >> $GITHUB_ENV
 
       # Get revanced-cli
       - name: Get Revanced-cli
@@ -123,7 +130,7 @@ jobs:
 
       # Release part
       - name: Release Bilix-play
-        if: ${{ env.Build-Bilix-play == 'true' && env.with-release == 'true' }}
+        if: ${{ env.Build-Bilix-play == 'true' && (env.with-release == 'true' || env.release == 'true') }}
         uses: softprops/action-gh-release@v2
         with:
           token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
@@ -134,19 +141,10 @@ jobs:
             版本信息：${{ env.Bilix-play-ver }} ${{ env.Bilix-play-vercode }} ${{ env.ver }} ${{ env.bigver }} ${{ env.play-sn }} ${{ env.play-size }} ${{ env.play-md5 }} ${{ env.TIME }}
              > 合并主分支
              > Bump bili ver to ${{ env.Bilix-play-vercode }}
+            
+            ${{ env.Nightly-Changelog }}
           files: ./Bilix-play-${{ env.Bilix-play-ver }}-${{ env.ver }}@Aniruf_x.apk
         continue-on-error: true
-
-      - name: Release Bilix-play Changelog
-        if: ${{ env.Build-Bilix-play == 'true' && env.with-release == 'true' }}
-        uses: softprops/action-gh-release@v2
-        with:
-          append_body: true
-          token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
-          fail_on_unmatched_files: true
-          name: 'Bilix-play ${{ env.Bilix-play-ver }}(${{ env.Bilix-play-vercode }}) with BiliroamingX ${{ env.ver }}'
-          tag_name: 'android_i-v${{ env.Bilix-play-ver }}-b${{ env.play-sn }}-p${{ env.ver }}'
-          body_path: ./build/Changelog_Nightly.txt
 
       # Del Release Nightly ver
       - name: Delete old Nightly Bilix-play
@@ -178,20 +176,11 @@ jobs:
             ![Nightly.jpg](https://github.com/sti-233/Bilix-PreBuilds/blob/main/Nightly.jpg)
             > 合并主分支
             > Bump bili-play ver to ${{ env.Bilix-play-vercode }}
+            
+            ${{ env.Nightly-Changelog }}
           files: |
             ./Bilix-play-Nightly@Aniruf_x.apk
         continue-on-error: true
-
-      - name: Release Bilix-play-Nightly Changelog
-        if: ${{ env.Build-Bilix-play == 'true' }}
-        uses: softprops/action-gh-release@v2
-        with:
-          append_body: true
-          token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
-          fail_on_unmatched_files: true
-          name: 'Bilix-play Nightly - BiliRoamingX ${{ env.ver }}'
-          tag_name: 'Nightly-android_i-Nightly'
-          body_path: ./build/Changelog_Nightly.txt
 
       # output Bilix-play informations
       - name: Build Bilix-play Success
@@ -231,6 +220,75 @@ jobs:
           git commit -m "Push prop"
           git push
         continue-on-error: true
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9.x'
+
+      - name: Prepare
+        run : |
+          mv ./Bilix-play-Nightly@Aniruf_x.apk ./Bilix-play-Nightly-n.${{ env.commit_count }}.${{ github.event.head_commit.id }}@Aniruf_x.apk
+          echo "Nightly_apk=./Bilix-play-Nightly-n.${{ env.commit_count }}.${{ github.event.head_commit.id }}@Aniruf_x.apk" >> $GITHUB_ENV
+          pip install pyrogram tgcrypto
+
+      - name: Post to Channel
+        shell: python
+        env:
+          API_ID: ${{ secrets.TELEGRAM_API_ID }}
+          API_HASH: ${{ secrets.TELEGRAM_API_HASH }}
+          chat_id: ${{ secrets.CHANNEL_ID }}
+          session: ${{ secrets.TELEGRAM_SESSION }}
+        run: |
+          import asyncio
+          import inspect
+          import os
+          from pyrogram import Client
+          from pyrogram.types import InputMediaDocument
+          async def main():
+            session = os.environ["session"]
+            bot = Client(
+              "client",
+              session_string=session,
+            )
+            async with bot:
+              Day = os.environ["Day"]
+              RoamingXver = os.environ["ver"]
+              ver = os.environ["Bilix-play-ver"]
+              ver_code = os.environ["Bilix-play-vercode"]
+              chat_id = os.environ["chat_id"]
+              changelog = os.environ["Nightly-Changelog"]
+              msg_p1 = f"Bilix Nightly - {Day}"
+              msg_p2 = f"BiliRoamingX {RoamingXver}"
+              msg_p3 = f"<pre>play {ver} {ver_code}</pre>"
+              msg_p4 = "New release to GitHub!<pre>"
+              msg_p5 = inspect.cleandoc("""
+              > 合并 sti-233/BiliRoamingX
+               *现在具有切换更新源的能力\n
+              """)
+              msg_p6 = f"{changelog}</pre>"
+              msg_p7 = inspect.cleandoc("""
+              by sti-233
+              在Github查看详情
+              
+              *此为非官方构建
+              Patched by @Aniruf_x
+              #Biliroaming_X
+              """)
+              caption = "{}\n\n{}\n{}\n\n{}\n{}\n{}{}".format(msg_p1, msg_p2, msg_p3, msg_p4, msg_p5, msg_p6, msg_p7)
+              dev = InputMediaDocument(media=os.environ["Nightly_apk"], caption=caption)
+              # 发送到指定的频道
+              await bot.send_media_group(
+                chat_id=chat_id,
+                media=[Nightly],
+              )
+          async def wait():
+            try:
+              await asyncio.wait_for(main(), timeout=600)
+            except asyncio.TimeoutError:
+              print("message send timeout!!!")
+              exit(1)
+          asyncio.run(wait())
 
       # Success
       - name: End
