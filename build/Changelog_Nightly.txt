@@ -1,3 +1,4 @@
+- build(deps): bump agp from 8.5.2 to 8.6.0 (#440)
 - build(deps): bump org.jetbrains.kotlinx:kotlinx-serialization-json (#437)
 - build(deps): bump com.google.protobuf:protobuf-javalite (#438)
 - build(deps): bump com.google.protobuf:protobuf-javalite (#433)
