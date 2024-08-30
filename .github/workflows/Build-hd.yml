@@ -53,7 +53,8 @@ jobs:
           cd ./Bilix-PreBuilds
           echo "commit-count=`git rev-list HEAD --count`" >> $GITHUB_ENV
           echo "hash=`git log -1 --format="%h"`" >> $GITHUB_ENV
-          rm ./Bilix-PreBuilds
+          cd $GITHUB_WORKSPACE
+          rm -r ./Bilix-PreBuilds
 
       # Get revanced-cli
       - name: Get Revanced-cli
