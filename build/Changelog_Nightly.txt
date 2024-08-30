@@ -1,3 +1,5 @@
+- build(deps): bump org.jetbrains.kotlinx:kotlinx-serialization-json (#437)
+- build(deps): bump com.google.protobuf:protobuf-javalite (#438)
 - build(deps): bump com.google.protobuf:protobuf-javalite (#433)
 - fix: remember playback speed
 - fix: player setting create speed fingerprint
