@@ -46,5 +46,8 @@ url.custom.revanced.cli.url=
 
 ## Temp
 temp.with.release=false
+temp.release.cn=
+temp.release.play=
+temp.release.hd=
 
 #### End
