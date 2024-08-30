@@ -50,10 +50,8 @@ jobs:
           cd ./
           git clone https://github.com/sti-233/Bilix-PreBuilds.git
           cd ./Bilix-PreBuilds
-          commit-count=`git rev-list HEAD --count`
-          echo "commit-count=$commit-count" >> $GITHUB_ENV
-          hash=`git log -1 --format="%h"`
-          echo "hash=$hash" >> $GITHUB_ENV
+          echo "commit-count=`git rev-list HEAD --count`" >> $GITHUB_ENV
+          echo "hash=`git log -1 --format="%h"`" >> $GITHUB_ENV
           rm ./Bilix-PreBuilds
 
       # Get revanced-cli
