@@ -48,7 +48,14 @@ jobs:
           echo "Nightly-Changelog<<EOF" >> $GITHUB_ENV
           cat ./build/Changelog_Nightly.txt >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
-          echo "commit-count=`git rev-list HEAD --count`" >> $GITHUB_ENV
+          cd ./
+          git clone https://github.com/sti-233/Bilix-PreBuilds.git
+          cd ./Bilix-PreBuilds
+          commit-count=`git rev-list HEAD --count`
+          echo "commit-count=$commit-count" >> $GITHUB_ENV
+          hash=`git log -1 --format="%h"`
+          echo "hash=$hash" >> $GITHUB_ENV
+          rm ./Bilix-PreBuilds
 
       # Get revanced-cli
       - name: Get Revanced-cli
@@ -149,6 +156,15 @@ jobs:
           files: ./Bilix-hd-${{ env.Bilix-hd-ver }}-${{ env.ver }}@Aniruf_x.apk
         continue-on-error: true
 
+      - name: Release Again
+        run: |
+          curl --request PATCH \
+          --header 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+          --header 'Content-type: application/json' \
+          --header 'User-Agent: Github-Action' \
+          --url https://api.github.com/repos/sti-233/Bilix-Prebuilds/releases/android_hd-v${{ env.Bilix-hd-ver }}-b${{ env.hd-sn }}-p${{ env.ver }} \
+          --data '{ "draft": false }'
+
       # Del Release Nightly ver
       - name: Delete old Nightly Bilix-hd
         if: ${{ env.Build-Bilix-hd == 'true' }}
@@ -184,6 +200,15 @@ jobs:
           files: |
             ./Bilix-hd-Nightly@Aniruf_x.apk
         continue-on-error: true
+
+      - name: Release Nightly Again
+        run: |
+          curl --request PATCH \
+          --header 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+          --header 'Content-type: application/json' \
+          --header 'User-Agent: Github-Action' \
+          --url https://api.github.com/repos/sti-233/Bilix-Prebuilds/releases/Nightly-android_hd-Nightly \
+          --data '{ "draft": false }'
 
       # output Bilix-hd informations
       - name: Build Bilix-hd Success
@@ -231,8 +256,8 @@ jobs:
 
       - name: Prepare
         run : |
-          mv ./Bilix-hd-Nightly@Aniruf_x.apk ./Bilix-hd-Nightly-n.${{ env.commit_count }}.${{ github.event.head_commit.id }}@Aniruf_x.apk
-          echo "Nightly_apk=./Bilix-hd-Nightly-n.${{ env.commit_count }}.${{ github.event.head_commit.id }}@Aniruf_x.apk" >> $GITHUB_ENV
+          mv ./Bilix-hd-Nightly@Aniruf_x.apk ./Bilix-hd-Nightly-n.${{ env.commit-count }}.${{ env.hash }}@Aniruf_x.apk
+          echo "Nightly_apk=./Bilix-hd-Nightly-n.${{ env.commit-count }}.${{ env.hash }}@Aniruf_x.apk" >> $GITHUB_ENV
           pip install pyrogram tgcrypto
 
       - name: Post to Channel

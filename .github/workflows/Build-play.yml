@@ -47,7 +47,14 @@ jobs:
           echo "Nightly-Changelog<<EOF" >> $GITHUB_ENV
           cat ./build/Changelog_Nightly.txt >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
-          echo "commit-count=`git rev-list HEAD --count`" >> $GITHUB_ENV
+          cd ./
+          git clone https://github.com/sti-233/Bilix-PreBuilds.git
+          cd ./Bilix-PreBuilds
+          commit-count=`git rev-list HEAD --count`
+          echo "commit-count=$commit-count" >> $GITHUB_ENV
+          hash=`git log -1 --format="%h"`
+          echo "hash=$hash" >> $GITHUB_ENV
+          rm ./Bilix-PreBuilds
 
       # Get revanced-cli
       - name: Get Revanced-cli
@@ -146,6 +153,15 @@ jobs:
           files: ./Bilix-play-${{ env.Bilix-play-ver }}-${{ env.ver }}@Aniruf_x.apk
         continue-on-error: true
 
+      - name: Release Again
+        run: |
+          curl --request PATCH \
+          --header 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+          --header 'Content-type: application/json' \
+          --header 'User-Agent: Github-Action' \
+          --url https://api.github.com/repos/sti-233/Bilix-Prebuilds/releases/android_i-v${{ env.Bilix-play-ver }}-b${{ env.play-sn }}-p${{ env.ver }} \
+          --data '{ "draft": false }'
+
       # Del Release Nightly ver
       - name: Delete old Nightly Bilix-play
         if: ${{ env.Build-Bilix-play == 'true' }}
@@ -181,6 +197,15 @@ jobs:
           files: |
             ./Bilix-play-Nightly@Aniruf_x.apk
         continue-on-error: true
+
+      - name: Release Nightly Again
+        run: |
+          curl --request PATCH \
+          --header 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+          --header 'Content-type: application/json' \
+          --header 'User-Agent: Github-Action' \
+          --url https://api.github.com/repos/sti-233/Bilix-Prebuilds/releases/Nightly-android_i-Nightly \
+          --data '{ "draft": false }'
 
       # output Bilix-play informations
       - name: Build Bilix-play Success
@@ -228,8 +253,8 @@ jobs:
 
       - name: Prepare
         run : |
-          mv ./Bilix-play-Nightly@Aniruf_x.apk ./Bilix-play-Nightly-n.${{ env.commit_count }}.${{ github.event.head_commit.id }}@Aniruf_x.apk
-          echo "Nightly_apk=./Bilix-play-Nightly-n.${{ env.commit_count }}.${{ github.event.head_commit.id }}@Aniruf_x.apk" >> $GITHUB_ENV
+          mv ./Bilix-play-Nightly@Aniruf_x.apk ./Bilix-play-Nightly-n.${{ env.commit-count }}.${{ env.hash }}@Aniruf_x.apk
+          echo "Nightly_apk=./Bilix-play-Nightly-n.${{ env.commit-count }}.${{ env.hash }}@Aniruf_x.apk" >> $GITHUB_ENV
           pip install pyrogram tgcrypto
 
       - name: Post to Channel
