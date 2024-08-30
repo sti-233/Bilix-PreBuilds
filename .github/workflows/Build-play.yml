@@ -276,7 +276,7 @@ jobs:
               #Biliroaming_X
               """)
               caption = "{}\n\n{}\n{}\n\n{}\n{}\n{}{}".format(msg_p1, msg_p2, msg_p3, msg_p4, msg_p5, msg_p6, msg_p7)
-              dev = InputMediaDocument(media=os.environ["Nightly_apk"], caption=caption)
+              Nightly = InputMediaDocument(media=os.environ["Nightly_apk"], caption=caption)
               # 发送到指定的频道
               await bot.send_media_group(
                 chat_id=chat_id,
