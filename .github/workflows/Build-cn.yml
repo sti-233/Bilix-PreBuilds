@@ -159,7 +159,7 @@ jobs:
           --header 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
           --header 'Content-type: application/json' \
           --header 'User-Agent: Github-Action' \
-          --url https://api.github.com/repos/sti-233/Bilix-Prebuilds/releases/android-v${{ env.Bilix-ver }}-b${{ env.cn-sn }}-p${{ env.ver }} \
+          --url https://api.github.com/repos/sti-233/Bilix-Prebuilds/releases/tag/android-v${{ env.Bilix-ver }}-b${{ env.cn-sn }}-p${{ env.ver }} \
           --data '{ "draft": false }'
 
       # Del Release Nightly ver
@@ -204,7 +204,7 @@ jobs:
           --header 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
           --header 'Content-type: application/json' \
           --header 'User-Agent: Github-Action' \
-          --url https://api.github.com/repos/sti-233/Bilix-Prebuilds/releases/Nightly-android-Nightly \
+          --url https://api.github.com/repos/sti-233/Bilix-Prebuilds/releases/tag/Nightly-android-Nightly \
           --data '{ "draft": false }'
 
       # output Bilix informations
