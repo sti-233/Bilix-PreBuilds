@@ -1,2 +1,4 @@
+- chore: update home feed ad filter type
+- chore: improve subtitle panel ui
 - chore: fix notification icon globally
 - feat: block charge relate video
