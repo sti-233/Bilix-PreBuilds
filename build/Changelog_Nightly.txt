@@ -1,3 +1,5 @@
+- chore: remove recommend reason
+- feat: refactor purify search
 - fix: attach channel info fingerprint
 - chore: update home feed ad filter type
 - chore: improve subtitle panel ui
