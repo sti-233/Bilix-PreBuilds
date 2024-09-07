@@ -136,6 +136,7 @@ jobs:
 
       # Release part
       - name: Release Bilix-play
+        id: play_release
         if: ${{ env.Build-Bilix-play == 'true' && (env.with-release == 'true' || env.release == 'true') }}
         uses: softprops/action-gh-release@v2
         with:
@@ -158,7 +159,7 @@ jobs:
           --header 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
           --header 'Content-type: application/json' \
           --header 'User-Agent: Github-Action' \
-          --url https://api.github.com/repos/sti-233/Bilix-Prebuilds/releases/tag/android_i-v${{ env.Bilix-play-ver }}-b${{ env.play-sn }}-p${{ env.ver }} \
+          --url https://api.github.com/repos/sti-233/Bilix-Prebuilds/releases/${{ steps.play_release.outputs.id }} \
           --data '{ "draft": false }'
 
       # Del Release Nightly ver
@@ -178,6 +179,7 @@ jobs:
 
       # Release Nightly
       - name: Release Bilix-play-Nightly
+        id: play_nightly
         if: ${{ env.Build-Bilix-play == 'true' }}
         uses: softprops/action-gh-release@v2
         with:
@@ -203,7 +205,7 @@ jobs:
           --header 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
           --header 'Content-type: application/json' \
           --header 'User-Agent: Github-Action' \
-          --url https://api.github.com/repos/sti-233/Bilix-Prebuilds/releases/tag/Nightly-android_i-Nightly \
+          --url https://api.github.com/repos/sti-233/Bilix-Prebuilds/releases/${{ steps.play_nightly.outputs.id }} \
           --data '{ "draft": false }'
 
       # output Bilix-play informations
@@ -297,7 +299,7 @@ jobs:
               
               *此为非官方构建
               Patched by @Aniruf_x
-              #Biliroaming_X
+              #Biliroaming_X #play
               """)
               caption = "{}\n\n{}\n{}\n\n{}\n{}\n{}{}".format(msg_p1, msg_p2, msg_p3, msg_p4, msg_p5, msg_p6, msg_p7)
               Nightly = InputMediaDocument(media=os.environ["Nightly_apk"], caption=caption)
