@@ -1,10 +1,1 @@
-- fix: purify search
-- fix: customize space
-- build(deps): bump ksp from 2.0.20-1.0.24 to 2.0.20-1.0.25 (#449)
-- chore: remove recommend reason
-- feat: refactor purify search
-- fix: attach channel info fingerprint
-- chore: update home feed ad filter type
-- chore: improve subtitle panel ui
-- chore: fix notification icon globally
-- feat: block charge relate video
+- fix: vertical video subtitle selected effect
