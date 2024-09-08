@@ -220,16 +220,24 @@ jobs:
       - name: Retrieve Release Result
         run: |
           if [ "${{ github.event.inputs.Release-All }}" == "true" ]; then
-          sed -i 's/^.*temp\.with\.release.*$/temp.with.release=true/' ./Build.prop
+            sed -i 's/^.*temp\.with\.release.*$/temp.with.release=true/' ./Build.prop
+          else
+            sed -i 's/^.*temp\.with\.release.*$/temp.with.release=false/' ./Build.prop
           fi
           if [ "${{ github.event.inputs.Release-cn }}" == "true" ]; then
-          sed -i 's/^.*temp\.release\.cn.*$/temp.release.cn=true/' ./Build.prop
+            sed -i 's/^.*temp\.release\.cn.*$/temp.release.cn=true/' ./Build.prop
+          else
+            sed -i 's/^.*temp\.release\.cn.*$/temp.release.cn=false/' ./Build.prop
           fi
           if [ "${{ github.event.inputs.Release-play }}" == "true" ]; then
-          sed -i 's/^.*temp\.release\.play.*$/temp.release.play=true/' ./Build.prop
+            sed -i 's/^.*temp\.release\.play.*$/temp.release.play=true/' ./Build.prop
+          else
+            sed -i 's/^.*temp\.release\.play.*$/temp.release.play=false/' ./Build.prop
           fi
           if [ "${{ github.event.inputs.Release-hd }}" == "true" ]; then
-          sed -i 's/^.*temp\.release\.hd.*$/temp.release.hd=true/' ./Build.prop
+            sed -i 's/^.*temp\.release\.hd.*$/temp.release.hd=true/' ./Build.prop
+          else
+            sed -i 's/^.*temp\.release\.hd.*$/temp.release.hd=false/' ./Build.prop
           fi
 
       - name: Build with gradle
