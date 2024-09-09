@@ -1,2 +1,5 @@
+- chore: update disable p2p upload preference summary
+- fix: moss synchronized methods naming
+- fix: unlock bvid/aid area limited video
 - chore: append reply id fragment to reply share url
 - fix: vertical video subtitle selected effect
