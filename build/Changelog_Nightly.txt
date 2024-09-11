@@ -1,3 +1,7 @@
+- fix: purify mall goods share url
+- fix: override and remember playback speed
+- fix: purify `special_s` search ad
+- feat: block share guide
 - build(deps): bump gradle wrapper from 8.10 to 8.10.1 (#455)
 - fix: purify space
 - chore: update disable p2p upload preference summary
