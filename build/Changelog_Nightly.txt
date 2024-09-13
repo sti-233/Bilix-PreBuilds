@@ -1,2 +1,6 @@
+- feat: fake not in multi-window for LiveRoomActivity
+- feat: make all time-point-like danmaku navigable
+- fix: purify space goods
+- build(deps): bump com.google.protobuf:protobuf-javalite (#459)
 - fix: dynamic no up recall
 - fix: resolve `MultiMethodFingerprint` multiple times
