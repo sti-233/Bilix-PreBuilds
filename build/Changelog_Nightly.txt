@@ -1,3 +1,5 @@
+- fix: cache redirect
+- fix: unlock download for segment video
 - feat: fake not in multi-window for LiveRoomActivity
 - feat: make all time-point-like danmaku navigable
 - fix: purify space goods
