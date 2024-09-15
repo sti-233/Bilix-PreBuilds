@@ -35,11 +35,11 @@ BiliRoamingX.ver.code=1023002
 BiliRoamingX.ver.compare=2020
 
 ## Url
-url.custom.cn=false
+url.custom.cn=true
 url.custom.play=false
 url.custom.hd=true
 url.custom.revanced.cli=false
-url.custom.bilibili.cn=https://dl.hdslb.com/mobile/pack/android64/15838351/iBiliPlayer-apinkRelease-8.11.0-b15838351.apk
+url.custom.bilibili.cn=https://dl.hdslb.com/mobile/pack/android64/16028446/iBiliPlayer-apinkRelease-8.14.0-b16028446.apk
 url.custom.bilibili.play=
 url.custom.bilibili.hd=https://dl.hdslb.com/mobile/pack/android_hd/15062066/iBiliPlayer-hdRelease-1.46.2-b15062066.apk
 url.custom.revanced.cli.url=
