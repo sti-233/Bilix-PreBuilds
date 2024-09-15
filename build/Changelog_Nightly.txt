@@ -1,3 +1,6 @@
+- feat: add back danmaku system font preference
+- feat: delay download modules
+- fix: backup restore logic
 - fix: cache redirect
 - fix: unlock download for segment video
 - feat: fake not in multi-window for LiveRoomActivity
