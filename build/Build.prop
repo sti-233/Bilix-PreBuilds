@@ -9,7 +9,7 @@ ahead.commits.number=1
 ## 获取更新日志
 # use offical repo commit id
 # start commit id
-commit.id.latest=226a740854399adddc378e4861bec12384e26f95
+commit.id.latest=7ad023fdc4a50c4924aa0e97fa36906e16a9c3d3
 commit.id.nightly.start=226a740854399adddc378e4861bec12384e26f95
 # Changelog need
 push.changelog=true
@@ -27,19 +27,19 @@ Bilix.vercode.play=7750600
 
 ## BiliRoamingX ver
 # Latest
-BiliRoamingX.ver.full=1.23.2.r2020
+BiliRoamingX.ver.full=1.23.2.r2023
 BiliRoamingX.ver.big=1.23.2
-BiliRoamingX.ver.small=2020
+BiliRoamingX.ver.small=2023
 BiliRoamingX.ver.code=1023002
 # Compare
 BiliRoamingX.ver.compare=2020
 
 ## Url
-url.custom.cn=false
+url.custom.cn=true
 url.custom.play=false
 url.custom.hd=true
 url.custom.revanced.cli=false
-url.custom.bilibili.cn=https://dl.hdslb.com/mobile/pack/android64/15838351/iBiliPlayer-apinkRelease-8.11.0-b15838351.apk
+url.custom.bilibili.cn=https://dl.hdslb.com/mobile/pack/android64/16028446/iBiliPlayer-apinkRelease-8.14.0-b16028446.apk
 url.custom.bilibili.play=
 url.custom.bilibili.hd=https://dl.hdslb.com/mobile/pack/android_hd/15062066/iBiliPlayer-hdRelease-1.46.2-b15062066.apk
 url.custom.revanced.cli.url=
