@@ -1,3 +1,4 @@
+- feat: make multi-part video comment time navigable
 - fix: convert ASS subtitle
 - fix: import subtitle
 - feat: add support for device decision hook
