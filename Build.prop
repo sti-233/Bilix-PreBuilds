@@ -35,7 +35,7 @@ BiliRoamingX.ver.code=1023002
 BiliRoamingX.ver.compare=2020
 
 ## Url
-url.custom.cn=true
+url.custom.cn=falss
 url.custom.play=false
 url.custom.hd=true
 url.custom.revanced.cli=false
