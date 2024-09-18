@@ -1,3 +1,4 @@
+- chore: encode some strings
 - feat: make multi-part video comment time navigable
 - fix: convert ASS subtitle
 - fix: import subtitle
