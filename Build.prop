@@ -9,8 +9,8 @@ ahead.commits.number=1
 ## 获取更新日志
 # use offical repo commit id
 # start commit id
-commit.id.latest=b920da69c63b0621ccd40a98de46f60f593035f1
-commit.id.nightly.start=b920da69c63b0621ccd40a98de46f60f593035f1
+commit.id.latest=aa05fcd1980788bc2178f3d99aba3089fc0fc536
+commit.id.nightly.start=aa05fcd1980788bc2178f3d99aba3089fc0fc536
 # Changelog need
 push.changelog=true
 
@@ -27,12 +27,12 @@ Bilix.vercode.play=7750600
 
 ## BiliRoamingX ver
 # Latest
-BiliRoamingX.ver.full=1.23.2.r2031
-BiliRoamingX.ver.big=1.23.2
-BiliRoamingX.ver.small=2031
-BiliRoamingX.ver.code=1023002
+BiliRoamingX.ver.full=1.23.3
+BiliRoamingX.ver.big=1.23.3
+BiliRoamingX.ver.small=2035
+BiliRoamingX.ver.code=1023003
 # Compare
-BiliRoamingX.ver.compare=2031
+BiliRoamingX.ver.compare=2035
 
 ## Url
 url.custom.cn=false
@@ -45,7 +45,7 @@ url.custom.bilibili.hd=https://dl.hdslb.com/mobile/pack/android_hd/15062066/iBil
 url.custom.revanced.cli.url=
 
 ## Temp
-temp.with.release=false
+temp.with.release=true
 temp.release.cn=false
 temp.release.play=false
 temp.release.hd=false
