@@ -1,4 +1,1 @@
-- build: bump to 1.23.3 [skip ci]
-- feat: force old danmaku setting panel
-- fix: subtitle panel text color
-- build(deps): bump kotlinx.serialization from 1.7.2 to 1.7.3 (#482)
+- feat: block live room auth dialog
