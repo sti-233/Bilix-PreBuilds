@@ -1,1 +1,10 @@
+- feat: block live room qoe popup
+- chore: update adjust layout patch
+- chore: improve delay download modules
+- chore: improve theseus playlist title layout
+- chore: update some strings
+- chore: improve delay download modules
+- chore: adjust theseus playlist title layout
+- feat: block live room wish popup
+- build(deps): bump gradle wrapper from 8.10.1 to 8.10.2 (#491)
 - feat: block live room auth dialog
