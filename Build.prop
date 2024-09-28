@@ -45,7 +45,7 @@ url.custom.bilibili.hd=https://dl.hdslb.com/mobile/pack/android_hd/15062066/iBil
 url.custom.revanced.cli.url=
 
 ## Temp
-temp.with.release=false
+temp.with.release=true
 temp.release.cn=false
 temp.release.play=false
 temp.release.hd=false
