@@ -39,6 +39,7 @@ jobs:
         run: |
           if [ "$Bilix-cn-vercode-local" -lt "$Bili-cn-vercode-online" ]; then
             sed -i 's/^.*url\.custom\.bilibli\.cn.*$/url.custom.bilibili.cn=${{ env.Bili-cn-url-online }}/' ./Build.prop
+            sed -i 's/^.*Bilix\.vercode\.cn.*$/Bilix.ver.cn=${{ env.Bili-cn-vercode-online }}/' ./Build.prop
             sed -i 's/^.*Bilix\.ver\.cn.*$/Bilix.ver.cn=${{ env.Bili-cn-version-online }}/' ./Build.prop
           fi
 
@@ -49,3 +50,4 @@ jobs:
           git add Build.prop
           git commit -m "Update bilibili apk url"
           git push
+        continue-on-error: true
