@@ -38,7 +38,7 @@ jobs:
       - name: Check update
         run: |
           if [ "${{ env.Bilix-cn-vercode-local }}" -lt "${{ env.Bili-cn-vercode-online }}" ]; then
-            sed -i 's#^.*url\.custom\.bilibli\.cn.*$#url.custom.bilibili.cn=${{ env.Bili-cn-url-online }}#' ./Build.prop
+            sed -i 's#^.*url\.custom\.bilibili\.cn.*$#url.custom.bilibili.cn=${{ env.Bili-cn-url-online }}#' ./Build.prop
             sed -i 's/^.*Bilix\.vercode\.cn.*$/Bilix.vercode.cn=${{ env.Bili-cn-vercode-online }}/' ./Build.prop
             sed -i 's/^.*Bilix\.ver\.cn.*$/Bilix.ver.cn=${{ env.Bili-cn-version-online }}/' ./Build.prop
           fi
