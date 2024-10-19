@@ -83,13 +83,18 @@ jobs:
           cp ./BiliRoamingX/patches/src/main/kotlin/app/revanced/patches/bilibili/misc/settings/patch/SettingsResourcePatch.kt ./composed/SettingsResourcePatch.kt
           cp ./BiliRoamingX/integrations/app/src/main/java/app/revanced/bilibili/settings/fragments/fragments.kt ./composed/fragments.kt
           cp ./BiliRoamingX/integrations/app/src/main/java/app/revanced/bilibili/settings/Settings.kt ./composed/Settings.kt
+          rm ./BiliRoamingX
+          rm ./Bilix-PreBuilds
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add build/Build.prop
-          git add build/patches.jar
-          git add build/integrations.apk
-          git add build/Changelog.txt
-          git add build/Changelog_Nightly.txt
+          git add composed/strings.xml
+          git add composed/strings_raw.xml
+          git add composed/MiscFragment.kt
+          git add composed/arrays.xml
+          git add composed/biliroaming_setting_misc.xml
+          git add composed/SettingsResourcePatch.kt
+          git add composed/fragments.kt
+          git add composed/Settings.kt
           git commit -m "Push resource"
           git push
         continue-on-error: true
