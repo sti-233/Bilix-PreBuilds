@@ -1,1 +1,9 @@
- - no change 
+- build(deps): bump androidx.annotation:annotation from 1.9.0 to 1.9.1 (#2)
+- build(deps): bump agp from 8.7.1 to 8.7.2 (#3)
+- build(deps): bump com.alibaba:fastjson from 1.2.83 to 2.0.53 (#4)
+- build(deps): bump com.android.tools.smali:smali from 3.0.3 to 3.0.8 (#5)
+- fix: readme
+- fix: can't update to official ver
+- fix: can't check official update
+- push: strings
+- push: fork resource
