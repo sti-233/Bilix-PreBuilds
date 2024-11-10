@@ -15,29 +15,19 @@ Bilix patches from [BiliroamingX-fork](https://github.com/sti-233/BiliRoamingX)
 >[!Warning]
 >此项目与 [HFrost0/bilix](https://github.com/HFrost0/bilix) 无关！
 
->[!Tip]
->本项目重构完毕<br/>
->现可脱离[BiliroamingX-fork](https://github.com/sti-233/BiliRoamingX)项目ci构建
-
 >[!Note]
 >本仓库使用 Github Action 进行构建并预发布
 
 ```
-- 自动获取bilibili-cn/play原包
-- 同时构建cn/play版bilibili
-- 自动合并BiliRoamingX-fork的修改至原版ci
-- 自动上传Bilix至ci/release
-- 自动获取自动更新所需的sn
-- 自动获取自动更新所需的md5
-- 自动获取自动更新所需的字节大小
-- 自动获取自动更新所需的发布时间时间戳
+- 自动获取原包
+- 自动发布release
+- 自动获取sn
+- 自动获取md5
+- 自动获取字节大小
+- 自动获取发布时间时间戳
 - 自动填充更新日志 (commit title)
 - 自定义原包/cli获取链接
 - 使用固定的签名
-
-- (old)自动获取BiliroamingX-fork的ci构建
-- (old)自动获取BiliroamingX-fork的构建ci版本
-- (old)自动检测bilibili是否为正确的版本
 ```
 
 >[!Important]
@@ -49,15 +39,10 @@ Wait for your issuse
 ```
 
 ## 使用/参考的项目
-- [BiliRoamingX/BiliRoamingX](https://github.com/BiliRoamingX/BiliRoamingX)
-- [BiliRoamingX/BiliRoamingX-PreBuilds](https://github.com/BiliRoamingX/BiliRoamingX-PreBuilds)<br/>
-  (原项目)
-- [sti-233/BiliRoamingX](https://github.com/sti-233/BiliRoamingX)-fork<br/>
-  (允许非官方构建更新 支持自定义更新源)
+- [BiliRoamingX/BiliRoamingX](https://github.com/BiliRoamingX/BiliRoamingX)<br/>
+- [sti-233/BiliRoamingX](https://github.com/sti-233/BiliRoamingX)<br/>
 - [vc-teahouse/inital-biliroaming-maker](https://github.com/vc-teahouse/inital-biliroaming-maker)<br/>
   (ci基本框架)
-- [8Mi-Tech/LSPatch-ApkFactory](https://github.com/8Mi-Tech/LSPatch-ApkFactory)<br/>
-  (bilibili原包下载部分参考)
 - [patrickfav/uber-apk-signer](https://github.com/patrickfav/uber-apk-signer)<br/>
   (Bilix签名)
 - [SocialSisterYi/bilibili-API-collect](https://github.com/SocialSisterYi/bilibili-API-collect)
