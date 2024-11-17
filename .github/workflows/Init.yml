@@ -217,7 +217,7 @@ jobs:
         run: |
           rm ./BiliRoamingX/integrations/app/src/main/java/app/revanced/bilibili/account/Accounts.kt
           git clone git@github.com:sti-233/Close-BiliRoamingX.git
-          mv ./BiliRoamingX/Close-BiliRoamingX/Accounts.kt ./BiliRoamingX/integrations/app/src/main/java/app/revanced/bilibili/account/Accounts.kt
+          mv ./Close-BiliRoamingX/Accounts.kt ./BiliRoamingX/integrations/app/src/main/java/app/revanced/bilibili/account/Accounts.kt
           cd ./BiliRoamingX
           ./gradlew --no-daemon -Dorg.gradle.jvmargs=-Xmx2g -Pversion=${{ env.BiliRoamingX-ver }} dist
 
