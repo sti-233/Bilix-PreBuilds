@@ -10,7 +10,7 @@ ahead.commits.number=1
 # use offical repo commit id
 # start commit id
 commit.id.latest=ae58109f3acdd53ec2d2b3fb439c2a2ef1886221
-commit.id.nightly.start=c284bbe0bb1535433a00f3ae24744e8ea73a9459
+commit.id.nightly.start=a02d615b21394ccba4b8cce4141e3a962a34600c
 # Changelog need
 push.changelog=true
 
@@ -20,28 +20,28 @@ Bilix.build.cn=true
 Bilix.build.play=true
 Bilix.build.hd=true
 # Latest version
-Bilix.ver.cn=8.21.0
+Bilix.ver.cn=8.23.0
 Bilix.ver.hd=1.47.0
 Bilix.ver.play=3.19.2
-Bilix.vercode.cn=8210200
+Bilix.vercode.cn=8230200
 Bilix.vercode.hd=1470100
 Bilix.vercode.play=7750600
 
 ## BiliRoamingX ver
 # Latest
-BiliRoamingX.ver.full=1.24.0
+BiliRoamingX.ver.full=1.24.0.r2093
 BiliRoamingX.ver.big=1.24.0
-BiliRoamingX.ver.small=2075
+BiliRoamingX.ver.small=2093
 BiliRoamingX.ver.code=1024000
 # Compare
-BiliRoamingX.ver.compare=2075
+BiliRoamingX.ver.compare=2093
 
 ## Url
 url.custom.cn=true
 url.custom.play=false
 url.custom.hd=true
 url.custom.revanced.cli=false
-url.custom.bilibili.cn=https://dl.hdslb.com/mobile/pack/android64/16594038/iBiliPlayer-apinkRelease-8.21.0-b16594038.apk
+url.custom.bilibili.cn=https://dl.hdslb.com/mobile/pack/android64/16760339/iBiliPlayer-apinkRelease-8.23.0-b16760339.apk
 url.custom.bilibili.play=
 url.custom.bilibili.hd=https://dl.hdslb.com/mobile/pack/android_hd/16112542/iBiliPlayer-hdRelease-1.47.0-b16112542.apk
 url.custom.revanced.cli.url=

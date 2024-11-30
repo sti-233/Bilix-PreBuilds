@@ -1,30 +1,18 @@
-- Chore: synchronous v1.25.0 string part1
-- del: useless pics [skip ci]
-- fix: build
-- fix: else
-- Chore: optimize updateSource
-- build(deps): bump ksp from 2.0.21-1.0.27 to 2.0.21-1.0.28 (#8)
-- chore: sponsor fragment part1
-- del: test line
-- fix: get
-- fix: try set ssh
-- fix: use ssl
-- build: bump checkout to v4
-- fix: task
-- fix: try again
-- fix: use secrets
-- fix: get Accounts.kt
-- fix: can't found Accounts.kt
-- fix: blacklist cracked [skip ci]
-- revert: build(deps): bump com.android.tools.smali:smali from 3.0.3 to 3.0.8. (#5)
-- build(deps): bump ksp from 2.0.21-1.0.26 to 2.0.21-1.0.27 (#7)
-- chore: synchronous v1.24.1 strings
-- build(deps): bump androidx.annotation:annotation from 1.9.0 to 1.9.1 (#2)
-- build(deps): bump agp from 8.7.1 to 8.7.2 (#3)
-- build(deps): bump com.alibaba:fastjson from 1.2.83 to 2.0.53 (#4)
-- build(deps): bump com.android.tools.smali:smali from 3.0.3 to 3.0.8 (#5)
-- fix: readme
-- fix: can't update to official ver
-- fix: can't check official update
-- push: strings
-- push: fork resource
+- fix: ssh-agent [skip ci]
+- build(deps): bump kotlin from 2.0.21 to 2.1.0 (#11)
+- build(deps): bump com.google.protobuf:protobuf-javalite (#12) [skip ci]
+- build(deps): bump ksp from 2.0.21-1.0.28 to 2.1.0-1.0.29 (#13) [skip ci]
+- fix: crash of CustomUpdateSource [skip ci]
+- chore: optimize strings
+- revert: use official Blacklist [skip ci]
+- fix: cli build
+- fix: pr build [skip ci]
+- chore: setup ssh-agent [skip ci]
+- fix: can't find resource
+- fix: get correct Blacklist [skip ci]
+- fix: Missing }
+- chore: sponsor fragment part2
+- docs: readme
+- docs: recommend project
+- docs: readme
+- Chore: optimize customUpdate
