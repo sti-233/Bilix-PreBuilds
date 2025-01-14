@@ -8,7 +8,7 @@
 
 </div>
 
-Bilix patches from [BiliroamingX-fork](https://github.com/sti-233/BiliRoamingX)
+此仓库几乎已被弃用 请转至 [BiliroamingX-fork](https://github.com/sti-233/BiliRoamingX)
 
 [![CI](https://github.com/sti-233/Bilix-PreBuilds/actions/workflows/Build.yml/badge.svg)](https://github.com/sti-233/Bilix-PreBuilds/actions/workflows/Build.yml)[![CI](https://github.com/sti-233/Bilix-PreBuilds/actions/workflows/Init.yml/badge.svg)](https://github.com/sti-233/Bilix-PreBuilds/actions/workflows/Init.yml)<br/><br/>[![CI](https://github.com/sti-233/Bilix-PreBuilds/actions/workflows/Build-cn.yml/badge.svg)](https://github.com/sti-233/Bilix-PreBuilds/actions/workflows/Build-cn.yml)<br/>[![CI](https://github.com/sti-233/Bilix-PreBuilds/actions/workflows/Build-play.yml/badge.svg)](https://github.com/sti-233/Bilix-PreBuilds/actions/workflows/Build-play.yml)[![CI](https://github.com/sti-233/Bilix-PreBuilds/actions/workflows/Build-hd.yml/badge.svg)](https://github.com/sti-233/Bilix-PreBuilds/actions/workflows/Build-hd.yml)
 
