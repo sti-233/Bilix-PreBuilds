@@ -43,8 +43,6 @@ Wait for your issuse
 ## 使用/参考的项目
 - [BiliRoamingX/BiliRoamingX](https://github.com/BiliRoamingX/BiliRoamingX)<br/>
 - [sti-233/BiliRoamingX](https://github.com/sti-233/BiliRoamingX)<br/>
-- [vc-teahouse/inital-biliroaming-maker](https://github.com/vc-teahouse/inital-biliroaming-maker)<br/>
-  (ci基本框架)
 - [patrickfav/uber-apk-signer](https://github.com/patrickfav/uber-apk-signer)<br/>
   (Bilix签名)
 - [SocialSisterYi/bilibili-API-collect](https://github.com/SocialSisterYi/bilibili-API-collect)
