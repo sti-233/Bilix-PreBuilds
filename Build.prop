@@ -20,10 +20,10 @@ Bilix.build.cn=true
 Bilix.build.play=true
 Bilix.build.hd=true
 # Latest version
-Bilix.ver.cn=8.91.0
+Bilix.ver.cn=8.91.1
 Bilix.ver.hd=1.47.0
 Bilix.ver.play=3.19.2
-Bilix.vercode.cn=8910300
+Bilix.vercode.cn=8911100
 Bilix.vercode.hd=1470100
 Bilix.vercode.play=7750600
 
@@ -41,7 +41,7 @@ url.custom.cn=true
 url.custom.play=false
 url.custom.hd=true
 url.custom.revanced.cli=false
-url.custom.bilibili.cn=https://dl.hdslb.com/mobile/pack/android64/24089784/iBiliPlayer-apinkRelease-8.91.0-b24089784.apk
+url.custom.bilibili.cn=https://dl.hdslb.com/mobile/pack/android64/24160930/iBiliPlayer-apinkRelease-8.91.1-b24160930.apk
 url.custom.bilibili.play=
 url.custom.bilibili.hd=https://dl.hdslb.com/mobile/pack/android_hd/16112542/iBiliPlayer-hdRelease-1.47.0-b16112542.apk
 url.custom.revanced.cli.url=
